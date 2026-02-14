@@ -100,6 +100,10 @@ Run it manually:
 python nse_scraper/stock_notification.py
 ```
 
+## Switching backends
+
+Set `DB_BACKEND` in `.env` to one of `mongo`, `postgres`, or `supabase`, and configure only the variables for that backend. For Supabase, create the `stock_data` table first; see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md).
+
 ## Docker
 
 Use the Docker template:

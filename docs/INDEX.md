@@ -7,6 +7,7 @@ Complete documentation for the NSE Stock Scraper project.
 - **[README.md](../README.md)** - Project overview, installation, and getting started
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick reference guide for common tasks
 - **[DOCKER.md](DOCKER.md)** - Comprehensive Docker deployment guide
+- **[SUPABASE_SETUP.md](SUPABASE_SETUP.md)** - Create Supabase table and switch backend
 
 ## Project Structure
 

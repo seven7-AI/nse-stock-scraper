@@ -47,17 +47,17 @@ class NseScraperPipeline:
             supabase_table=crawler.settings.get("SUPABASE_TABLE", "stock_data"),
         )
 
-    def open_spider(self, spider):
+    def open_spider(self, spider=None):
         """Called when spider is opened"""
         self.storage.open()
         logger.info("Storage backend active: %s", self.db_backend)
 
-    def close_spider(self, spider):
+    def close_spider(self, spider=None):
         """Called when spider is closed"""
         self.storage.close()
         logger.info("Storage backend closed")
-    
-    def process_item(self, item, spider):
+
+    def process_item(self, item, spider=None):
         """Process item and store to database"""
         try:
             # Validate required fields

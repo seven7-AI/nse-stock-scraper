@@ -7,7 +7,6 @@ Complete documentation for the NSE Stock Scraper project.
 - **[README.md](../README.md)** - Project overview, installation, and getting started
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick reference guide for common tasks
 - **[DOCKER.md](DOCKER.md)** - Comprehensive Docker deployment guide
-- **[IMPROVEMENTS.md](IMPROVEMENTS.md)** - Detailed changelog of all improvements and fixes
 
 ## Project Structure
 
@@ -15,10 +14,8 @@ Complete documentation for the NSE Stock Scraper project.
 nse-stock-scraper/
 ├── docs/                      # All documentation and images
 │   ├── INDEX.md              # This file
-│   ├── README.md             # Project overview
 │   ├── QUICKSTART.md         # Quick reference
 │   ├── DOCKER.md             # Docker guide
-│   ├── IMPROVEMENTS.md       # Changelog
 │   └── images/               # Screenshots and diagrams
 ├── config/                    # Configuration files
 │   ├── .env.example          # Example environment variables
@@ -34,8 +31,10 @@ nse-stock-scraper/
 │   ├── pipelines.py          # Data pipelines
 │   ├── middlewares.py        # Custom middlewares
 │   ├── settings.py           # Scrapy settings
-│   ├── stock_notification.py # SMS notification script
-│   └── migrations/           # Database migrations (future)
+│   ├── stock_notification.py # Placeholder utility (no messaging)
+│   └── db/                   # Storage backend adapters
+├── alembic/                   # Alembic migration scripts
+├── sql/                       # SQL schema and utility functions
 ├── .github/                   # GitHub configuration
 │   ├── workflows/            # GitHub Actions workflows
 │   │   ├── python-app.yml   # Main CI/CD workflow
@@ -61,7 +60,6 @@ nse-stock-scraper/
 - Use `docker-compose up` for quick local setup
 
 ### For Development
-- Check [IMPROVEMENTS.md](IMPROVEMENTS.md) for recent changes
 - Review CI/CD in `.github/workflows/`
 - Check Dependabot configuration in `.github/dependabot.yml`
 
@@ -99,4 +97,3 @@ See the **Troubleshooting** section in [README.md](../README.md#troubleshooting)
 For detailed documentation on specific features:
 - **Docker deployment**: See [DOCKER.md](DOCKER.md)
 - **Quick commands**: See [QUICKSTART.md](QUICKSTART.md)
-- **Code improvements**: See [IMPROVEMENTS.md](IMPROVEMENTS.md)

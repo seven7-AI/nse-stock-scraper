@@ -42,7 +42,11 @@ USER scraper
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import pymongo; import os; pymongo.MongoClient(os.getenv('MONGODB_URI'))" || exit 1
+    CMD python -c "import os; backend=os.getenv('DB_BACKEND','mongo').lower(); \
+if backend=='mongo': import pymongo; pymongo.MongoClient(os.getenv('MONGODB_URI')).admin.command('ping'); \
+elif backend=='postgres': from sqlalchemy import create_engine, text; eng=create_engine(os.getenv('SQL_DATABASE_URL')); conn=eng.connect(); conn.execute(text('SELECT 1')); conn.close(); eng.dispose(); \
+elif backend=='supabase': assert os.getenv('SUPABASE_URL') and os.getenv('SUPABASE_KEY'); \
+else: raise SystemExit(1)" || exit 1
 
 # Run scraper by default
 ENTRYPOINT ["scrapy"]

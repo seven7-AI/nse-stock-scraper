@@ -6,7 +6,8 @@
 
 ```
 ├── Dockerfile              # Multi-stage Docker image definition
-├── docker-compose.yml      # Local development with MongoDB
+├── docker-compose.yml      # Local development (MongoDB + PostgreSQL)
+├── alembic.ini             # Alembic configuration
 ├── requirements.txt        # Python package dependencies
 ├── scrapy.cfg             # Scrapy project configuration
 ├── LICENSE                # MIT License
@@ -20,10 +21,8 @@ All project documentation centralized in one folder:
 ```
 docs/
 ├── INDEX.md               # Documentation index (this folder's guide)
-├── README.md              # [DEPRECATED - kept for reference]
 ├── QUICKSTART.md          # Quick reference for common commands
 ├── DOCKER.md              # Comprehensive Docker deployment guide
-├── IMPROVEMENTS.md        # Detailed changelog of fixes & improvements
 └── images/
     ├── nse-scraper.png    # App screenshot
     ├── Atlas-DB.png       # Database screenshot
@@ -55,22 +54,42 @@ Core Scrapy project code:
 nse_scraper/
 ├── __init__.py            # Package initialization
 ├── items.py               # Scrapy item definitions (data schema)
-├── pipelines.py           # Data processing pipelines (validation, MongoDB)
+├── pipelines.py           # Data processing pipelines (validation, multi-backend upsert)
 ├── middlewares.py         # Custom middlewares (if needed)
 ├── settings.py            # Scrapy configuration (logging, concurrency, etc.)
-├── stock_notification.py  # SMS notification script (Africa's Talking)
+├── stock_notification.py  # Placeholder utility (no messaging)
+├── db/                    # Backend adapters + SQL models
+│   ├── __init__.py
+│   ├── backends.py
+│   └── models.py
 ├── spiders/               # Spider implementations
 │   ├── __init__.py
 │   └── afx_scraper.py    # Main AFX NSE web scraper
-└── migrations/            # Database migration scripts (future use)
-    └── .gitkeep
+```
+
+### `/alembic` - PostgreSQL Migrations
+
+```
+alembic/
+├── env.py
+├── script.py.mako
+└── versions/
+    └── 20260214_0001_create_stock_data.py
+```
+
+### `/sql` - SQL Scripts
+
+```
+sql/
+├── 001_create_stock_data.sql
+└── 002_upsert_stock_data.sql
 ```
 
 **Key Files:**
 
 - `afx_scraper.py` - Scrapes stock prices from AFX website
-- `pipelines.py` - Validates and stores data in MongoDB
-- `stock_notification.py` - Sends SMS alerts for price changes
+- `pipelines.py` - Validates and stores data using selected backend
+- `stock_notification.py` - Placeholder utility (query-only, no messaging)
 - `settings.py` - Configures Scrapy (logging, delays, retries, etc.)
 
 ### `/tests` - Test Files & Test Data
@@ -123,7 +142,7 @@ CI/CD and automation:
 4. **`/nse_scraper` Structure**
    - ✅ Follows Scrapy best practices
    - ✅ `spiders/` clearly separate spider implementations
-   - ✅ Added `migrations/` for future database schema changes
+   - ✅ Added `db/` for backend-specific adapters
    - ✅ Standard package structure (easy to maintain)
 
 ## Environment Files
@@ -164,8 +183,11 @@ pip install -r requirements.txt
 # Run scraper
 scrapy crawl afx_scraper
 
-# Send notifications
+# Placeholder utility
 python nse_scraper/stock_notification.py
+
+# Postgres migrations (if DB_BACKEND=postgres)
+alembic upgrade head
 ```
 
 ### Docker
@@ -201,7 +223,7 @@ docker-compose down
 
 ### Adding Database Migrations
 
-→ Place in `nse_scraper/migrations/` with timestamp prefix
+→ Place in `alembic/versions/` with timestamp prefix
 
 ## Key Paths for Common Tasks
 
@@ -214,6 +236,8 @@ docker-compose down
 | Check CI/CD | `.github/workflows/python-app.yml` |
 | Scrapy config | `nse_scraper/settings.py` |
 | Data validation | `nse_scraper/pipelines.py` |
+| SQL migrations | `alembic/` |
+| SQL scripts | `sql/` |
 
 ## Summary
 
@@ -224,6 +248,6 @@ The reorganized structure:
 - ✅ **Clear config** - All templates in `/config`
 - ✅ **Organized tests** - Test data in `/tests`
 - ✅ **Standard layout** - Follows Python/Scrapy conventions
-- ✅ **Easy to scale** - Room for new spiders, migrations, utilities
+- ✅ **Easy to scale** - Room for new spiders, backends, migrations, utilities
 
 This structure makes the project easier to navigate, maintain, and extend.

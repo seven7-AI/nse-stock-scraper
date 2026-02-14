@@ -12,13 +12,22 @@ NEWSPIDER_MODULE = 'nse_scraper.spiders'
 MONGODB_URI = os.getenv("MONGODB_URI")
 MONGO_DATABASE = os.getenv("MONGODB_DATABASE", "nse_data")
 
+# Unified storage configuration
+DB_BACKEND = os.getenv("DB_BACKEND", "mongo").strip().lower()
+STOCK_TABLE = os.getenv("STOCK_TABLE", "stock_data")
+SQL_DATABASE_URL = os.getenv("SQL_DATABASE_URL")
+SQL_ECHO = os.getenv("SQL_ECHO", "false").strip().lower() in {"1", "true", "yes", "on"}
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", STOCK_TABLE)
+
 # Item pipelines
 ITEM_PIPELINES = {
     'nse_scraper.pipelines.NseScraperPipeline': 300,
 }
 
 # Logging
-LOG_LEVEL = "INFO"
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
 
 # Obey robots.txt rules

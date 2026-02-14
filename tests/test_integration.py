@@ -5,6 +5,7 @@ import unittest
 import os
 import sys
 from pathlib import Path
+from nse_scraper.db import create_backend
 
 
 class TestProjectStructure(unittest.TestCase):
@@ -75,13 +76,29 @@ class TestDependencies(unittest.TestCase):
         except ImportError:
             self.fail("PyMongo not installed")
 
-    def test_africastalking_installed(self):
-        """Test Africa's Talking is installed"""
+    def test_sqlalchemy_installed(self):
+        """Test SQLAlchemy is installed"""
         try:
-            import africastalking
+            import sqlalchemy
             self.assertTrue(True)
         except ImportError:
-            self.fail("Africa's Talking not installed")
+            self.fail("SQLAlchemy not installed")
+
+    def test_alembic_installed(self):
+        """Test Alembic is installed"""
+        try:
+            import alembic
+            self.assertTrue(True)
+        except ImportError:
+            self.fail("Alembic not installed")
+
+    def test_supabase_installed(self):
+        """Test Supabase client is installed"""
+        try:
+            import supabase
+            self.assertTrue(True)
+        except ImportError:
+            self.fail("Supabase client not installed")
 
     def test_python_dotenv_installed(self):
         """Test python-dotenv is installed"""
@@ -126,6 +143,18 @@ class TestConfigurationFiles(unittest.TestCase):
         project_root = Path(__file__).parent.parent
         docker_compose = project_root / "docker-compose.yml"
         self.assertTrue(docker_compose.exists())
+
+
+class TestBackendFactory(unittest.TestCase):
+    """Test storage backend factory behavior"""
+
+    def test_invalid_backend_raises(self):
+        with self.assertRaises(ValueError):
+            create_backend("invalid-backend")
+
+    def test_mongo_backend_requires_uri(self):
+        with self.assertRaises(ValueError):
+            create_backend("mongo", mongodb_uri=None)
 
 
 if __name__ == "__main__":

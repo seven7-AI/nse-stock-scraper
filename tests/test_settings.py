@@ -27,6 +27,11 @@ class TestScrapySettings(unittest.TestCase):
         log_level = getattr(settings, "LOG_LEVEL", None)
         self.assertIn(log_level, ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
 
+    def test_db_backend_configured(self):
+        """Test DB backend setting exists and is valid"""
+        backend = getattr(settings, "DB_BACKEND", None)
+        self.assertIn(backend, ["mongo", "postgres", "supabase"])
+
     def test_concurrent_requests(self):
         """Test concurrent requests setting"""
         concurrent = getattr(settings, "CONCURRENT_REQUESTS", None)

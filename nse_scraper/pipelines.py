@@ -1,52 +1,61 @@
 # useful for handling different item types with a single interface
 import logging
-import pymongo
 from scrapy.exceptions import DropItem
 
-from .items import NseScraperItem
+from .db import create_backend
 
 logger = logging.getLogger(__name__)
 
 
 class NseScraperPipeline:
-    collection = "stock_data"
-
-    def __init__(self, mongodb_uri, mongo_db):
-        self.db = None
-        self.client = None
-        self.mongodb_uri = mongodb_uri
-        self.mongo_db = mongo_db
-        if not self.mongodb_uri:
-            raise ValueError("MongoDB URI not set")
-        if not self.mongo_db:
-            raise ValueError("Mongo DB not set")
+    def __init__(
+        self,
+        db_backend,
+        mongodb_uri,
+        mongo_db,
+        stock_table,
+        sql_database_url,
+        sql_echo,
+        supabase_url,
+        supabase_key,
+        supabase_table,
+    ):
+        self.db_backend = db_backend
+        self.storage = create_backend(
+            backend_name=db_backend,
+            mongodb_uri=mongodb_uri,
+            mongo_database=mongo_db,
+            stock_table=stock_table,
+            sql_database_url=sql_database_url,
+            sql_echo=sql_echo,
+            supabase_url=supabase_url,
+            supabase_key=supabase_key,
+            supabase_table=supabase_table,
+        )
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
+            db_backend=crawler.settings.get("DB_BACKEND", "mongo"),
             mongodb_uri=crawler.settings.get("MONGODB_URI"),
-            mongo_db=crawler.settings.get('MONGO_DATABASE', 'nse_data')
+            mongo_db=crawler.settings.get("MONGO_DATABASE", "nse_data"),
+            stock_table=crawler.settings.get("STOCK_TABLE", "stock_data"),
+            sql_database_url=crawler.settings.get("SQL_DATABASE_URL"),
+            sql_echo=crawler.settings.get("SQL_ECHO", False),
+            supabase_url=crawler.settings.get("SUPABASE_URL"),
+            supabase_key=crawler.settings.get("SUPABASE_KEY"),
+            supabase_table=crawler.settings.get("SUPABASE_TABLE", "stock_data"),
         )
 
     def open_spider(self, spider):
         """Called when spider is opened"""
-        self.client = pymongo.MongoClient(self.mongodb_uri)
-        self.db = self.client[self.mongo_db]
-        
-        # Create unique index on ticker_symbol to prevent duplicates
-        try:
-            self.db[self.collection].create_index(
-                [("ticker_symbol", pymongo.ASCENDING)],
-                unique=True
-            )
-            logger.info(f"Created unique index on {self.collection}.ticker_symbol")
-        except pymongo.errors.OperationFailure as e:
-            logger.warning(f"Index creation warning: {e}")
+        self.storage.open()
+        logger.info("Storage backend active: %s", self.db_backend)
 
     def close_spider(self, spider):
         """Called when spider is closed"""
-        self.client.close()
-        logger.info("MongoDB connection closed")
+        self.storage.close()
+        logger.info("Storage backend closed")
     
     def process_item(self, item, spider):
         """Process item and store to database"""
@@ -63,16 +72,8 @@ class NseScraperPipeline:
             data = dict(item)
             
             # Replace or insert the document
-            result = self.db[self.collection].replace_one(
-                {'ticker_symbol': data['ticker_symbol']},
-                data,
-                upsert=True
-            )
-            
-            if result.matched_count:
-                logger.debug(f"Updated stock data for {data['ticker_symbol']}")
-            else:
-                logger.debug(f"Inserted stock data for {data['ticker_symbol']}")
+            self.storage.upsert_stock(data)
+            logger.debug(f"Upserted stock data for {data['ticker_symbol']}")
             
             return item
             

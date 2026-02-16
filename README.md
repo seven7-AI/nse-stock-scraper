@@ -76,6 +76,14 @@ Preview as JSON:
 scrapy crawl afx_scraper -o test.json
 ```
 
+Run the StockAnalysis scraper (scrape-only, no DB write):
+
+```bash
+scrapy crawl stockanalysis_scraper -o stockanalysis_output.jsonl
+```
+
+This outputs per-view records for `overview`, `performance`, `dividends`, `price`, and `profile`. Storage integration is intentionally deferred.
+
 ## Database Migrations (PostgreSQL)
 
 Alembic is included for PostgreSQL schema management.
@@ -102,7 +110,7 @@ python nse_scraper/stock_notification.py
 
 ## Switching backends
 
-Set `DB_BACKEND` in `.env` to one of `mongo`, `postgres`, or `supabase`, and configure only the variables for that backend. For Supabase, create the `stock_data` table first; see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md).
+Set `DB_BACKEND` in `.env` to one of `mongo`, `postgres`, or `supabase`, and configure only the variables for that backend. For Supabase, create the `stock_data` table first; see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). For the StockAnalysis spider with Supabase, set `STOCKANALYSIS_TABLE=stockanalysis_stocks` and run the SQL in `sql/003_create_stockanalysis_stocks.sql`.
 
 ## Docker
 

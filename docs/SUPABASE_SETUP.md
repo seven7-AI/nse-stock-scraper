@@ -39,6 +39,17 @@ SUPABASE_TABLE=stock_data
 - Use the **service_role** key (Settings → API → Project API keys) so the scraper can insert/update.
 - `SUPABASE_TABLE` must be exactly `stock_data` (the table created above).
 
+### StockAnalysis scraper (optional)
+
+To store **StockAnalysis** scraper output (one row per stock with all tab data in JSONB columns), create the `stockanalysis_stocks` table and set `STOCKANALYSIS_TABLE`:
+
+1. In Supabase SQL Editor, run the scripts in `sql/` in order: `003_create_stockanalysis_stocks.sql`, then `004_upsert_stockanalysis_stocks.sql` (optional; app can use PostgREST upsert directly).
+2. In `.env`, set:
+   ```bash
+   STOCKANALYSIS_TABLE=stockanalysis_stocks
+   ```
+   When `DB_BACKEND=supabase`, the StockAnalysis spider will write to this table. Example queries: `sql/005_query_examples.sql`.
+
 ## 4. Run the scraper
 
 From the project root:

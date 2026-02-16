@@ -20,6 +20,7 @@ SQL_ECHO = os.getenv("SQL_ECHO", "false").strip().lower() in {"1", "true", "yes"
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", STOCK_TABLE)
+STOCKANALYSIS_TABLE = os.getenv("STOCKANALYSIS_TABLE", "stockanalysis_stocks")
 
 # Item pipelines
 ITEM_PIPELINES = {

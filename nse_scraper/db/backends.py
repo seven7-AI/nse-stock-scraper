@@ -114,12 +114,13 @@ class PostgresBackend:
 
 
 class SupabaseBackend:
-    def __init__(self, supabase_url, supabase_key, supabase_table):
+    def __init__(self, supabase_url, supabase_key, supabase_table, stockanalysis_table="stockanalysis_stocks"):
         if not supabase_url or not supabase_key:
             raise ValueError("SUPABASE_URL and SUPABASE_KEY are required when DB_BACKEND=supabase")
         self.supabase_url = supabase_url
         self.supabase_key = supabase_key
         self.supabase_table = supabase_table
+        self.stockanalysis_table = stockanalysis_table
         self.client = None
 
     def open(self):
@@ -130,6 +131,26 @@ class SupabaseBackend:
 
     def close(self):
         return None
+
+    def upsert_stockanalysis_stock(self, record):
+        """Upsert one normalized stock record (all tab data) into stockanalysis_stocks."""
+        scraped_at = record.get("scraped_at")
+        if hasattr(scraped_at, "isoformat"):
+            scraped_at = scraped_at.isoformat()
+        payload = {
+            "ticker_symbol": record["ticker_symbol"],
+            "company_name": record["company_name"],
+            "rank": record.get("rank"),
+            "stock_price": float(record["stock_price"]) if record.get("stock_price") is not None else None,
+            "stock_change": float(record["stock_change"]) if record.get("stock_change") is not None else None,
+            "scraped_at": scraped_at,
+            "overview_metrics": record.get("overview_metrics"),
+            "performance_metrics": record.get("performance_metrics"),
+            "dividends_metrics": record.get("dividends_metrics"),
+            "price_metrics": record.get("price_metrics"),
+            "profile_metrics": record.get("profile_metrics"),
+        }
+        self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
 
     def upsert_stock(self, record):
         payload = _normalize_record(record)
@@ -166,6 +187,7 @@ def create_backend(
     supabase_url=None,
     supabase_key=None,
     supabase_table="stock_data",
+    stockanalysis_table="stockanalysis_stocks",
 ):
     backend = backend_name.strip().lower()
     if backend == "mongo":
@@ -181,5 +203,6 @@ def create_backend(
             supabase_url=supabase_url,
             supabase_key=supabase_key,
             supabase_table=supabase_table,
+            stockanalysis_table=stockanalysis_table,
         )
     raise ValueError("Unsupported DB_BACKEND. Use one of: mongo, postgres, supabase")

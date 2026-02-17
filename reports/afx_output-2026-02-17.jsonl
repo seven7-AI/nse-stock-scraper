@@ -65,3 +65,70 @@
 {"ticker_symbol": "UNGA", "stock_name": "Unga Group Limited", "stock_price": 28.05, "stock_change": 2.35, "created_at": "2026-02-17 17:22:14"}
 {"ticker_symbol": "WTK", "stock_name": "Williamson Tea Kenya Limited", "stock_price": 144.75, "stock_change": 0.0, "created_at": "2026-02-17 17:22:14"}
 {"ticker_symbol": "XPRS", "stock_name": "Express Kenya Limited", "stock_price": 7.84, "stock_change": 0.0, "created_at": "2026-02-17 17:22:14"}
+{"ticker_symbol": "ABSA", "stock_name": "Absa Bank Kenya Plc", "stock_price": 29.85, "stock_change": 0.15, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "AMAC", "stock_name": "Africa Mega Agricorp", "stock_price": 97.5, "stock_change": 1.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "ARM", "stock_name": "ARM Cement Limited", "stock_price": 5.55, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "BAMB", "stock_name": "Bamburi Cement Limited", "stock_price": 47.2, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "BAT", "stock_name": "British American Tobacco Kenya", "stock_price": 495.25, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "BKG", "stock_name": "BK Group Plc", "stock_price": 46.8, "stock_change": 0.9, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "BOC", "stock_name": "BOC Kenya Limited", "stock_price": 136.5, "stock_change": 2.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "BRIT", "stock_name": "Britam Holdings Limited", "stock_price": 13.05, "stock_change": 0.85, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CABL", "stock_name": "East African Cables Limited", "stock_price": 1.0, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CARB", "stock_name": "Carbacid Investments Limited", "stock_price": 31.75, "stock_change": 0.35, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CGEN", "stock_name": "Car and General Kenya Limited", "stock_price": 69.75, "stock_change": 2.5, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CIC", "stock_name": "CIC Insurance Group Limited", "stock_price": 6.12, "stock_change": 0.14, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "COOP", "stock_name": "Co-operative Bank of Kenya Limited", "stock_price": 29.65, "stock_change": 0.55, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CRWN", "stock_name": "Crown Paints Kenya Limited", "stock_price": 64.5, "stock_change": 5.5, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "CTUM", "stock_name": "Centum Investment Company", "stock_price": 14.65, "stock_change": 0.45, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "DCON", "stock_name": "Deacons East Africa Plc", "stock_price": 0.45, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "DTK", "stock_name": "Diamond Trust Bank Kenya Limited", "stock_price": 159.25, "stock_change": 2.75, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "EABL", "stock_name": "East African Breweries Limited", "stock_price": 251.5, "stock_change": 1.5, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "EGAD", "stock_name": "Eaagads Limited", "stock_price": 29.25, "stock_change": 2.4, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "EQTY", "stock_name": "Equity Group Holdings Limited", "stock_price": 75.0, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "EVRD", "stock_name": "Eveready East Africa Limited", "stock_price": 1.66, "stock_change": 0.02, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "FTGH", "stock_name": "Flame Tree Group Holdings Limited", "stock_price": 1.85, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "GLD", "stock_name": "Absa NewGold ETF", "stock_price": 5995.0, "stock_change": 35.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "HAFR", "stock_name": "Home Afrika Limited", "stock_price": 1.49, "stock_change": 0.05, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "HBE", "stock_name": "Homeboyz Entertainment", "stock_price": 4.66, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "HFCK", "stock_name": "HF Group Limited", "stock_price": 11.05, "stock_change": 0.05, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "IMH", "stock_name": "I&M Holdings Plc", "stock_price": 49.9, "stock_change": 0.1, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "JUB", "stock_name": "Jubilee Holdings Limited", "stock_price": 351.5, "stock_change": 1.75, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KAPC", "stock_name": "Kapchorua Tea Company Limited", "stock_price": 247.0, "stock_change": 5.75, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KCB", "stock_name": "KCB Group", "stock_price": 75.0, "stock_change": 0.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KEGN", "stock_name": "KenGen Plc", "stock_price": 9.62, "stock_change": 0.08, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KNRE", "stock_name": "Kenya Re-Insurance Corporation Ltd", "stock_price": 3.94, "stock_change": 0.05, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KPLC", "stock_name": "Kenya Power & Lighting Company", "stock_price": 18.75, "stock_change": 0.35, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KPLC-P4", "stock_name": "Kenya Power 4% Preference Shares", "stock_price": 5.0, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KPLC-P7", "stock_name": "Kenya Power 7% Preference Shares", "stock_price": 6.0, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KQ", "stock_name": "Kenya Airways Limited", "stock_price": 5.44, "stock_change": 0.02, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KUKZ", "stock_name": "Kakuzi Limited", "stock_price": 436.0, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "KURV", "stock_name": "Kurwitu Ventures Limited", "stock_price": 1500.0, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "LAPR", "stock_name": "Laptrust Imara Income-REIT", "stock_price": 20.0, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "LBTY", "stock_name": "Liberty Kenya Holdings Limited", "stock_price": 10.0, "stock_change": 0.02, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "LIMT", "stock_name": "Limuru Tea Company Limited", "stock_price": 508.0, "stock_change": 2.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "LKL", "stock_name": "Longhorn Publishers Limited", "stock_price": 3.15, "stock_change": 0.21, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "MSC", "stock_name": "Mumias Sugar Company Limited", "stock_price": 0.28, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "NBV", "stock_name": "Nairobi Business Ventures Ltd", "stock_price": 1.57, "stock_change": 0.1, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "NCBA", "stock_name": "NCBA Group Plc", "stock_price": 88.75, "stock_change": 0.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "NMG", "stock_name": "Nation Media Group", "stock_price": 14.9, "stock_change": 0.8, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "NSE", "stock_name": "Nairobi Securities Exchange Limited", "stock_price": 23.35, "stock_change": 0.2, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "OCH", "stock_name": "Olympia Capital Holdings Limited", "stock_price": 8.24, "stock_change": 0.18, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "PORT", "stock_name": "East African Portland Cement Co. Ltd", "stock_price": 85.5, "stock_change": 4.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SASN", "stock_name": "Sasini Tea and Coffee Limited", "stock_price": 31.3, "stock_change": 0.8, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SBIC", "stock_name": "Stanbic Holdings Limited", "stock_price": 256.25, "stock_change": 11.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SCAN", "stock_name": "ScanGroup Limited", "stock_price": 2.52, "stock_change": 0.09, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SCBK", "stock_name": "Standard Chartered Bank Limited", "stock_price": 336.5, "stock_change": 5.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SCOM", "stock_name": "Safaricom Plc", "stock_price": 33.15, "stock_change": 0.7, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SGL", "stock_name": "Standard Group Limited", "stock_price": 6.42, "stock_change": 0.02, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SKL", "stock_name": "Shri Krishana Overseas Ltd", "stock_price": 8.22, "stock_change": 0.06, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SLAM", "stock_name": "Sanlam Kenya Plc", "stock_price": 9.0, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SMER", "stock_name": "Sameer Africa Plc", "stock_price": 20.35, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "SMWF", "stock_name": "Satrix MSCI World Feeder ETF", "stock_price": 867.0, "stock_change": 31.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "TCL", "stock_name": "Trans Century Limited", "stock_price": 0.71, "stock_change": null, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "TOTL", "stock_name": "Total Kenya Limited", "stock_price": 45.5, "stock_change": 2.25, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "TPSE", "stock_name": "TPS Eastern Africa Serena Limited", "stock_price": 16.85, "stock_change": 1.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "UCHM", "stock_name": "Uchumi Supermarket Limited", "stock_price": 1.46, "stock_change": 0.1, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "UMME", "stock_name": "Umeme Limited", "stock_price": 9.14, "stock_change": 0.12, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "UNGA", "stock_name": "Unga Group Limited", "stock_price": 28.05, "stock_change": 2.35, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "WTK", "stock_name": "Williamson Tea Kenya Limited", "stock_price": 144.75, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}
+{"ticker_symbol": "XPRS", "stock_name": "Express Kenya Limited", "stock_price": 7.84, "stock_change": 0.0, "created_at": "2026-02-17 18:11:49"}

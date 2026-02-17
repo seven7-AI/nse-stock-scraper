@@ -2,21 +2,21 @@
 Date: 2026-02-17
 
 Run Summary
-Start: 2026-02-17 20:22:06
-End:   2026-02-17 20:23:10
-DurationSeconds: 64.56
+Start: 2026-02-17 21:11:37
+End:   2026-02-17 21:12:52
+DurationSeconds: 75.5
 OverallStatus: SUCCESS
 
 Scrape Metrics
-afx_scraper: rows=67, exitCode=0, durationSec=28.32
-stockanalysis_scraper: rows=295, exitCode=0, durationSec=34.19
+afx_scraper: rows=134, exitCode=0, durationSec=33.13
+stockanalysis_scraper: rows=590, exitCode=0, durationSec=38.83
 stockanalysis view counts:
-- dividends: 59
-- overview: 59
-- performance: 59
-- price: 59
-- profile: 59
-stockanalysis metrics non-null=1402, null=604
+- dividends: 118
+- overview: 118
+- performance: 118
+- price: 118
+- profile: 118
+stockanalysis metrics non-null=2803, null=1209
 
 Top Samples (AFX)
 - ABSA | Absa Bank Kenya Plc | price=29.85 | change=0.15
@@ -35,4 +35,4 @@ Top Samples (StockAnalysis Overview)
 Artifacts
 - AFX output: D:\2026 Projects\nse-stock-scraper\reports\afx_output-2026-02-17.jsonl
 - StockAnalysis output: D:\2026 Projects\nse-stock-scraper\reports\stockanalysis_output-2026-02-17.jsonl
-- Run log: D:\2026 Projects\nse-stock-scraper\reports\run-2026-02-17_202206.log
+- Run log: D:\2026 Projects\nse-stock-scraper\reports\run-2026-02-17_211137.log

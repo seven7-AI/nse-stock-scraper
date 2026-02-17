@@ -156,14 +156,29 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoGitP
 
 ### Register Scheduled Task (Run Whether Logged In Or Not)
 
-Run in PowerShell (Admin recommended):
-
+**First, delete the existing task if it has issues:**
 ```powershell
-$batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
-schtasks /Create /TN "NSE-Daily-Scrapers-9PM" /SC DAILY /ST 21:00 /TR "$batchFile" /RL HIGHEST /F
+schtasks /Delete /TN "NSE-Daily-Scrapers-9PM" /F
 ```
 
-**Note:** The task is configured for 9 PM (21:00). To change the time, modify `/ST 21:00` (use 24-hour format).
+**Then create it properly using PowerShell (Run as Administrator):**
+```powershell
+$batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
+$action = New-ScheduledTaskAction -Execute $batchFile -WorkingDirectory "D:\2026 Projects\nse-stock-scraper"
+$trigger = New-ScheduledTaskTrigger -Daily -At "21:00"
+$principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType S4U -RunLevel Highest
+$settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
+
+Register-ScheduledTask -TaskName "NSE-Daily-Scrapers-9PM" -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description "Daily stock scraper run at 9 PM"
+```
+
+**Alternative using schtasks (if PowerShell method doesn't work):**
+```powershell
+$batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
+schtasks /Create /TN "NSE-Daily-Scrapers-9PM" /SC DAILY /ST 21:00 /TR "$batchFile" /RL HIGHEST /F /RU "SYSTEM" /RP ""
+```
+
+**Note:** The task is configured for 9 PM (21:00). To change the time, modify `-At "21:00"` or `/ST 21:00` (use 24-hour format).
 
 ### Verify
 

@@ -76,13 +76,13 @@ Preview as JSON:
 scrapy crawl afx_scraper -o test.json
 ```
 
-Run the StockAnalysis scraper (scrape-only, no DB write):
+Run the StockAnalysis scraper:
 
 ```bash
 scrapy crawl stockanalysis_scraper -o stockanalysis_output.jsonl
 ```
 
-This outputs per-view records for `overview`, `performance`, `dividends`, `price`, and `profile`. Storage integration is intentionally deferred.
+This outputs per-view records for `overview`, `performance`, `dividends`, `price`, and `profile`.
 
 ## Database Migrations (PostgreSQL)
 
@@ -111,6 +111,66 @@ python nse_scraper/stock_notification.py
 ## Switching backends
 
 Set `DB_BACKEND` in `.env` to one of `mongo`, `postgres`, or `supabase`, and configure only the variables for that backend. For Supabase, create the `stock_data` table first; see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). For the StockAnalysis spider with Supabase, set `STOCKANALYSIS_TABLE=stockanalysis_stocks` and run the SQL in `sql/003_create_stockanalysis_stocks.sql`.
+
+## Windows Daily Task (9:00 PM)
+
+Use `scripts/daily_stock_job.ps1` to run both spiders daily on this Windows machine at 9 PM:
+- `afx_scraper`
+- `stockanalysis_scraper` (forced fresh run with `HTTPCACHE_ENABLED=False`)
+
+The script:
+- Runs both spiders using `.venv\Scripts\python.exe`
+- Writes daily outputs under `reports/`
+- Generates `reports/report-YYYY-MM-DD.txt` and `reports/latest-report.txt`
+- Commits and pushes report/run artifacts with:
+  - `chore(report): daily afx+stockanalysis run YYYY-MM-DD`
+- Opens the report in Notepad only when an interactive desktop session exists
+
+### Prerequisites
+
+- A virtual environment exists in one of: `.venv`, `env`, or `venv`
+- `.env` contains valid backend credentials (for Supabase, include `SUPABASE_URL`, `SUPABASE_KEY`, `STOCKANALYSIS_TABLE`)
+- Git is authenticated for non-interactive push (for example, Git Credential Manager or PAT configured)
+
+### Manual Dry Run
+
+From project root:
+
+```powershell
+# First run on a new machine/venv (installs requirements if needed)
+powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -BootstrapDeps
+
+# Normal run
+powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1"
+```
+
+Optional flags:
+
+```powershell
+# Skip opening Notepad
+powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoNotepad
+
+# Run and commit locally but skip push
+powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoGitPush
+```
+
+### Register Scheduled Task (Run Whether Logged In Or Not)
+
+Run in PowerShell (Admin recommended):
+
+```powershell
+$batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
+schtasks /Create /TN "NSE-Daily-Scrapers-9PM" /SC DAILY /ST 21:00 /TR "$batchFile" /RL HIGHEST /F
+```
+
+**Note:** The task is configured for 9 PM (21:00). To change the time, modify `/ST 21:00` (use 24-hour format).
+
+### Verify
+
+- `schtasks /Query /TN "NSE-Daily-Scrapers-9PM" /V /FO LIST`
+- Confirm latest report exists in `reports/`
+- Confirm commit and push completed on `origin/main`
+- Confirm task result is `0x0` for successful runs
 
 ## Docker
 

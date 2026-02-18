@@ -9,7 +9,7 @@ if errorlevel 1 (
     exit /b 1
 )
 
-"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "D:\2026 Projects\nse-stock-scraper\scripts\daily_stock_job.ps1" -NoNotepad >> "%LOGFILE%" 2>&1
+"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -ExecutionPolicy Bypass -File "D:\2026 Projects\nse-stock-scraper\scripts\daily_stock_job.ps1" >> "%LOGFILE%" 2>&1
 set EXITCODE=%ERRORLEVEL%
 
 echo [%date% %time%] Task completed with exit code %EXITCODE% >> "%LOGFILE%"

@@ -17,14 +17,17 @@ if (-not (Test-Path -LiteralPath $batchFile)) {
     throw "Batch file not found: $batchFile"
 }
 
-# Remove existing task if present
-$existing = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-if ($existing) {
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-    Write-Host "Removed existing task: $taskName"
+# Remove existing tasks if present.
+foreach ($existingTaskName in @("NSE-Daily-Scrapers-9AM", "NSE-Daily-Scrapers-9PM")) {
+    $existing = Get-ScheduledTask -TaskName $existingTaskName -ErrorAction SilentlyContinue
+    if ($existing) {
+        Unregister-ScheduledTask -TaskName $existingTaskName -Confirm:$false
+        Write-Host "Removed existing task: $existingTaskName"
+    }
 }
 
-$action = New-ScheduledTaskAction -Execute $batchFile -WorkingDirectory $repoRoot
+$cmdPath = Join-Path $env:WINDIR "System32\cmd.exe"
+$action = New-ScheduledTaskAction -Execute $cmdPath -Argument "/c `"$batchFile`"" -WorkingDirectory $repoRoot
 $trigger = New-ScheduledTaskTrigger -Daily -At $scheduleTime
 $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType S4U -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable

@@ -120,11 +120,13 @@ Use `scripts/daily_stock_job.ps1` to run both spiders daily on this Windows mach
 
 The script:
 - Runs both spiders using `.venv\Scripts\python.exe`
-- Writes daily outputs under `reports/`
-- Generates `reports/report-YYYY-MM-DD.txt` and `reports/latest-report.txt`
-- Commits and pushes report/run artifacts with:
-  - `chore(report): daily afx+stockanalysis run YYYY-MM-DD`
-- Opens the report in Notepad only when an interactive desktop session exists
+- Sends scraped data through the existing pipelines (for your setup: Supabase)
+- Does not write local data output files (`.jsonl`)
+- Writes run logs under `reports/`:
+  - `reports/run-YYYY-MM-DD_HHMMSS.log`
+  - `reports/task-runner.log`
+- Commits and pushes log artifacts with:
+  - `chore(log): daily scraper run YYYY-MM-DD`
 
 ### Prerequisites
 
@@ -147,10 +149,7 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1"
 Optional flags:
 
 ```powershell
-# Skip opening Notepad
-powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoNotepad
-
-# Run and commit locally but skip push
+# Run and commit logs locally but skip push
 powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoGitPush
 ```
 
@@ -193,9 +192,34 @@ schtasks /Create /TN "NSE-Daily-Scrapers-9AM" /SC DAILY /ST 09:00 /TR "$batchFil
 ### Verify
 
 - `schtasks /Query /TN "NSE-Daily-Scrapers-9AM" /V /FO LIST`
-- Confirm latest report exists in `reports/`
-- Confirm commit and push completed on `origin/main`
+- Confirm latest `reports/run-*.log` file exists and contains:
+  - `RUN_STATUS SUCCESS` for successful runs, or
+  - `RUN_STATUS FAILED reason=...` for failures
+- Confirm `reports/task-runner.log` contains wrapper-level start/end lines
 - Confirm task result is `0x0` for successful runs
+- Confirm rows are updated in Supabase
+
+### Daily Reliability Test (Run Any Time)
+
+1. Re-register the task:
+   - `powershell -ExecutionPolicy Bypass -File ".\scripts\register_scheduled_task.ps1"`
+2. Trigger it immediately:
+   - `Start-ScheduledTask -TaskName "NSE-Daily-Scrapers-9AM"`
+3. Check scheduler status:
+   - `Get-ScheduledTask -TaskName "NSE-Daily-Scrapers-9AM" | Get-ScheduledTaskInfo`
+4. Inspect logs:
+   - latest `reports/run-*.log` should show both spiders and final `RUN_STATUS SUCCESS` or `RUN_STATUS FAILED reason=...`
+   - `reports/task-runner.log` should show task wrapper start/end with exit code
+
+### Troubleshooting Scheduled Runs
+
+- Last result `2147942402` / `0x80070002`:
+  - Re-run `scripts/register_scheduled_task.ps1` and ensure `scripts/run_daily_job.bat` exists.
+- Task did not run:
+  - Verify `NextRunTime` and task is `Enabled`.
+  - Confirm account/logon configuration via `Get-ScheduledTask ... | Select-Object -ExpandProperty Principal`.
+- Run failed:
+  - Check failure reason in `reports/run-*.log` (`RUN_STATUS FAILED reason=...`).
 
 ## Docker
 

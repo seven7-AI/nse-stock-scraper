@@ -112,9 +112,9 @@ python nse_scraper/stock_notification.py
 
 Set `DB_BACKEND` in `.env` to one of `mongo`, `postgres`, or `supabase`, and configure only the variables for that backend. For Supabase, create the `stock_data` table first; see [docs/SUPABASE_SETUP.md](docs/SUPABASE_SETUP.md). For the StockAnalysis spider with Supabase, set `STOCKANALYSIS_TABLE=stockanalysis_stocks` and run the SQL in `sql/003_create_stockanalysis_stocks.sql`.
 
-## Windows Daily Task (9:00 PM)
+## Windows Daily Task (9:00 AM)
 
-Use `scripts/daily_stock_job.ps1` to run both spiders daily on this Windows machine at 9 PM:
+Use `scripts/daily_stock_job.ps1` to run both spiders daily on this Windows machine at 9 AM:
 - `afx_scraper`
 - `stockanalysis_scraper` (forced fresh run with `HTTPCACHE_ENABLED=False`)
 
@@ -156,33 +156,43 @@ powershell -ExecutionPolicy Bypass -File ".\scripts\daily_stock_job.ps1" -NoGitP
 
 ### Register Scheduled Task (Run Whether Logged In Or Not)
 
-**First, delete the existing task if it has issues:**
+**Option 1 – run the registration script (schedule is 9 AM in code):**
+
+From project root, in PowerShell **as Administrator**:
 ```powershell
-schtasks /Delete /TN "NSE-Daily-Scrapers-9PM" /F
+powershell -ExecutionPolicy Bypass -File ".\scripts\register_scheduled_task.ps1"
+```
+The script defines the run time as 9 AM (`scripts/register_scheduled_task.ps1`, variable `$scheduleTime = "09:00"`). Edit that file to change the time.
+
+**Option 2 – manual commands**
+
+Delete the existing task if needed:
+```powershell
+schtasks /Delete /TN "NSE-Daily-Scrapers-9AM" /F
 ```
 
-**Then create it properly using PowerShell (Run as Administrator):**
+Then create it using PowerShell (Run as Administrator):
 ```powershell
 $batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
 $action = New-ScheduledTaskAction -Execute $batchFile -WorkingDirectory "D:\2026 Projects\nse-stock-scraper"
-$trigger = New-ScheduledTaskTrigger -Daily -At "21:00"
+$trigger = New-ScheduledTaskTrigger -Daily -At "09:00"
 $principal = New-ScheduledTaskPrincipal -UserId "$env:USERDOMAIN\$env:USERNAME" -LogonType S4U -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable
 
-Register-ScheduledTask -TaskName "NSE-Daily-Scrapers-9PM" -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description "Daily stock scraper run at 9 PM"
+Register-ScheduledTask -TaskName "NSE-Daily-Scrapers-9AM" -Action $action -Trigger $trigger -Principal $principal -Settings $settings -Description "Daily stock scraper run at 9 AM"
 ```
 
 **Alternative using schtasks (if PowerShell method doesn't work):**
 ```powershell
 $batchFile = "D:\2026 Projects\nse-stock-scraper\scripts\run_daily_job.bat"
-schtasks /Create /TN "NSE-Daily-Scrapers-9PM" /SC DAILY /ST 21:00 /TR "$batchFile" /RL HIGHEST /F /RU "SYSTEM" /RP ""
+schtasks /Create /TN "NSE-Daily-Scrapers-9AM" /SC DAILY /ST 09:00 /TR "$batchFile" /RL HIGHEST /F /RU "SYSTEM" /RP ""
 ```
 
-**Note:** The task is configured for 9 PM (21:00). To change the time, modify `-At "21:00"` or `/ST 21:00` (use 24-hour format).
+**Note:** The task is configured for 9 AM (09:00). To change the time, modify `-At "09:00"` or `/ST 09:00` (use 24-hour format).
 
 ### Verify
 
-- `schtasks /Query /TN "NSE-Daily-Scrapers-9PM" /V /FO LIST`
+- `schtasks /Query /TN "NSE-Daily-Scrapers-9AM" /V /FO LIST`
 - Confirm latest report exists in `reports/`
 - Confirm commit and push completed on `origin/main`
 - Confirm task result is `0x0` for successful runs

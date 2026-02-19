@@ -18,6 +18,12 @@ def _normalize_record(record):
         normalized["created_at"] = datetime.now(timezone.utc)
     elif isinstance(created_at, datetime) and created_at.tzinfo is None:
         normalized["created_at"] = created_at.replace(tzinfo=timezone.utc)
+    # Ensure scraped_at exists for historical tracking
+    scraped_at = normalized.get("scraped_at")
+    if scraped_at is None:
+        normalized["scraped_at"] = normalized["created_at"]
+    elif isinstance(scraped_at, datetime) and scraped_at.tzinfo is None:
+        normalized["scraped_at"] = scraped_at.replace(tzinfo=timezone.utc)
     return normalized
 
 
@@ -133,8 +139,10 @@ class SupabaseBackend:
         return None
 
     def upsert_stockanalysis_stock(self, record):
-        """Upsert one normalized stock record (all tab data) into stockanalysis_stocks."""
+        """Insert one normalized stock record (all tab data) into stockanalysis_stocks for historical tracking."""
         scraped_at = record.get("scraped_at")
+        if scraped_at is None:
+            scraped_at = datetime.now(timezone.utc)
         if hasattr(scraped_at, "isoformat"):
             scraped_at = scraped_at.isoformat()
         payload = {
@@ -150,18 +158,30 @@ class SupabaseBackend:
             "price_metrics": record.get("price_metrics"),
             "profile_metrics": record.get("profile_metrics"),
         }
-        self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
+        # Use insert instead of upsert to preserve historical data
+        # Composite primary key (ticker_symbol, scraped_at) prevents duplicates
+        self.client.table(self.stockanalysis_table).insert(payload).execute()
 
     def upsert_stock(self, record):
         payload = _normalize_record(record)
+        scraped_at = payload.get("scraped_at")
+        if scraped_at is None:
+            scraped_at = payload.get("created_at", datetime.now(timezone.utc))
+        if hasattr(scraped_at, "isoformat"):
+            scraped_at_iso = scraped_at.isoformat()
+        else:
+            scraped_at_iso = scraped_at
         serialized = {
             "ticker_symbol": payload["ticker_symbol"],
             "stock_name": payload["stock_name"],
             "stock_price": float(payload["stock_price"]),
             "stock_change": float(payload["stock_change"]) if payload.get("stock_change") is not None else None,
-            "created_at": payload["created_at"].isoformat(),
+            "scraped_at": scraped_at_iso,
+            "created_at": payload["created_at"].isoformat() if hasattr(payload["created_at"], "isoformat") else payload["created_at"],
         }
-        self.client.table(self.supabase_table).upsert(serialized, on_conflict="ticker_symbol").execute()
+        # Use insert instead of upsert to preserve historical data
+        # Composite primary key (ticker_symbol, scraped_at) prevents duplicates
+        self.client.table(self.supabase_table).insert(serialized).execute()
 
     def get_latest_by_ticker(self, ticker_symbol):
         response = (

@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from bs4 import BeautifulSoup
 from scrapy import Spider
 
@@ -38,12 +38,14 @@ class AfxScraperSpider(Spider):
                         logger.debug(f"Skipping incomplete row: {raw_ticker}")
                         continue
                     
+                    scraped_at = datetime.now(timezone.utc)
                     yield {
                         'ticker_symbol': ticker_symbol,
                         'stock_name': stock_name,
                         'stock_price': stock_price,
                         'stock_change': stock_change,
-                        'created_at': datetime.utcnow()
+                        'scraped_at': scraped_at,
+                        'created_at': scraped_at
                     }
                     
                 except Exception as e:

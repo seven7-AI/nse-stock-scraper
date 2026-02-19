@@ -921,3 +921,5 @@
 [2026-02-19T20:14:56] END stockanalysis_scraper exit=0 durationSec=30.21
 [2026-02-19T20:14:56] SUMMARY afx_exit=0 stockanalysis_exit=0 durationSec=59.31
 [2026-02-19T20:14:56] RUN_STATUS SUCCESS
+[2026-02-19T20:14:56] GIT_COMMIT SUCCESS
+[2026-02-19T20:15:01] GIT_ERROR To https://github.com/seven7-AI/nse-stock-scraper.git

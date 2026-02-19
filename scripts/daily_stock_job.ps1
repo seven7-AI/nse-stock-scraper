@@ -223,31 +223,84 @@ try {
     }
     else {
         Add-Content -LiteralPath $runLogPath -Value ("[{0}] RUN_STATUS FAILED reason=one_or_more_spiders_failed" -f $runEndedAt.ToString("s"))
-        throw "One or more spiders failed. Check run log: $runLogPath"
     }
 
+    # Always commit and push logs regardless of success/failure
     $tracked = @($runLogPath, $taskRunnerLogPath) | Where-Object { Test-Path -LiteralPath $_ }
     $tracked = $tracked | ForEach-Object { Get-RelativePath -FromPath $repoRoot -ToPath $_ } | Where-Object { $_ -and $_ -ne "." }
     if (@($tracked).Count -gt 0) {
-        & git add -- $tracked
-        & git diff --cached --quiet
-        $hasChanges = ($LASTEXITCODE -ne 0)
-        if ($hasChanges) {
-            $commitMessage = "chore(log): daily scraper run $dateStamp"
-            & git commit -m $commitMessage | Out-Null
-            if (-not $NoGitPush) {
-                $branch = (& git branch --show-current).Trim()
-                if (-not $branch) {
-                    $branch = "main"
+        try {
+            & git add -- $tracked 2>&1 | Out-Null
+            & git diff --cached --quiet
+            $hasChanges = ($LASTEXITCODE -ne 0)
+            if ($hasChanges) {
+                $statusText = if ($overallSuccess) { "SUCCESS" } else { "FAILED" }
+                $commitMessage = "chore(log): daily scraper run $dateStamp - $statusText"
+                & git commit -m $commitMessage 2>&1 | Out-Null
+                $commitExitCode = $LASTEXITCODE
+                if ($commitExitCode -eq 0) {
+                    Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_COMMIT SUCCESS" -f (Get-Date).ToString("s"))
                 }
-                & git push origin $branch | Out-Null
+                else {
+                    Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_COMMIT FAILED exit={1}" -f (Get-Date).ToString("s"), $commitExitCode)
+                }
+                
+                if (-not $NoGitPush) {
+                    $branch = (& git branch --show-current).Trim()
+                    if (-not $branch) {
+                        $branch = "main"
+                    }
+                    & git push origin $branch 2>&1 | Out-Null
+                    $pushExitCode = $LASTEXITCODE
+                    if ($pushExitCode -eq 0) {
+                        Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_PUSH SUCCESS" -f (Get-Date).ToString("s"))
+                    }
+                    else {
+                        Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_PUSH FAILED exit={1}" -f (Get-Date).ToString("s"), $pushExitCode)
+                    }
+                }
+            }
+            else {
+                Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_NO_CHANGES" -f (Get-Date).ToString("s"))
             }
         }
+        catch {
+            Add-Content -LiteralPath $runLogPath -Value ("[{0}] GIT_ERROR {1}" -f (Get-Date).ToString("s"), $_.Exception.Message)
+        }
+    }
+
+    # Throw error only after git operations complete
+    if (-not $overallSuccess) {
+        throw "One or more spiders failed. Check run log: $runLogPath"
     }
 }
 catch {
     $failedAt = Get-Date
     Add-Content -LiteralPath $runLogPath -Value ("[{0}] RUN_STATUS FAILED reason={1}" -f $failedAt.ToString("s"), $_.Exception.Message)
+    
+    # Try to commit failure log before re-throwing
+    try {
+        if (Test-Path -LiteralPath $runLogPath) {
+            $tracked = Get-RelativePath -FromPath $repoRoot -ToPath $runLogPath
+            if ($tracked -and $tracked -ne ".") {
+                & git add -- $tracked 2>&1 | Out-Null
+                & git diff --cached --quiet
+                if ($LASTEXITCODE -ne 0) {
+                    $commitMessage = "chore(log): daily scraper run $dateStamp - FAILED"
+                    & git commit -m $commitMessage 2>&1 | Out-Null
+                    if (-not $NoGitPush) {
+                        $branch = (& git branch --show-current).Trim()
+                        if (-not $branch) { $branch = "main" }
+                        & git push origin $branch 2>&1 | Out-Null
+                    }
+                }
+            }
+        }
+    }
+    catch {
+        # Ignore git errors in catch block to avoid masking original error
+    }
+    
     throw
 }
 finally {

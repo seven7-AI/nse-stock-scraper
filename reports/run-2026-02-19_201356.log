@@ -1,0 +1,923 @@
+[2026-02-19T20:13:56] RUN_START
+[2026-02-19T20:13:56] python=D:\2026 Projects\nse-stock-scraper\.venv\Scripts\python.exe
+[2026-02-19T20:13:58] START afx_scraper
+[afx_scraper] 2026-02-19 20:14:00 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.utils.log] INFO: Versions:
+[afx_scraper] 
+
+[afx_scraper] {'lxml': '6.0.2',
+[afx_scraper] 
+
+[afx_scraper]  'libxml2': '2.11.9',
+[afx_scraper] 
+
+[afx_scraper]  'cssselect': '1.4.0',
+[afx_scraper] 
+
+[afx_scraper]  'parsel': '1.11.0',
+[afx_scraper] 
+
+[afx_scraper]  'w3lib': '2.3.1',
+[afx_scraper] 
+
+[afx_scraper]  'Twisted': '25.5.0',
+[afx_scraper] 
+
+[afx_scraper]  'Python': '3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 '
+[afx_scraper] 
+
+[afx_scraper]            '64 bit (AMD64)]',
+[afx_scraper] 
+
+[afx_scraper]  'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+[afx_scraper] 
+
+[afx_scraper]  'cryptography': '46.0.4',
+[afx_scraper] 
+
+[afx_scraper]  'Platform': 'Windows-11-10.0.22621-SP0'}
+[afx_scraper] 
+
+[afx_scraper] []
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.addons] INFO: Enabled addons:
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.extensions.telnet] INFO: Telnet Password: b9e8a10577b2c24f
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.middleware] INFO: Enabled extensions:
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.extensions.corestats.CoreStats',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.logcount.LogCount',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.telnet.TelnetConsole',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.logstats.LogStats']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.crawler] INFO: Overridden settings:
+[afx_scraper] 
+
+[afx_scraper] {'BOT_NAME': 'nse_scraper',
+[afx_scraper] 
+
+[afx_scraper]  'CONCURRENT_REQUESTS': 8,
+[afx_scraper] 
+
+[afx_scraper]  'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+[afx_scraper] 
+
+[afx_scraper]  'DOWNLOAD_DELAY': 1,
+[afx_scraper] 
+
+[afx_scraper]  'HTTPCACHE_ENABLED': True,
+[afx_scraper] 
+
+[afx_scraper]  'HTTPCACHE_EXPIRATION_SECS': 3600,
+[afx_scraper] 
+
+[afx_scraper]  'LOG_LEVEL': 'INFO',
+[afx_scraper] 
+
+[afx_scraper]  'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+[afx_scraper] 
+
+[afx_scraper]  'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+[afx_scraper] 
+
+[afx_scraper]  'RETRY_TIMES': 3,
+[afx_scraper] 
+
+[afx_scraper]  'SPIDER_MODULES': ['nse_scraper.spiders'],
+[afx_scraper] 
+
+[afx_scraper]  'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+[afx_scraper] 
+
+[afx_scraper]                '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.middleware] INFO: Enabled downloader middlewares:
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.stats.DownloaderStats',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:01 [scrapy.middleware] INFO: Enabled spider middlewares:
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.referer.RefererMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.depth.DepthMiddleware']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:02 [scrapy.middleware] INFO: Enabled item pipelines:
+[afx_scraper] 
+
+[afx_scraper] ['nse_scraper.pipelines.NseScraperPipeline']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:02 [scrapy.core.engine] INFO: Spider opened
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [nse_scraper.db.backends] INFO: Supabase backend ready
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [nse_scraper.pipelines] INFO: Storage backend active: supabase
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+[afx_scraper] 
+
+[afx_scraper]   warn_on_deprecated_spider_attribute("user_agent", "USER_AGENT")
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [py.warnings] WARNING: D:\2026 Projects\nse-stock-scraper\.venv\Lib\site-packages\scrapy\downloadermiddlewares\useragent.py:33: ScrapyDeprecationWarning: The 'user_agent' spider attribute is deprecated. Use Spider.custom_settings or Spider.update_settings() instead. The corresponding setting name is 'USER_AGENT'.
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:04 [nse_scraper.spiders.afx_scraper] INFO: Processing: https://afx.kwayisi.org/nse/
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:06 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:07 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:07 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:07 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:07 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:08 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:08 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:08 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:08 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:09 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:09 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:09 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:09 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:10 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:10 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:10 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:10 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:11 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:11 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:11 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:11 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:12 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:12 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:12 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:12 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:13 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:13 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:13 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:14 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:14 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:15 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:15 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:16 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:16 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:16 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:21 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:21 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:21 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:21 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data "HTTP/2 201 Created"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [scrapy.core.engine] INFO: Closing spider (finished)
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [nse_scraper.pipelines] INFO: Storage backend closed
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+[afx_scraper] 
+
+[afx_scraper] {'downloader/request_bytes': 268,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/request_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/request_method_count/GET': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_bytes': 10325,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_status_count/200': 1,
+[afx_scraper] 
+
+[afx_scraper]  'elapsed_time_seconds': 20.396841,
+[afx_scraper] 
+
+[afx_scraper]  'finish_reason': 'finished',
+[afx_scraper] 
+
+[afx_scraper]  'finish_time': datetime.datetime(2026, 2, 19, 17, 14, 24, 996884, tzinfo=datetime.timezone.utc),
+[afx_scraper] 
+
+[afx_scraper]  'httpcache/hit': 1,
+[afx_scraper] 
+
+[afx_scraper]  'httpcompression/response_bytes': 38106,
+[afx_scraper] 
+
+[afx_scraper]  'httpcompression/response_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'item_scraped_count': 67,
+[afx_scraper] 
+
+[afx_scraper]  'items_per_minute': 201.0,
+[afx_scraper] 
+
+[afx_scraper]  'log_count/INFO': 72,
+[afx_scraper] 
+
+[afx_scraper]  'log_count/WARNING': 1,
+[afx_scraper] 
+
+[afx_scraper]  'response_received_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'responses_per_minute': 3.0,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/dequeued': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/dequeued/memory': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/enqueued': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/enqueued/memory': 1,
+[afx_scraper] 
+
+[afx_scraper]  'start_time': datetime.datetime(2026, 2, 19, 17, 14, 4, 600043, tzinfo=datetime.timezone.utc)}
+[afx_scraper] 
+
+[afx_scraper] 2026-02-19 20:14:24 [scrapy.core.engine] INFO: Spider closed (finished)
+[afx_scraper] 
+
+[2026-02-19T20:14:26] END afx_scraper exit=0 durationSec=27.28
+[2026-02-19T20:14:26] START stockanalysis_scraper
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.utils.log] INFO: Versions:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'lxml': '6.0.2',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'libxml2': '2.11.9',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'cssselect': '1.4.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'parsel': '1.11.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'w3lib': '2.3.1',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Twisted': '25.5.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Python': '3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 '
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]            '64 bit (AMD64)]',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'cryptography': '46.0.4',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Platform': 'Windows-11-10.0.22621-SP0'}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.addons] INFO: Enabled addons:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] []
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.extensions.telnet] INFO: Telnet Password: dfbbbb9ad2dcc0dc
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.middleware] INFO: Enabled extensions:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.telnet.TelnetConsole',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.logstats.LogStats']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.extensions.corestats.CoreStats',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.logcount.LogCount',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.crawler] INFO: Overridden settings:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'BOT_NAME': 'nse_scraper',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'DOWNLOAD_DELAY': 1,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'HTTPCACHE_ENABLED': 'False',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'HTTPCACHE_EXPIRATION_SECS': 3600,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'CONCURRENT_REQUESTS': 8,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'LOG_LEVEL': 'INFO',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'SPIDER_MODULES': ['nse_scraper.spiders'],
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]                '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'RETRY_TIMES': 3,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.middleware] INFO: Enabled downloader middlewares:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.stats.DownloaderStats']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:28 [scrapy.middleware] INFO: Enabled spider middlewares:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.referer.RefererMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.depth.DepthMiddleware']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['nse_scraper.pipelines.StockAnalysisPipeline']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:29 [scrapy.middleware] INFO: Enabled item pipelines:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:29 [scrapy.core.engine] INFO: Spider opened
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:31 [nse_scraper.db.backends] INFO: Supabase backend ready
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:31 [nse_scraper.pipelines] INFO: StockAnalysisPipeline: Supabase storage active
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:31 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:31 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:33 [nse_scraper.spiders.stockanalysis_scraper] INFO: View 'performance' missing in embedded payload; fetching via screener API
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:37 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:48 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:48 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:48 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:50 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:50 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:50 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:52 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:52 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:52 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:52 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:54 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:54 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:54 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:55 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks "HTTP/2 201 Created"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:55 [scrapy.core.engine] INFO: Closing spider (finished)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'downloader/request_bytes': 2427,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/request_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:55 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_bytes': 40375,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_status_count/200': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'elapsed_time_seconds': 23.250973,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'finish_reason': 'finished',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'finish_time': datetime.datetime(2026, 2, 19, 17, 14, 55, 30165, tzinfo=datetime.timezone.utc),
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'httpcompression/response_bytes': 196341,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'httpcompression/response_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'item_scraped_count': 295,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'items_per_minute': 769.5652173913043,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'log_count/INFO': 63,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'request_depth_max': 1,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'response_received_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/request_method_count/GET': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'responses_per_minute': 13.043478260869565,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/dequeued/memory': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/enqueued': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/enqueued/memory': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'start_time': datetime.datetime(2026, 2, 19, 17, 14, 31, 779192, tzinfo=datetime.timezone.utc)}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-19 20:14:55 [scrapy.core.engine] INFO: Spider closed (finished)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/dequeued': 5,
+[stockanalysis_scraper] 
+
+[2026-02-19T20:14:56] END stockanalysis_scraper exit=0 durationSec=30.21
+[2026-02-19T20:14:56] SUMMARY afx_exit=0 stockanalysis_exit=0 durationSec=59.31
+[2026-02-19T20:14:56] RUN_STATUS SUCCESS

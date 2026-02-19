@@ -1,84 +1,88 @@
-# Historical Data Tracking
+# Data Storage Behavior
 
 ## Overview
 
-The scraper now preserves historical data instead of replacing it. Each daily scrape run creates new records, allowing you to track changes over time.
+The scraper uses upsert behavior: each daily scrape run **updates** existing records for each ticker_symbol instead of creating duplicates. This ensures you always have the latest data for each stock.
 
-## Schema Changes
+## Schema
 
 ### `stock_data` Table
-- **Primary Key**: Changed from `ticker_symbol` to composite `(ticker_symbol, scraped_at)`
-- **New Column**: `scraped_at TIMESTAMPTZ` - timestamp when the data was scraped
-- **Behavior**: Each scrape run inserts new records; old records are preserved
+- **Primary Key**: `ticker_symbol` (single column)
+- **Column**: `scraped_at TIMESTAMPTZ` - timestamp when the data was last scraped
+- **Behavior**: Each scrape run updates existing records or inserts new ones (upsert)
 
 ### `stockanalysis_stocks` Table
-- **Primary Key**: Changed from `ticker_symbol` to composite `(ticker_symbol, scraped_at)`
-- **Behavior**: Each scrape run inserts new records; old records are preserved
+- **Primary Key**: `ticker_symbol` (single column)
+- **Column**: `scraped_at TIMESTAMPTZ` - timestamp when the data was last scraped
+- **Behavior**: Each scrape run updates existing records or inserts new ones (upsert)
 
 ## Migration Steps
 
-### For Existing Databases
+### For Existing Databases with Duplicate Records
 
-1. **Run the migration script** in Supabase SQL Editor:
+1. **Run the cleanup migration script** in Supabase SQL Editor:
    ```sql
-   -- Run sql/005_migrate_to_historical_tracking.sql
+   -- Run sql/006_revert_to_upsert_behavior.sql
    ```
+   This will:
+   - Remove duplicate records (keeps only the latest per ticker_symbol)
+   - Restore single-column primary keys
+   - Clean up composite indexes
 
 2. **Verify migration**:
    ```sql
-   -- Check stock_data has composite key
+   -- Check stock_data has single-column primary key
    SELECT constraint_name, constraint_type 
    FROM information_schema.table_constraints 
    WHERE table_name = 'stock_data' AND constraint_type = 'PRIMARY KEY';
    
-   -- Check stockanalysis_stocks has composite key
+   -- Check stockanalysis_stocks has single-column primary key
    SELECT constraint_name, constraint_type 
    FROM information_schema.table_constraints 
    WHERE table_name = 'stockanalysis_stocks' AND constraint_type = 'PRIMARY KEY';
+   
+   -- Verify no duplicates
+   SELECT ticker_symbol, COUNT(*) as count 
+   FROM stock_data 
+   GROUP BY ticker_symbol 
+   HAVING COUNT(*) > 1;
    ```
 
 ### For New Databases
 
-Simply run the updated schema files:
-- `sql/001_create_stock_data.sql` (already updated with composite key)
-- `sql/003_create_stockanalysis_stocks.sql` (already updated with composite key)
+Simply run the schema files:
+- `sql/001_create_stock_data.sql` (single-column primary key)
+- `sql/003_create_stockanalysis_stocks.sql` (single-column primary key)
 
-## Querying Historical Data
+## Querying Data
 
-### Get Latest Data for a Stock
+### Get Current Data for a Stock
 ```sql
--- Latest stock_data
+-- Current stock_data (one record per ticker)
 SELECT * FROM stock_data 
-WHERE ticker_symbol = 'SCOM'
-ORDER BY scraped_at DESC 
-LIMIT 1;
+WHERE ticker_symbol = 'SCOM';
 
--- Latest stockanalysis_stocks
+-- Current stockanalysis_stocks (one record per ticker)
 SELECT * FROM stockanalysis_stocks 
-WHERE ticker_symbol = 'SCOM'
-ORDER BY scraped_at DESC 
-LIMIT 1;
+WHERE ticker_symbol = 'SCOM';
 ```
 
-### Get All Historical Records
+### Get All Stocks
 ```sql
--- All historical records for a stock
+-- All stocks with latest prices
 SELECT * FROM stock_data 
-WHERE ticker_symbol = 'SCOM'
-ORDER BY scraped_at DESC;
+ORDER BY ticker_symbol;
 
--- All historical records for stockanalysis
+-- All stocks with latest analysis data
 SELECT * FROM stockanalysis_stocks 
-WHERE ticker_symbol = 'SCOM'
-ORDER BY scraped_at DESC;
+ORDER BY ticker_symbol;
 ```
 
-### Track Price Changes Over Time
+### Check Last Scrape Time
 ```sql
--- Price history for a stock
-SELECT scraped_at, stock_price, stock_change
+-- When was each stock last scraped
+SELECT ticker_symbol, scraped_at, stock_price
 FROM stock_data
-WHERE ticker_symbol = 'SCOM'
 ORDER BY scraped_at DESC;
 ```
 
@@ -97,19 +101,19 @@ SELECT * FROM get_latest_stockanalysis_stock('SCOM');
 
 ## Daily Scrape Behavior
 
-- **Before**: Each scrape replaced existing records (upsert on `ticker_symbol`)
-- **After**: Each scrape inserts new records (insert with composite key `ticker_symbol, scraped_at`)
+- **Behavior**: Each scrape **updates** existing records (upsert on `ticker_symbol`)
+- **Result**: One record per ticker_symbol with the latest scraped data
 
 This means:
-- ✅ Historical data is preserved
-- ✅ You can track changes over time
-- ✅ Each day's scrape adds new records
-- ✅ No data loss from previous runs
+- ✅ Latest data is always available
+- ✅ No duplicate records per ticker
+- ✅ `scraped_at` timestamp shows when data was last updated
+- ✅ Efficient storage (one record per stock)
 
-## Backend Changes
+## Backend Implementation
 
-The backend code now uses `insert()` instead of `upsert()`:
-- `SupabaseBackend.upsert_stock()` → inserts new records
-- `SupabaseBackend.upsert_stockanalysis_stock()` → inserts new records
+The backend code uses `upsert()` with `on_conflict="ticker_symbol"`:
+- `SupabaseBackend.upsert_stock()` → updates existing or inserts new
+- `SupabaseBackend.upsert_stockanalysis_stock()` → updates existing or inserts new
 
-Duplicate prevention is handled by the composite primary key constraint.
+Duplicate prevention is handled by the primary key constraint on `ticker_symbol`.

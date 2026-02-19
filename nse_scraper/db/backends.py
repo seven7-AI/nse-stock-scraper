@@ -139,12 +139,38 @@ class SupabaseBackend:
         return None
 
     def upsert_stockanalysis_stock(self, record):
-        """Insert one normalized stock record (all tab data) into stockanalysis_stocks for historical tracking."""
+        """Upsert one normalized stock record (all tab data) into stockanalysis_stocks, updating existing records."""
         scraped_at = record.get("scraped_at")
         if scraped_at is None:
             scraped_at = datetime.now(timezone.utc)
         if hasattr(scraped_at, "isoformat"):
             scraped_at = scraped_at.isoformat()
+        
+        # Get existing record to preserve price_history
+        existing = None
+        try:
+            response = self.client.table(self.stockanalysis_table).select("price_history, stock_price, stock_change").eq("ticker_symbol", record["ticker_symbol"]).execute()
+            if response.data:
+                existing = response.data[0]
+        except Exception:
+            existing = None
+        
+        # Build price_history entry
+        history_entry = {
+            "scraped_at": scraped_at,
+            "stock_price": float(record["stock_price"]) if record.get("stock_price") is not None else None,
+            "stock_change": float(record["stock_change"]) if record.get("stock_change") is not None else None,
+        }
+        
+        # Append to existing history or create new array
+        price_history = existing.get("price_history", []) if existing else []
+        if not isinstance(price_history, list):
+            price_history = []
+        
+        # Only add if price or change actually changed (avoid duplicates)
+        if not price_history or price_history[-1].get("stock_price") != history_entry["stock_price"] or price_history[-1].get("stock_change") != history_entry["stock_change"]:
+            price_history.append(history_entry)
+        
         payload = {
             "ticker_symbol": record["ticker_symbol"],
             "company_name": record["company_name"],
@@ -157,10 +183,12 @@ class SupabaseBackend:
             "dividends_metrics": record.get("dividends_metrics"),
             "price_metrics": record.get("price_metrics"),
             "profile_metrics": record.get("profile_metrics"),
+            "price_history": price_history,
         }
-        # Use insert instead of upsert to preserve historical data
-        # Composite primary key (ticker_symbol, scraped_at) prevents duplicates
-        self.client.table(self.stockanalysis_table).insert(payload).execute()
+        # Use upsert to update existing records or insert new ones
+        # Primary key on ticker_symbol ensures one record per stock
+        # price_history JSONB preserves historical data
+        self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
 
     def upsert_stock(self, record):
         payload = _normalize_record(record)
@@ -171,6 +199,32 @@ class SupabaseBackend:
             scraped_at_iso = scraped_at.isoformat()
         else:
             scraped_at_iso = scraped_at
+        
+        # Get existing record to preserve price_history
+        existing = None
+        try:
+            response = self.client.table(self.supabase_table).select("price_history, stock_price, stock_change").eq("ticker_symbol", payload["ticker_symbol"]).execute()
+            if response.data:
+                existing = response.data[0]
+        except Exception:
+            existing = None
+        
+        # Build price_history entry
+        history_entry = {
+            "scraped_at": scraped_at_iso,
+            "stock_price": float(payload["stock_price"]),
+            "stock_change": float(payload["stock_change"]) if payload.get("stock_change") is not None else None,
+        }
+        
+        # Append to existing history or create new array
+        price_history = existing.get("price_history", []) if existing else []
+        if not isinstance(price_history, list):
+            price_history = []
+        
+        # Only add if price or change actually changed (avoid duplicates)
+        if not price_history or price_history[-1].get("stock_price") != history_entry["stock_price"] or price_history[-1].get("stock_change") != history_entry["stock_change"]:
+            price_history.append(history_entry)
+        
         serialized = {
             "ticker_symbol": payload["ticker_symbol"],
             "stock_name": payload["stock_name"],
@@ -178,10 +232,12 @@ class SupabaseBackend:
             "stock_change": float(payload["stock_change"]) if payload.get("stock_change") is not None else None,
             "scraped_at": scraped_at_iso,
             "created_at": payload["created_at"].isoformat() if hasattr(payload["created_at"], "isoformat") else payload["created_at"],
+            "price_history": price_history,
         }
-        # Use insert instead of upsert to preserve historical data
-        # Composite primary key (ticker_symbol, scraped_at) prevents duplicates
-        self.client.table(self.supabase_table).insert(serialized).execute()
+        # Use upsert to update existing records or insert new ones
+        # Primary key on ticker_symbol ensures one record per stock
+        # price_history JSONB preserves historical data
+        self.client.table(self.supabase_table).upsert(serialized, on_conflict="ticker_symbol").execute()
 
     def get_latest_by_ticker(self, ticker_symbol):
         response = (

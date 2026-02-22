@@ -1,0 +1,1307 @@
+[2026-02-22T16:23:10] RUN_START
+[2026-02-22T16:23:10] python=D:\2026 Projects\nse-stock-scraper\.venv\Scripts\python.exe
+[2026-02-22T16:23:14] START afx_scraper
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.utils.log] INFO: Versions:
+[afx_scraper] 
+
+[afx_scraper] {'lxml': '6.0.2',
+[afx_scraper] 
+
+[afx_scraper]  'cssselect': '1.4.0',
+[afx_scraper] 
+
+[afx_scraper]  'libxml2': '2.11.9',
+[afx_scraper] 
+
+[afx_scraper]  'w3lib': '2.3.1',
+[afx_scraper] 
+
+[afx_scraper]  'parsel': '1.11.0',
+[afx_scraper] 
+
+[afx_scraper]  'Twisted': '25.5.0',
+[afx_scraper] 
+
+[afx_scraper]  'Python': '3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 '
+[afx_scraper] 
+
+[afx_scraper]            '64 bit (AMD64)]',
+[afx_scraper] 
+
+[afx_scraper]  'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+[afx_scraper] 
+
+[afx_scraper]  'cryptography': '46.0.4',
+[afx_scraper] 
+
+[afx_scraper]  'Platform': 'Windows-11-10.0.22621-SP0'}
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.addons] INFO: Enabled addons:
+[afx_scraper] 
+
+[afx_scraper] []
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.extensions.telnet] INFO: Telnet Password: aff23210d37cb9fd
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.extensions.corestats.CoreStats',
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.middleware] INFO: Enabled extensions:
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.logcount.LogCount',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.telnet.TelnetConsole',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.extensions.logstats.LogStats']
+[afx_scraper] 
+
+[afx_scraper] {'BOT_NAME': 'nse_scraper',
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:17 [scrapy.crawler] INFO: Overridden settings:
+[afx_scraper] 
+
+[afx_scraper]  'CONCURRENT_REQUESTS': 8,
+[afx_scraper] 
+
+[afx_scraper]  'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+[afx_scraper] 
+
+[afx_scraper]  'DOWNLOAD_DELAY': 1,
+[afx_scraper] 
+
+[afx_scraper]  'HTTPCACHE_ENABLED': True,
+[afx_scraper] 
+
+[afx_scraper]  'HTTPCACHE_EXPIRATION_SECS': 3600,
+[afx_scraper] 
+
+[afx_scraper]  'LOG_LEVEL': 'INFO',
+[afx_scraper] 
+
+[afx_scraper]  'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+[afx_scraper] 
+
+[afx_scraper]  'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+[afx_scraper] 
+
+[afx_scraper]  'RETRY_TIMES': 3,
+[afx_scraper] 
+
+[afx_scraper]  'SPIDER_MODULES': ['nse_scraper.spiders'],
+[afx_scraper] 
+
+[afx_scraper]                '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+[afx_scraper] 
+
+[afx_scraper]  'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:18 [scrapy.middleware] INFO: Enabled downloader middlewares:
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.stats.DownloaderStats',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:18 [scrapy.middleware] INFO: Enabled spider middlewares:
+[afx_scraper] 
+
+[afx_scraper] ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.referer.RefererMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+[afx_scraper] 
+
+[afx_scraper]  'scrapy.spidermiddlewares.depth.DepthMiddleware']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:19 [scrapy.middleware] INFO: Enabled item pipelines:
+[afx_scraper] 
+
+[afx_scraper] ['nse_scraper.pipelines.NseScraperPipeline']
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:19 [scrapy.core.engine] INFO: Spider opened
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:23 [nse_scraper.db.backends] INFO: Supabase backend ready
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:23 [nse_scraper.pipelines] INFO: Storage backend active: supabase
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:23 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+[afx_scraper] 
+
+[afx_scraper]   warn_on_deprecated_spider_attribute("user_agent", "USER_AGENT")
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:23 [py.warnings] WARNING: D:\2026 Projects\nse-stock-scraper\.venv\Lib\site-packages\scrapy\downloadermiddlewares\useragent.py:33: ScrapyDeprecationWarning: The 'user_agent' spider attribute is deprecated. Use Spider.custom_settings or Spider.update_settings() instead. The corresponding setting name is 'USER_AGENT'.
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:23 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:24 [nse_scraper.spiders.afx_scraper] INFO: Processing: https://afx.kwayisi.org/nse/
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.ABSA "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.AMAC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.ARM "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAMB "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:29 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:29 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAT "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:29 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:29 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BKG "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:30 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BOC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:30 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BRIT "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:31 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CABL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:31 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:31 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CARB "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:31 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:32 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CGEN "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:32 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:32 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CIC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:32 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:33 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.COOP "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:33 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:33 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CRWN "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:33 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:34 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CTUM "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:34 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:34 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.DCON "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:34 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:35 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.DTK "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:35 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:35 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EABL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:36 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:36 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EGAD "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:36 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:37 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EQTY "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:37 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:37 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EVRD "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:38 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.FTGH "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:38 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.GLD "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:39 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HAFR "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:39 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HBE "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:40 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HFCK "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:40 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.IMH "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:41 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.JUB "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:41 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KAPC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:42 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KCB "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:42 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KEGN "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:43 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KNRE "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:43 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPLC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:44 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPLC-P4 "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:44 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPLC-P7 "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:44 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KQ "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:45 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KUKZ "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:45 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KURV "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:46 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LAPR "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:46 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LBTY "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:47 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LIMT "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:47 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LKL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:47 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:48 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.MSC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:48 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:48 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NBV "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:48 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:48 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NCBA "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:49 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NMG "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:49 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:49 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NSE "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:50 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:50 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.OCH "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:50 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:50 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.PORT "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:51 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SASN "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:51 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SBIC "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:51 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:52 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCAN "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:52 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:52 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCBK "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:53 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCOM "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:53 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SGL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:53 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:54 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SKL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:54 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:54 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SLAM "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:55 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:55 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SMER "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:55 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:55 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SMWF "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:56 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:56 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TCL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:56 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:56 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TOTL "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:57 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:57 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TPSE "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:57 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:57 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UCHM "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:58 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:58 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UMME "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:58 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:59 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UNGA "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:59 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:59 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.WTK "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:59 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:23:59 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.XPRS "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:24:00 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stock_data?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:24:00 [scrapy.core.engine] INFO: Closing spider (finished)
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:24:00 [nse_scraper.pipelines] INFO: Storage backend closed
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:24:00 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+[afx_scraper] 
+
+[afx_scraper] {'downloader/request_bytes': 268,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/request_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/request_method_count/GET': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_bytes': 10558,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'downloader/response_status_count/200': 1,
+[afx_scraper] 
+
+[afx_scraper]  'elapsed_time_seconds': 36.983796,
+[afx_scraper] 
+
+[afx_scraper]  'finish_reason': 'finished',
+[afx_scraper] 
+
+[afx_scraper]  'finish_time': datetime.datetime(2026, 2, 22, 13, 24, 0, 218598, tzinfo=datetime.timezone.utc),
+[afx_scraper] 
+
+[afx_scraper]  'httpcache/firsthand': 1,
+[afx_scraper] 
+
+[afx_scraper]  'httpcache/miss': 1,
+[afx_scraper] 
+
+[afx_scraper]  'httpcache/store': 1,
+[afx_scraper] 
+
+[afx_scraper]  'httpcompression/response_bytes': 38787,
+[afx_scraper] 
+
+[afx_scraper]  'httpcompression/response_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'item_scraped_count': 67,
+[afx_scraper] 
+
+[afx_scraper]  'items_per_minute': 111.66666666666667,
+[afx_scraper] 
+
+[afx_scraper]  'log_count/INFO': 139,
+[afx_scraper] 
+
+[afx_scraper]  'log_count/WARNING': 1,
+[afx_scraper] 
+
+[afx_scraper]  'response_received_count': 1,
+[afx_scraper] 
+
+[afx_scraper]  'responses_per_minute': 1.6666666666666667,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/dequeued': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/dequeued/memory': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/enqueued': 1,
+[afx_scraper] 
+
+[afx_scraper]  'scheduler/enqueued/memory': 1,
+[afx_scraper] 
+
+[afx_scraper]  'start_time': datetime.datetime(2026, 2, 22, 13, 23, 23, 234802, tzinfo=datetime.timezone.utc)}
+[afx_scraper] 
+
+[afx_scraper] 2026-02-22 16:24:00 [scrapy.core.engine] INFO: Spider closed (finished)
+[afx_scraper] 
+
+[2026-02-22T16:24:02] END afx_scraper exit=0 durationSec=47.83
+[2026-02-22T16:24:02] START stockanalysis_scraper
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'lxml': '6.0.2',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'libxml2': '2.11.9',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.utils.log] INFO: Versions:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'parsel': '1.11.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'w3lib': '2.3.1',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Twisted': '25.5.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Python': '3.13.1 (tags/v3.13.1:0671451, Dec  3 2024, 19:06:28) [MSC v.1942 '
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]            '64 bit (AMD64)]',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'cryptography': '46.0.4',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'Platform': 'Windows-11-10.0.22621-SP0'}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'cssselect': '1.4.0',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.addons] INFO: Enabled addons:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] []
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.extensions.telnet] INFO: Telnet Password: 3d480f38c2053492
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.middleware] INFO: Enabled extensions:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.telnet.TelnetConsole',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.logstats.LogStats']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.extensions.logcount.LogCount',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.extensions.corestats.CoreStats',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.crawler] INFO: Overridden settings:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'CONCURRENT_REQUESTS': 8,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'DOWNLOAD_DELAY': 1,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'HTTPCACHE_ENABLED': 'False',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'HTTPCACHE_EXPIRATION_SECS': 3600,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'LOG_LEVEL': 'INFO',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'RETRY_TIMES': 3,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'SPIDER_MODULES': ['nse_scraper.spiders'],
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'BOT_NAME': 'nse_scraper',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]                '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.middleware] INFO: Enabled downloader middlewares:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.downloadermiddlewares.stats.DownloaderStats']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:05 [scrapy.middleware] INFO: Enabled spider middlewares:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.referer.RefererMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scrapy.spidermiddlewares.depth.DepthMiddleware']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:06 [scrapy.middleware] INFO: Enabled item pipelines:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] ['nse_scraper.pipelines.StockAnalysisPipeline']
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:06 [scrapy.core.engine] INFO: Spider opened
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:08 [nse_scraper.db.backends] INFO: Supabase backend ready
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:08 [nse_scraper.pipelines] INFO: StockAnalysisPipeline: Supabase storage active
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:08 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:08 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:10 [nse_scraper.spiders.stockanalysis_scraper] INFO: View 'performance' missing in embedded payload; fetching via screener API
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:15 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCOM "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:15 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:16 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EQTY "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:16 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:16 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KCB "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:17 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EABL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:17 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.COOP "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:17 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:18 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.ABSA "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:18 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NCBA "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:18 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:19 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCBK "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:19 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SBIC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:19 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:20 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.IMH "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:20 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:21 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KEGN "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:21 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:21 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAT "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:22 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BKG "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.DTK "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPLC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BRIT "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KQ "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TOTL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.JUB "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KNRE "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HFCK "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAMB "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CIC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:29 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UMME "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:29 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:29 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CTUM "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:29 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:29 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CRWN "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:30 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KUKZ "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:30 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CARB "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:30 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:31 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.PORT "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:31 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:31 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SASN "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:31 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:32 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NSE "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:32 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:32 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CGEN "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:33 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:33 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SMER "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:33 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:33 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LBTY "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:34 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:34 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.WTK "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:34 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:34 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TPSE "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:35 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:35 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KAPC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:35 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:35 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LAPR "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:36 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:36 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BOC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:36 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:36 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NMG "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:37 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:37 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NBV "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:37 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:37 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UNGA "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:38 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SLAM "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:38 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:38 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LIMT "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:39 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TCL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:39 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:39 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.AMAC "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:40 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCAN "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:40 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:40 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EGAD "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:41 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LKL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:41 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UCHM "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:41 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:42 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:42 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HAFR "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:42 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SKL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:43 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SGL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:43 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:44 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CABL "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:44 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.XPRS "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:44 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:45 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.FTGH "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:45 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.OCH "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:45 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:45 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EVRD "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KURV "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [scrapy.core.engine] INFO: Closing spider (finished)
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] {'downloader/request_bytes': 2427,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/request_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/request_method_count/GET': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_status_count/200': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'elapsed_time_seconds': 38.168084,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'finish_reason': 'finished',
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'finish_time': datetime.datetime(2026, 2, 22, 13, 24, 46, 522009, tzinfo=datetime.timezone.utc),
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'httpcompression/response_bytes': 196275,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'httpcompression/response_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'item_scraped_count': 295,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'items_per_minute': 465.7894736842105,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'downloader/response_bytes': 40078,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'log_count/INFO': 122,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'response_received_count': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'request_depth_max': 1,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'responses_per_minute': 7.894736842105264,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/dequeued': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/dequeued/memory': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/enqueued': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'scheduler/enqueued/memory': 5,
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper]  'start_time': datetime.datetime(2026, 2, 22, 13, 24, 8, 353925, tzinfo=datetime.timezone.utc)}
+[stockanalysis_scraper] 
+
+[stockanalysis_scraper] 2026-02-22 16:24:46 [scrapy.core.engine] INFO: Spider closed (finished)
+[stockanalysis_scraper] 
+
+[2026-02-22T16:24:48] END stockanalysis_scraper exit=0 durationSec=46.08
+[2026-02-22T16:24:48] SUMMARY afx_exit=0 stockanalysis_exit=0 durationSec=97.97
+[2026-02-22T16:24:48] RUN_STATUS SUCCESS

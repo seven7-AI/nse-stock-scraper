@@ -225,8 +225,15 @@ try {
         Add-Content -LiteralPath $runLogPath -Value ("[{0}] RUN_STATUS FAILED reason=one_or_more_spiders_failed" -f $runEndedAt.ToString("s"))
     }
 
-    # Always commit and push logs regardless of success/failure
-    $tracked = @($runLogPath, $taskRunnerLogPath) | Where-Object { Test-Path -LiteralPath $_ }
+    # Always commit and push logs and local fallback data regardless of success/failure
+    $localFallbackDir = Join-Path $reportsDir "local_fallback"
+    $localFallbackFiles = @()
+    if (Test-Path -LiteralPath $localFallbackDir) {
+        $localFallbackFiles = Get-ChildItem -LiteralPath $localFallbackDir -File -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName }
+    }
+
+    $tracked = @($runLogPath, $taskRunnerLogPath) + $localFallbackFiles
+    $tracked = $tracked | Where-Object { Test-Path -LiteralPath $_ }
     $tracked = $tracked | ForEach-Object { Get-RelativePath -FromPath $repoRoot -ToPath $_ } | Where-Object { $_ -and $_ -ne "." }
     if (@($tracked).Count -gt 0) {
         try {

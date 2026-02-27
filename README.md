@@ -125,8 +125,11 @@ The script:
 - Writes run logs under `reports/`:
   - `reports/run-YYYY-MM-DD_HHMMSS.log`
   - `reports/task-runner.log`
-- Commits and pushes log artifacts with:
-  - `chore(log): daily scraper run YYYY-MM-DD`
+- When Supabase writes fail, also writes local fallback JSONL under:
+  - `reports/local_fallback/stock_data_fallback-YYYY-MM-DD.jsonl`
+  - `reports/local_fallback/stockanalysis_stocks_fallback-YYYY-MM-DD.jsonl`
+- Commits and pushes log + local fallback artifacts with:
+  - `chore(log): daily scraper run YYYY-MM-DD - SUCCESS|FAILED`
 
 ### Prerequisites
 

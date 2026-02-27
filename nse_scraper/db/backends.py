@@ -1,5 +1,7 @@
 import logging
 from datetime import datetime, timezone
+import json
+import os
 
 import pymongo
 from sqlalchemy import create_engine, desc
@@ -128,6 +130,8 @@ class SupabaseBackend:
         self.supabase_table = supabase_table
         self.stockanalysis_table = stockanalysis_table
         self.client = None
+        # Local fallback directory for failed Supabase writes (relative to CWD)
+        self.local_fallback_dir = "reports/local_fallback"
 
     def open(self):
         from supabase import create_client
@@ -137,6 +141,28 @@ class SupabaseBackend:
 
     def close(self):
         return None
+
+    def _ensure_local_dir(self):
+        if not self.local_fallback_dir:
+            return
+        try:
+            os.makedirs(self.local_fallback_dir, exist_ok=True)
+        except Exception:
+            logger.exception("Failed to create local fallback directory %s", self.local_fallback_dir)
+
+    def _write_local_fallback(self, kind, payload):
+        """Write a failed Supabase payload to local JSONL for later inspection/replay."""
+        if not self.local_fallback_dir:
+            return
+        self._ensure_local_dir()
+        try:
+            date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+            filename = f"{kind}_fallback-{date_str}.jsonl"
+            path = os.path.join(self.local_fallback_dir, filename)
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(payload, default=str) + "\n")
+        except Exception:
+            logger.exception("Failed to write local fallback record for %s", kind)
 
     def upsert_stockanalysis_stock(self, record):
         """Upsert one normalized stock record (all tab data) into stockanalysis_stocks, updating existing records."""
@@ -185,10 +211,13 @@ class SupabaseBackend:
             "profile_metrics": record.get("profile_metrics"),
             "price_history": price_history,
         }
-        # Use upsert to update existing records or insert new ones
-        # Primary key on ticker_symbol ensures one record per stock
-        # price_history JSONB preserves historical data
-        self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
+        # Use upsert to update existing records or insert new ones.
+        # On Supabase failure, write a local fallback record.
+        try:
+            self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
+        except Exception:
+            logger.exception("Supabase upsert_stockanalysis_stock failed; writing local fallback")
+            self._write_local_fallback("stockanalysis_stocks", payload)
 
     def upsert_stock(self, record):
         payload = _normalize_record(record)
@@ -234,10 +263,13 @@ class SupabaseBackend:
             "created_at": payload["created_at"].isoformat() if hasattr(payload["created_at"], "isoformat") else payload["created_at"],
             "price_history": price_history,
         }
-        # Use upsert to update existing records or insert new ones
-        # Primary key on ticker_symbol ensures one record per stock
-        # price_history JSONB preserves historical data
-        self.client.table(self.supabase_table).upsert(serialized, on_conflict="ticker_symbol").execute()
+        # Use upsert to update existing records or insert new ones.
+        # On Supabase failure, write a local fallback record.
+        try:
+            self.client.table(self.supabase_table).upsert(serialized, on_conflict="ticker_symbol").execute()
+        except Exception:
+            logger.exception("Supabase upsert_stock failed; writing local fallback")
+            self._write_local_fallback("stock_data", serialized)
 
     def get_latest_by_ticker(self, ticker_symbol):
         response = (

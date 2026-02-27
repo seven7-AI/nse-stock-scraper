@@ -4,7 +4,7 @@
 -- ============================================
 -- 1. Add price_history to stock_data
 -- ============================================
-
+CA
 -- Add column if it doesn't exist
 ALTER TABLE stock_data 
 ADD COLUMN IF NOT EXISTS price_history JSONB DEFAULT '[]'::jsonb;

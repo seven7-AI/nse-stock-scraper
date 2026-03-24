@@ -68,30 +68,6 @@ class TestDependencies(unittest.TestCase):
         except ImportError:
             self.fail("Scrapy not installed")
 
-    def test_pymongo_installed(self):
-        """Test PyMongo is installed"""
-        try:
-            import pymongo
-            self.assertTrue(True)
-        except ImportError:
-            self.fail("PyMongo not installed")
-
-    def test_sqlalchemy_installed(self):
-        """Test SQLAlchemy is installed"""
-        try:
-            import sqlalchemy
-            self.assertTrue(True)
-        except ImportError:
-            self.fail("SQLAlchemy not installed")
-
-    def test_alembic_installed(self):
-        """Test Alembic is installed"""
-        try:
-            import alembic
-            self.assertTrue(True)
-        except ImportError:
-            self.fail("Alembic not installed")
-
     def test_supabase_installed(self):
         """Test Supabase client is installed"""
         try:
@@ -135,13 +111,13 @@ class TestConfigurationFiles(unittest.TestCase):
     def test_dockerfile_exists(self):
         """Test Dockerfile exists"""
         project_root = Path(__file__).parent.parent
-        dockerfile = project_root / "Dockerfile"
+        dockerfile = project_root / "deployment" / "Dockerfile"
         self.assertTrue(dockerfile.exists())
 
     def test_docker_compose_exists(self):
         """Test docker-compose.yml exists"""
         project_root = Path(__file__).parent.parent
-        docker_compose = project_root / "docker-compose.yml"
+        docker_compose = project_root / "deployment" / "docker-compose.yml"
         self.assertTrue(docker_compose.exists())
 
 
@@ -152,9 +128,9 @@ class TestBackendFactory(unittest.TestCase):
         with self.assertRaises(ValueError):
             create_backend("invalid-backend")
 
-    def test_mongo_backend_requires_uri(self):
+    def test_supabase_backend_requires_credentials(self):
         with self.assertRaises(ValueError):
-            create_backend("mongo", mongodb_uri=None)
+            create_backend("supabase", supabase_url=None, supabase_key=None)
 
 
 if __name__ == "__main__":

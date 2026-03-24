@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  scraper-job:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+    container_name: nse-scraper-job
+    env_file:
+      - ../.env
+    environment:
+      DB_BACKEND: supabase
+    volumes:
+      - ../reports:/app/reports
+      - ../httpcache:/app/httpcache
+    entrypoint: ["bash", "scripts/run_daily_job.sh"]

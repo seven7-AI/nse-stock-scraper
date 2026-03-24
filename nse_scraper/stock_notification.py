@@ -11,12 +11,8 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-DB_BACKEND = os.getenv("DB_BACKEND", "mongo").strip().lower()
-MONGODB_URI = os.getenv("MONGODB_URI")
-MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "nse_data")
+DB_BACKEND = os.getenv("DB_BACKEND", "supabase").strip().lower()
 STOCK_TABLE = os.getenv("STOCK_TABLE", "stock_data")
-SQL_DATABASE_URL = os.getenv("SQL_DATABASE_URL")
-SQL_ECHO = os.getenv("SQL_ECHO", "false").strip().lower() in {"1", "true", "yes", "on"}
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", STOCK_TABLE)
@@ -31,11 +27,7 @@ def stock_query(ticker_symbol="BAT", threshold=38.0):
     try:
         backend = create_backend(
             backend_name=DB_BACKEND,
-            mongodb_uri=MONGODB_URI,
-            mongo_database=MONGODB_DATABASE,
             stock_table=STOCK_TABLE,
-            sql_database_url=SQL_DATABASE_URL,
-            sql_echo=SQL_ECHO,
             supabase_url=SUPABASE_URL,
             supabase_key=SUPABASE_KEY,
             supabase_table=SUPABASE_TABLE,

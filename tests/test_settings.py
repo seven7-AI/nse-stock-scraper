@@ -30,7 +30,7 @@ class TestScrapySettings(unittest.TestCase):
     def test_db_backend_configured(self):
         """Test DB backend setting exists and is valid"""
         backend = getattr(settings, "DB_BACKEND", None)
-        self.assertIn(backend, ["mongo", "postgres", "supabase"])
+        self.assertEqual(backend, "supabase")
 
     def test_concurrent_requests(self):
         """Test concurrent requests setting"""

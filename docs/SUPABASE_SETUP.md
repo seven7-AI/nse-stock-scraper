@@ -58,11 +58,4 @@ From the project root:
 scrapy crawl afx_scraper
 ```
 
-## Switching back to MongoDB or Postgres
-
-Change only `DB_BACKEND` and the matching env vars:
-
-- **MongoDB**: `DB_BACKEND=mongo` and set `MONGODB_URI`, `MONGODB_DATABASE`.
-- **Postgres**: `DB_BACKEND=postgres` and set `SQL_DATABASE_URL`.
-
-No code changes required.
+This repository is configured for Supabase-only runtime. Keep `DB_BACKEND=supabase`.

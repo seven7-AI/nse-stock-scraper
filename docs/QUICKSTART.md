@@ -1,58 +1,29 @@
-# Quick Start
+# Quickstart
 
-## 1) Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-## 2) Configure environment
+## 1) Configure environment
 
 ```bash
 cp config/.env.example .env
 ```
 
-Set `DB_BACKEND` to one of:
-- `mongo`
-- `postgres`
-- `supabase`
+Set:
 
-Then fill only the vars needed for the selected backend.
+- `DB_BACKEND=supabase`
+- `SUPABASE_URL`
+- `SUPABASE_KEY`
 
-## 3) Run the scraper
-
-```bash
-scrapy crawl afx_scraper
-```
-
-Optional JSON preview:
+## 2) Build and run one job
 
 ```bash
-scrapy crawl afx_scraper -o test.json
+docker compose -f deployment/docker-compose.yml build scraper-job
+docker compose -f deployment/docker-compose.yml run --rm scraper-job
 ```
 
-## 4) PostgreSQL migrations (optional)
-
-When using `DB_BACKEND=postgres`:
+## 3) Install weekday schedule
 
 ```bash
-alembic upgrade head
+bash scripts/install_weekday_cron.sh
+crontab -l
 ```
 
-## 5) Manual placeholder utility
-
-`stock_notification.py` is now a non-sending placeholder helper that reads latest stock data and logs threshold checks.
-
-```bash
-python nse_scraper/stock_notification.py
-```
-
-## Useful checks
-
-```bash
-# Scrapy debug logs
-scrapy crawl afx_scraper --loglevel=DEBUG
-
-# Run tests
-make test
-```
+The schedule runs every Monday-Friday at `09:00` in `Africa/Nairobi`.

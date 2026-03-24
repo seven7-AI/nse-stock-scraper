@@ -1,4 +1,4 @@
-name: Scraper test with MongoDB
+name: Scraper test
 
 on: [push]
 
@@ -9,7 +9,6 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.11', '3.12', '3.13']
-        mongodb-version: ['6.0', '7.0', '8.0']
 
     steps:
     - uses: actions/checkout@v6
@@ -17,10 +16,6 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Set up MongoDB ${{ matrix.mongodb-version }}
-      uses: supercharge/mongodb-github-action@1.12.1
-      with:
-        mongodb-version: ${{ matrix.mongodb-version }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -37,12 +32,10 @@ jobs:
         make test
     - name: scraper-test
       run: |
-        cd nse_scraper
-        export DB_BACKEND=mongo
-        export MONGODB_URI=mongodb://localhost:27017
-        export MONGODB_DATABASE=nse_data
-        scrapy crawl afx_scraper -a output_format=csv -a output_file=afx.csv
-        scrapy crawl afx_scraper -a output_format=json -a output_file=afx.json
+        export DB_BACKEND=supabase
+        export SUPABASE_URL=https://example.supabase.co
+        export SUPABASE_KEY=fake_service_role_key
+        scrapy crawl afx_scraper --loglevel=INFO
         
 #     - name: Test with pytest
 #       run: |

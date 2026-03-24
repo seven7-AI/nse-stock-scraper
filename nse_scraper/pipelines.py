@@ -13,11 +13,7 @@ class NseScraperPipeline:
     def __init__(
         self,
         db_backend,
-        mongodb_uri,
-        mongo_db,
         stock_table,
-        sql_database_url,
-        sql_echo,
         supabase_url,
         supabase_key,
         supabase_table,
@@ -25,11 +21,7 @@ class NseScraperPipeline:
         self.db_backend = db_backend
         self.storage = create_backend(
             backend_name=db_backend,
-            mongodb_uri=mongodb_uri,
-            mongo_database=mongo_db,
             stock_table=stock_table,
-            sql_database_url=sql_database_url,
-            sql_echo=sql_echo,
             supabase_url=supabase_url,
             supabase_key=supabase_key,
             supabase_table=supabase_table,
@@ -38,12 +30,8 @@ class NseScraperPipeline:
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            db_backend=crawler.settings.get("DB_BACKEND", "mongo"),
-            mongodb_uri=crawler.settings.get("MONGODB_URI"),
-            mongo_db=crawler.settings.get("MONGO_DATABASE", "nse_data"),
+            db_backend=crawler.settings.get("DB_BACKEND", "supabase"),
             stock_table=crawler.settings.get("STOCK_TABLE", "stock_data"),
-            sql_database_url=crawler.settings.get("SQL_DATABASE_URL"),
-            sql_echo=crawler.settings.get("SQL_ECHO", False),
             supabase_url=crawler.settings.get("SUPABASE_URL"),
             supabase_key=crawler.settings.get("SUPABASE_KEY"),
             supabase_table=crawler.settings.get("SUPABASE_TABLE", "stock_data"),

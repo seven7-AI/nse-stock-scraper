@@ -1,63 +1,45 @@
-# Docker Guide
+# Docker + Cron Operations
 
-## Quick Start
+## One-shot Docker Run
 
-```bash
-cp config/.env.docker .env
-docker-compose up --build
-```
-
-Use `DB_BACKEND` in `.env` to choose storage:
-- `mongo`
-- `postgres`
-- `supabase`
-
-## Services
-
-`docker-compose.yml` starts:
-- `mongodb` (MongoDB local service)
-- `postgres` (PostgreSQL local service)
-- `scraper` (Scrapy app)
-
-The scraper service can connect to any backend based on env configuration.
-
-## Common Commands
+This repo uses a single job service named `scraper-job`.
 
 ```bash
-# Run scraper in debug mode
-docker-compose run --rm scraper crawl afx_scraper --loglevel=DEBUG
-
-# Run placeholder utility (no messaging)
-docker-compose run --rm scraper python nse_scraper/stock_notification.py
-
-# MongoDB shell
-docker-compose exec mongodb mongosh
-
-# PostgreSQL shell
-docker-compose exec postgres psql -U postgres -d nse_data
-
-# Stop services
-docker-compose down
+docker compose -f deployment/docker-compose.yml build scraper-job
+docker compose -f deployment/docker-compose.yml run --rm scraper-job
 ```
 
-## Environment Template
+The service runs `scripts/run_daily_job.sh`, which executes both spiders and writes logs in `reports/`.
 
-Use `config/.env.docker` as base. Important variables:
-- `DB_BACKEND`
-- `MONGODB_URI`
-- `MONGODB_DATABASE`
-- `SQL_DATABASE_URL`
+## Environment Source
+
+Docker Compose reads the root `.env` file directly:
+
+- `DB_BACKEND=supabase`
 - `SUPABASE_URL`
 - `SUPABASE_KEY`
+- `SUPABASE_TABLE`
+- `STOCKANALYSIS_TABLE`
 
-## PostgreSQL Migrations in Docker
+## Weekday Schedule
+
+Install cron at `09:00` Monday-Friday in `Africa/Nairobi`:
 
 ```bash
-docker-compose run --rm scraper alembic upgrade head
+bash scripts/install_weekday_cron.sh
 ```
 
-## Notes
+The script writes this entry:
 
-- MongoDB and PostgreSQL data are persisted through Docker volumes.
-- Supabase mode requires external Supabase credentials in `.env`.
-- Scheduler and SMS integrations are intentionally removed.
+```cron
+CRON_TZ=Africa/Nairobi
+0 9 * * 1-5 cd /path/to/nse-stock-scraper && docker compose -f deployment/docker-compose.yml run --rm scraper-job >> /path/to/nse-stock-scraper/reports/task-runner.log 2>&1
+```
+
+## Validate Setup
+
+```bash
+crontab -l
+docker compose -f deployment/docker-compose.yml run --rm scraper-job
+ls reports/
+```

@@ -1,0 +1,2 @@
+CRON_TZ=Africa/Nairobi
+0 9 * * * cd /home/kevin/nse-stock-scraper && docker compose -f deployment/docker-compose.yml run --rm scraper-job >> /home/kevin/nse-stock-scraper/reports/task-runner.log 2>&1

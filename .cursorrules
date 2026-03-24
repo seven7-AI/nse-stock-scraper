@@ -1,0 +1,53 @@
+You are working on the NSE Stock Scraper project.
+
+PROJECT IDENTITY
+- Stack: Python 3.11+, Scrapy, Supabase (PostgREST)
+- Runtime target: Linux + Docker + host cron
+- Schedule: Weekdays at 09:00 Africa/Nairobi
+- Environment source of truth: root `.env`
+
+PROJECT STRUCTURE
+- `nse_scraper/` contains spiders, pipelines, settings, and DB adapters.
+- `scripts/` contains executable operational scripts:
+  - `run_daily_job.sh`
+  - `install_weekday_cron.sh`
+- `deployment/cron/` contains cron templates.
+- `docs/` contains operational and developer docs.
+- `config/` contains env templates only.
+
+OPERATIONAL RULES
+- Do not add Windows scheduling assets (`.ps1`, `.bat`, Task Scheduler instructions).
+- Prefer Docker one-shot runs:
+  - `docker compose -f deployment/docker-compose.yml run --rm scraper-job`
+- Cron changes must preserve weekday 09:00 Africa/Nairobi behavior.
+- Keep run logs under `reports/` and include clear success/failure lines.
+
+SUPABASE RULES
+- `DB_BACKEND` must remain `supabase`.
+- Required env keys:
+  - `SUPABASE_URL`
+  - `SUPABASE_KEY`
+  - `SUPABASE_TABLE`
+  - `STOCKANALYSIS_TABLE`
+- Avoid reintroducing MongoDB/Postgres runtime paths unless explicitly requested.
+
+SCRAPY CODING STANDARDS
+- Keep spiders deterministic and defensive against parsing failures.
+- Validate item payloads in pipelines before persistence.
+- Keep business logic in `pipelines.py` / backend adapters, not in spiders.
+- Use concise logging that helps operators debug scheduled runs.
+
+TESTING EXPECTATIONS
+- Run focused tests for changed modules first.
+- For scheduler/runtime changes, at minimum verify:
+  - `docker compose -f deployment/docker-compose.yml run --rm scraper-job`
+  - log files appear in `reports/`
+  - exit code is non-zero when a spider fails
+
+DOCUMENTATION EXPECTATIONS
+- Keep `README.md` and `docs/DOCKER.md` aligned with actual run commands.
+- Keep `docs/PROJECT_STRUCTURE.md` synced with folder layout.
+
+GIT/CHANGE HYGIENE
+- Keep commits scoped and descriptive.
+- Remove obsolete references when deprecating files or workflows.

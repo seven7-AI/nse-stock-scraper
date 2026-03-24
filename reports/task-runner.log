@@ -71,3 +71,16 @@ Usage:  docker [OPTIONS] COMMAND [ARG...]
 
 Run 'docker --help' for more information
 [2026-03-24T16:41:06+0100] DOCKER_RUN_STATUS FAILED exit=125
+[main 15b9cfb] chore(log): daily scraper run 2026-03-24 - FAILED
+ 1 file changed, 6 insertions(+)
+To github.com:seven7-AI/nse-stock-scraper.git
+   9b468e3..15b9cfb  main -> main
+Creating deployment_scraper-job_run ... 
+Creating deployment_scraper-job_run ... done
+[2026-03-24T15:41:53+0000] RUN_START
+[2026-03-24T15:41:53+0000] START afx_scraper
+[2026-03-24T15:42:09+0000] END afx_scraper exit=0
+[2026-03-24T15:42:09+0000] START stockanalysis_scraper
+[2026-03-24T15:42:23+0000] END stockanalysis_scraper exit=0
+[2026-03-24T15:42:23+0000] RUN_STATUS SUCCESS
+[2026-03-24T16:42:23+0100] DOCKER_RUN_STATUS SUCCESS exit=0

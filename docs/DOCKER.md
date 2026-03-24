@@ -21,19 +21,19 @@ Docker Compose reads the root `.env` file directly:
 - `SUPABASE_TABLE`
 - `STOCKANALYSIS_TABLE`
 
-## Weekday Schedule
+## Daily Schedule
 
-Install cron at `09:00` Monday-Friday in `Africa/Nairobi`:
+Install cron at `09:00` daily in `Africa/Nairobi`:
 
 ```bash
-bash scripts/install_weekday_cron.sh
+bash scripts/install_daily_cron.sh
 ```
 
 The script writes this entry:
 
 ```cron
 CRON_TZ=Africa/Nairobi
-0 9 * * 1-5 cd /path/to/nse-stock-scraper && docker compose -f deployment/docker-compose.yml run --rm scraper-job >> /path/to/nse-stock-scraper/reports/task-runner.log 2>&1
+0 9 * * * cd /path/to/nse-stock-scraper && bash scripts/run_daily_with_git.sh
 ```
 
 ## Validate Setup

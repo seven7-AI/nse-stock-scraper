@@ -19,11 +19,11 @@ docker compose -f deployment/docker-compose.yml build scraper-job
 docker compose -f deployment/docker-compose.yml run --rm scraper-job
 ```
 
-## 3) Install weekday schedule
+## 3) Install daily schedule
 
 ```bash
-bash scripts/install_weekday_cron.sh
+bash scripts/install_daily_cron.sh
 crontab -l
 ```
 
-The schedule runs every Monday-Friday at `09:00` in `Africa/Nairobi`.
+The schedule runs every day at `09:00` in `Africa/Nairobi`.

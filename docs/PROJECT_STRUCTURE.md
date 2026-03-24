@@ -8,10 +8,11 @@ nse-stock-scraper/
 │   ├── Dockerfile
 │   ├── docker-compose.yml
 │   └── cron/
-│       └── weekday-cron.example
+│       └── daily-cron.example
 ├── scripts/
 │   ├── run_daily_job.sh
-│   └── install_weekday_cron.sh
+│   ├── run_daily_with_git.sh
+│   └── install_daily_cron.sh
 ├── nse_scraper/
 │   ├── spiders/
 │   ├── db/

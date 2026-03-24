@@ -3,14 +3,15 @@ You are working on the NSE Stock Scraper project.
 PROJECT IDENTITY
 - Stack: Python 3.11+, Scrapy, Supabase (PostgREST)
 - Runtime target: Linux + Docker + host cron
-- Schedule: Weekdays at 09:00 Africa/Nairobi
+- Schedule: Daily at 09:00 Africa/Nairobi
 - Environment source of truth: root `.env`
 
 PROJECT STRUCTURE
 - `nse_scraper/` contains spiders, pipelines, settings, and DB adapters.
 - `scripts/` contains executable operational scripts:
   - `run_daily_job.sh`
-  - `install_weekday_cron.sh`
+  - `run_daily_with_git.sh`
+  - `install_daily_cron.sh`
 - `deployment/cron/` contains cron templates.
 - `docs/` contains operational and developer docs.
 - `config/` contains env templates only.
@@ -19,7 +20,7 @@ OPERATIONAL RULES
 - Do not add Windows scheduling assets (`.ps1`, `.bat`, Task Scheduler instructions).
 - Prefer Docker one-shot runs:
   - `docker compose -f deployment/docker-compose.yml run --rm scraper-job`
-- Cron changes must preserve weekday 09:00 Africa/Nairobi behavior.
+- Cron changes must preserve daily 09:00 Africa/Nairobi behavior.
 - Keep run logs under `reports/` and include clear success/failure lines.
 
 SUPABASE RULES

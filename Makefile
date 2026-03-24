@@ -19,4 +19,4 @@ docker-run:
 	docker compose -f deployment/docker-compose.yml run --rm scraper-job
 
 cron-install:
-	bash scripts/install_weekday_cron.sh
+	bash scripts/install_daily_cron.sh

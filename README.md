@@ -42,18 +42,18 @@ docker compose -f deployment/docker-compose.yml build scraper-job
 docker compose -f deployment/docker-compose.yml run --rm scraper-job
 ```
 
-## Weekday Cron (Mon-Fri, 09:00 Africa/Nairobi)
+## Daily Cron (09:00 Africa/Nairobi)
 
 Install the cron entry:
 
 ```bash
-bash scripts/install_weekday_cron.sh
+bash scripts/install_daily_cron.sh
 ```
 
 This installs:
 
 - `CRON_TZ=Africa/Nairobi`
-- `0 9 * * 1-5 cd <repo> && docker compose -f deployment/docker-compose.yml run --rm scraper-job >> reports/task-runner.log 2>&1`
+- `0 9 * * * cd <repo> && bash scripts/run_daily_with_git.sh`
 
 To inspect current cron entries:
 
@@ -87,7 +87,8 @@ nse-stock-scraper/
 │       └── weekday-cron.example
 ├── scripts/
 │   ├── run_daily_job.sh
-│   └── install_weekday_cron.sh
+│   ├── run_daily_with_git.sh
+│   └── install_daily_cron.sh
 ├── nse_scraper/
 ├── docs/
 ├── config/

@@ -1,0 +1,377 @@
+[2026-04-02T07:00:04+0000] RUN_START
+[2026-04-02T07:00:04+0000] START afx_scraper
+/usr/local/lib/python3.14/site-packages/itemadapter/_imports.py:45: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  import pydantic.v1 as pydantic_v1
+2026-04-02 07:00:08 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+2026-04-02 07:00:08 [scrapy.utils.log] INFO: Versions:
+{'lxml': '6.0.2',
+ 'libxml2': '2.14.6',
+ 'cssselect': '1.4.0',
+ 'parsel': '1.11.0',
+ 'w3lib': '2.3.1',
+ 'Twisted': '25.5.0',
+ 'Python': '3.14.3 (main, Mar 16 2026, 23:02:05) [GCC 14.2.0]',
+ 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+ 'cryptography': '46.0.4',
+ 'Platform': 'Linux-6.8.0-100-generic-x86_64-with-glibc2.41'}
+2026-04-02 07:00:08 [scrapy.addons] INFO: Enabled addons:
+[]
+2026-04-02 07:00:08 [scrapy.extensions.telnet] INFO: Telnet Password: c5e36608bac48eb7
+2026-04-02 07:00:08 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.logcount.LogCount',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2026-04-02 07:00:08 [scrapy.crawler] INFO: Overridden settings:
+{'BOT_NAME': 'nse_scraper',
+ 'CONCURRENT_REQUESTS': 8,
+ 'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+ 'DOWNLOAD_DELAY': 1,
+ 'HTTPCACHE_ENABLED': True,
+ 'HTTPCACHE_EXPIRATION_SECS': 3600,
+ 'LOG_LEVEL': 'INFO',
+ 'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+ 'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+ 'RETRY_TIMES': 3,
+ 'SPIDER_MODULES': ['nse_scraper.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+               '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+2026-04-02 07:00:08 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats',
+ 'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware']
+2026-04-02 07:00:08 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+ 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2026-04-02 07:00:08 [scrapy.middleware] INFO: Enabled item pipelines:
+['nse_scraper.pipelines.NseScraperPipeline']
+2026-04-02 07:00:08 [scrapy.core.engine] INFO: Spider opened
+2026-04-02 07:00:11 [nse_scraper.db.backends] INFO: Supabase backend ready
+2026-04-02 07:00:11 [nse_scraper.pipelines] INFO: Storage backend active: supabase
+2026-04-02 07:00:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:00:11 [py.warnings] WARNING: /usr/local/lib/python3.14/site-packages/scrapy/downloadermiddlewares/useragent.py:33: ScrapyDeprecationWarning: The 'user_agent' spider attribute is deprecated. Use Spider.custom_settings or Spider.update_settings() instead. The corresponding setting name is 'USER_AGENT'.
+  warn_on_deprecated_spider_attribute("user_agent", "USER_AGENT")
+
+2026-04-02 07:00:11 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2026-04-02 07:01:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:02:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:03:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:04:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:05:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:06:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:07:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:08:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:09:11 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:09:11 [scrapy.downloadermiddlewares.retry] ERROR: Gave up retrying <GET https://afx.kwayisi.org/nse/> (failed 4 times): TCP connection timed out: 110: Connection timed out.
+2026-04-02 07:09:11 [scrapy.core.scraper] ERROR: Error downloading <GET https://afx.kwayisi.org/nse/>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1853, in _inlineCallbacks
+    result = context.run(
+        cast(Failure, result).throwExceptionIntoGenerator, gen
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/python/failure.py", line 467, in throwExceptionIntoGenerator
+    return g.throw(self.value.with_traceback(self.tb))
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/engine.py", line 490, in _download
+    result = yield self.downloader.fetch(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1853, in _inlineCallbacks
+    result = context.run(
+        cast(Failure, result).throwExceptionIntoGenerator, gen
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/python/failure.py", line 467, in throwExceptionIntoGenerator
+    return g.throw(self.value.with_traceback(self.tb))
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 144, in fetch
+    yield deferred_from_coro(
+        self.middleware.download_async(self._enqueue_request, request)
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1257, in adapt
+    extracted: _SelfResultT | Failure = result.result()
+                                        ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 158, in download_async
+    result = await process_exception(ex)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 150, in process_exception
+    raise exception
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 153, in download_async
+    result: Response | Request = await process_request(request)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 97, in process_request
+    return await download_func(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 202, in _enqueue_request
+    return await maybe_deferred_to_future(d)  # fired in _wait_for_download()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 269, in _wait_for_download
+    response = await self._download(slot, request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 239, in _download
+    response: Response = await self.handlers.download_request_async(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/handlers/__init__.py", line 156, in download_request_async
+    return await handler.download_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/handlers/http11.py", line 113, in download_request
+    return await maybe_deferred_to_future(agent.download_request(request))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+twisted.internet.error.TCPTimedOutError: TCP connection timed out: 110: Connection timed out.
+2026-04-02 07:09:11 [scrapy.core.engine] INFO: Closing spider (finished)
+2026-04-02 07:09:11 [nse_scraper.pipelines] INFO: Storage backend closed
+2026-04-02 07:09:11 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/exception_count': 4,
+ 'downloader/exception_type_count/twisted.internet.error.TCPTimedOutError': 4,
+ 'downloader/request_bytes': 1072,
+ 'downloader/request_count': 4,
+ 'downloader/request_method_count/GET': 4,
+ 'elapsed_time_seconds': 540.630408,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2026, 4, 2, 7, 9, 11, 927525, tzinfo=datetime.timezone.utc),
+ 'httpcache/miss': 4,
+ 'items_per_minute': 0.0,
+ 'log_count/ERROR': 2,
+ 'log_count/INFO': 13,
+ 'log_count/WARNING': 1,
+ 'memusage/max': 129605632,
+ 'memusage/startup': 128950272,
+ 'responses_per_minute': 0.0,
+ 'retry/count': 3,
+ 'retry/max_reached': 1,
+ 'retry/reason_count/twisted.internet.error.TCPTimedOutError': 3,
+ 'scheduler/dequeued': 4,
+ 'scheduler/dequeued/memory': 4,
+ 'scheduler/enqueued': 4,
+ 'scheduler/enqueued/memory': 4,
+ 'start_time': datetime.datetime(2026, 4, 2, 7, 0, 11, 297117, tzinfo=datetime.timezone.utc)}
+2026-04-02 07:09:11 [scrapy.core.engine] INFO: Spider closed (finished)
+[2026-04-02T07:09:13+0000] END afx_scraper exit=0
+[2026-04-02T07:09:13+0000] START stockanalysis_scraper
+/usr/local/lib/python3.14/site-packages/itemadapter/_imports.py:45: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  import pydantic.v1 as pydantic_v1
+2026-04-02 07:09:14 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+2026-04-02 07:09:14 [scrapy.utils.log] INFO: Versions:
+{'lxml': '6.0.2',
+ 'libxml2': '2.14.6',
+ 'cssselect': '1.4.0',
+ 'parsel': '1.11.0',
+ 'w3lib': '2.3.1',
+ 'Twisted': '25.5.0',
+ 'Python': '3.14.3 (main, Mar 16 2026, 23:02:05) [GCC 14.2.0]',
+ 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+ 'cryptography': '46.0.4',
+ 'Platform': 'Linux-6.8.0-100-generic-x86_64-with-glibc2.41'}
+2026-04-02 07:09:14 [scrapy.addons] INFO: Enabled addons:
+[]
+2026-04-02 07:09:14 [scrapy.extensions.telnet] INFO: Telnet Password: fb9143923f6f5540
+2026-04-02 07:09:14 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.logcount.LogCount',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2026-04-02 07:09:14 [scrapy.crawler] INFO: Overridden settings:
+{'BOT_NAME': 'nse_scraper',
+ 'CONCURRENT_REQUESTS': 8,
+ 'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+ 'DOWNLOAD_DELAY': 1,
+ 'HTTPCACHE_ENABLED': 'False',
+ 'HTTPCACHE_EXPIRATION_SECS': 3600,
+ 'LOG_LEVEL': 'INFO',
+ 'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+ 'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+ 'RETRY_TIMES': 3,
+ 'SPIDER_MODULES': ['nse_scraper.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+               '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+2026-04-02 07:09:14 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2026-04-02 07:09:14 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+ 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2026-04-02 07:09:14 [scrapy.middleware] INFO: Enabled item pipelines:
+['nse_scraper.pipelines.StockAnalysisPipeline']
+2026-04-02 07:09:14 [scrapy.core.engine] INFO: Spider opened
+2026-04-02 07:09:16 [nse_scraper.db.backends] INFO: Supabase backend ready
+2026-04-02 07:09:16 [nse_scraper.pipelines] INFO: StockAnalysisPipeline: Supabase storage active
+2026-04-02 07:09:16 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-02 07:09:16 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2026-04-02 07:09:16 [nse_scraper.spiders.stockanalysis_scraper] INFO: View 'performance' missing in embedded payload; fetching via screener API
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCOM "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EQTY "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KCB "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EABL "HTTP/2 200 OK"
+2026-04-02 07:09:22 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPC "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.COOP "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.ABSA "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NCBA "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCBK "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:23 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SBIC "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.IMH "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KEGN "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAT "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BKG "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.DTK "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KPLC "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BRIT "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KQ "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.JUB "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TOTL "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:24 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BAMB "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HFCK "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KNRE "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CIC "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CTUM "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KUKZ "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CRWN "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CARB "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.PORT "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SASN "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LBTY "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:25 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CGEN "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NSE "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.WTK "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SMER "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TPSE "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UMME "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KAPC "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LAPR "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NMG "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.BOC "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UNGA "HTTP/2 200 OK"
+2026-04-02 07:09:26 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.NBV "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.AMAC "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SLAM "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.TCL "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LIMT "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SCAN "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EGAD "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.LKL "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.UCHM "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.HAFR "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SGL "HTTP/2 200 OK"
+2026-04-02 07:09:27 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.FTGH "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.SKL "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.CABL "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.XPRS "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.OCH "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.EVRD "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.KURV "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: GET https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?select=price_history%2Cstock_price%2Cstock_change&ticker_symbol=eq.ALP "HTTP/2 200 OK"
+2026-04-02 07:09:28 [httpx] INFO: HTTP Request: POST https://vbqerqbllfwnyjsogbxl.supabase.co/rest/v1/stockanalysis_stocks?on_conflict=ticker_symbol "HTTP/2 200 OK"
+2026-04-02 07:09:28 [scrapy.core.engine] INFO: Closing spider (finished)
+2026-04-02 07:09:28 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/request_bytes': 2427,
+ 'downloader/request_count': 5,
+ 'downloader/request_method_count/GET': 5,
+ 'downloader/response_bytes': 41092,
+ 'downloader/response_count': 5,
+ 'downloader/response_status_count/200': 5,
+ 'elapsed_time_seconds': 12.444919,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2026, 4, 2, 7, 9, 28, 704683, tzinfo=datetime.timezone.utc),
+ 'httpcompression/response_bytes': 203181,
+ 'httpcompression/response_count': 5,
+ 'item_scraped_count': 305,
+ 'items_per_minute': 1525.0,
+ 'log_count/INFO': 126,
+ 'memusage/max': 129654784,
+ 'memusage/startup': 129654784,
+ 'request_depth_max': 1,
+ 'response_received_count': 5,
+ 'responses_per_minute': 25.0,
+ 'scheduler/dequeued': 5,
+ 'scheduler/dequeued/memory': 5,
+ 'scheduler/enqueued': 5,
+ 'scheduler/enqueued/memory': 5,
+ 'start_time': datetime.datetime(2026, 4, 2, 7, 9, 16, 259764, tzinfo=datetime.timezone.utc)}
+2026-04-02 07:09:28 [scrapy.core.engine] INFO: Spider closed (finished)
+[2026-04-02T07:09:29+0000] END stockanalysis_scraper exit=0
+[2026-04-02T07:09:29+0000] RUN_STATUS SUCCESS

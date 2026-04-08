@@ -1,0 +1,70 @@
+[2026-04-08T07:00:03+0000] RUN_START
+[2026-04-08T07:00:03+0000] START afx_scraper
+/usr/local/lib/python3.14/site-packages/itemadapter/_imports.py:45: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  import pydantic.v1 as pydantic_v1
+2026-04-08 07:00:06 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+2026-04-08 07:00:06 [scrapy.utils.log] INFO: Versions:
+{'lxml': '6.0.2',
+ 'libxml2': '2.14.6',
+ 'cssselect': '1.4.0',
+ 'parsel': '1.11.0',
+ 'w3lib': '2.3.1',
+ 'Twisted': '25.5.0',
+ 'Python': '3.14.3 (main, Mar 16 2026, 23:02:05) [GCC 14.2.0]',
+ 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+ 'cryptography': '46.0.4',
+ 'Platform': 'Linux-6.8.0-100-generic-x86_64-with-glibc2.41'}
+2026-04-08 07:00:06 [scrapy.addons] INFO: Enabled addons:
+[]
+2026-04-08 07:00:06 [scrapy.extensions.telnet] INFO: Telnet Password: e6d3fbf94370d95f
+2026-04-08 07:00:06 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.logcount.LogCount',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats']
+2026-04-08 07:00:06 [scrapy.crawler] INFO: Overridden settings:
+{'BOT_NAME': 'nse_scraper',
+ 'CONCURRENT_REQUESTS': 8,
+ 'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+ 'DOWNLOAD_DELAY': 1,
+ 'HTTPCACHE_ENABLED': True,
+ 'HTTPCACHE_EXPIRATION_SECS': 3600,
+ 'LOG_LEVEL': 'INFO',
+ 'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+ 'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+ 'RETRY_TIMES': 3,
+ 'SPIDER_MODULES': ['nse_scraper.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+               '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+2026-04-08 07:00:06 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats',
+ 'scrapy.downloadermiddlewares.httpcache.HttpCacheMiddleware']
+2026-04-08 07:00:06 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+ 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2026-04-08 07:00:06 [scrapy.middleware] INFO: Enabled item pipelines:
+['nse_scraper.pipelines.NseScraperPipeline']
+2026-04-08 07:00:06 [scrapy.core.engine] INFO: Spider opened
+2026-04-08 07:00:08 [nse_scraper.db.backends] INFO: Supabase backend ready
+2026-04-08 07:00:08 [nse_scraper.pipelines] INFO: Storage backend active: supabase
+2026-04-08 07:00:08 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-04-08 07:00:08 [py.warnings] WARNING: /usr/local/lib/python3.14/site-packages/scrapy/downloadermiddlewares/useragent.py:33: ScrapyDeprecationWarning: The 'user_agent' spider attribute is deprecated. Use Spider.custom_settings or Spider.update_settings() instead. The corresponding setting name is 'USER_AGENT'.
+  warn_on_deprecated_spider_attribute("user_agent", "USER_AGENT")
+
+2026-04-08 07:00:08 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2026-04-08 07:01:08 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)

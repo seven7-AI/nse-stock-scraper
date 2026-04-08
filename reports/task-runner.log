@@ -280,3 +280,15 @@ Creating deployment_scraper-job_run ... done
 [2026-04-07T07:09:26+0000] END stockanalysis_scraper exit=0
 [2026-04-07T07:09:26+0000] RUN_STATUS SUCCESS
 [2026-04-07T09:09:27+0200] DOCKER_RUN_STATUS SUCCESS exit=0
+[main 308bc7e] chore(log): daily scraper run 2026-04-07 - SUCCESS
+ 2 files changed, 391 insertions(+)
+ create mode 100644 reports/run-2026-04-07_070004.log
+To github.com:seven7-AI/nse-stock-scraper.git
+   9eeff9e..308bc7e  main -> main
+Found orphan containers (deployment_minio_1, deployment_celery-worker_1, deployment_redis_1, deployment_api_1, deployment_nginx_1) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+Creating deployment_scraper-job_run ... 
+Creating deployment_scraper-job_run ... done
+[2026-04-08T07:00:03+0000] RUN_START
+[2026-04-08T07:00:03+0000] START afx_scraper
+No such container: 02b92ae8affed52fbc1484eaf8d67182394bbd412905a358a45529e53f0ac3cf
+[2026-04-08T09:01:21+0200] DOCKER_RUN_STATUS FAILED exit=1

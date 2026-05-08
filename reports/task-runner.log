@@ -2047,3 +2047,19 @@ time="2026-05-07T09:00:05+02:00" level=warning msg="Found orphan containers ([de
 [2026-05-07T07:09:43+0000] END stockanalysis_scraper exit=0
 [2026-05-07T07:09:43+0000] RUN_STATUS SUCCESS
 [2026-05-07T09:09:44+0200] DOCKER_RUN_STATUS SUCCESS exit=0
+[main fca3ef0] chore(log): daily scraper run 2026-05-07 - SUCCESS
+ 2 files changed, 396 insertions(+)
+ create mode 100644 reports/run-2026-05-07_070010.log
+To github.com:seven7-AI/nse-stock-scraper.git
+   5f72915..fca3ef0  main -> main
+time="2026-05-08T09:00:07+02:00" level=warning msg="/home/kevin/nse-stock-scraper/deployment/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+time="2026-05-08T09:00:07+02:00" level=warning msg="Found orphan containers ([deployment-celery-worker-1 deployment-api-1 deployment-minio-1 deployment-celery-flower-1 deployment-certbot-1 deployment-redis-1 deployment-nginx-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-d8d7c7991acd Creating 
+ Container deployment-scraper-job-run-d8d7c7991acd Created 
+[2026-05-08T07:00:09+0000] RUN_START
+[2026-05-08T07:00:09+0000] START afx_scraper
+[2026-05-08T07:09:21+0000] END afx_scraper exit=0
+[2026-05-08T07:09:21+0000] START stockanalysis_scraper
+[2026-05-08T07:09:38+0000] END stockanalysis_scraper exit=0
+[2026-05-08T07:09:38+0000] RUN_STATUS SUCCESS
+[2026-05-08T09:09:39+0200] DOCKER_RUN_STATUS SUCCESS exit=0

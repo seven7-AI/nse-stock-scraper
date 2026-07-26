@@ -21,6 +21,28 @@ ITEM_PIPELINES = {
     'nse_scraper.pipelines.NseScraperPipeline': 300,
 }
 
+# Extensions
+EXTENSIONS = {
+    'nse_scraper.extensions.DataQualityGate': 500,
+}
+
+# Downloader middlewares (proxy injection is a no-op unless AFX_PROXY_URL is set)
+DOWNLOADER_MIDDLEWARES = {
+    'nse_scraper.middlewares.NseScraperDownloaderMiddleware': 543,
+}
+
+# Data-quality gate: minimum acceptable item count per spider.
+# Scrapy exits 0 even when a spider scrapes nothing, so these thresholds are what
+# turn a silent no-data run into RUN_STATUS FAILED. Default 0 (gate off) so CI and
+# ad-hoc runs are unaffected; the daily job sets real values via .env.
+MIN_ITEMS_AFX_SCRAPER = int(os.getenv("MIN_ITEMS_AFX_SCRAPER", "0"))
+MIN_ITEMS_STOCKANALYSIS_SCRAPER = int(os.getenv("MIN_ITEMS_STOCKANALYSIS_SCRAPER", "0"))
+QUALITY_STATS_DIR = os.getenv("QUALITY_STATS_DIR", "reports/stats")
+
+# Optional outbound proxy for afx_scraper only (afx.kwayisi.org blocks this host).
+# Empty means no proxy and completely unchanged behaviour.
+AFX_PROXY_URL = os.getenv("AFX_PROXY_URL", "").strip()
+
 # Logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
 LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
@@ -55,8 +77,13 @@ HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 RETRY_TIMES = 3
 RETRY_HTTP_CODES = [500, 502, 503, 504, 408, 429]
 
-# AutoThrottle (optional, but recommended)
-# AUTOTHROTTLE_ENABLED = True
-# AUTOTHROTTLE_START_DELAY = 5
-# AUTOTHROTTLE_MAX_DELAY = 60
-# AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0
+# Fail fast on unreachable hosts. Scrapy's default of 180s meant an unreachable
+# host burned ~9 minutes per run across retries before giving up.
+DOWNLOAD_TIMEOUT = int(os.getenv("DOWNLOAD_TIMEOUT", "30"))
+
+# AutoThrottle: stockanalysis_scraper now fetches several pages per ticker, so
+# adapt the delay to the server's response times instead of hammering a fixed rate.
+AUTOTHROTTLE_ENABLED = True
+AUTOTHROTTLE_START_DELAY = 1
+AUTOTHROTTLE_MAX_DELAY = 20
+AUTOTHROTTLE_TARGET_CONCURRENCY = 1.0

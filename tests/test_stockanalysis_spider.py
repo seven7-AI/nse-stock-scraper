@@ -3,8 +3,10 @@ Tests for StockAnalysis scraper spider.
 """
 import unittest
 
-from scrapy.http import HtmlResponse, Request
+from scrapy import Request
+from scrapy.http import HtmlResponse
 
+from nse_scraper import stockanalysis_pages
 from nse_scraper.spiders.stockanalysis_scraper import StockAnalysisScraperSpider
 
 
@@ -39,6 +41,42 @@ EMBEDDED_FIXTURE_HTML = """
     </script>
   </body>
 </html>
+"""
+
+
+# What the live list page serves today: overview columns only, so the other four
+# views have to be rebuilt from per-symbol pages.
+OVERVIEW_ONLY_FIXTURE_HTML = """
+<html>
+  <body>
+    <script>
+      kit.start(app, element, {
+        data: [{type:"data",data:{
+          stockData:[
+            {no:1,s:"nase/SCOM",n:"Safaricom PLC",marketCap:1426329236800,subtype:"stock",price:35.6,change:.282,revenue:423865800000},
+            {no:2,s:"nase/EQTY",n:"Equity Group Holdings Plc",marketCap:328309707774,subtype:"stock",price:87,change:0,revenue:196400057000}
+          ],
+          pagination:false,
+          stockQuery:{type:"a",main:"marketCap",sortDirection:"desc",sortColumn:"marketCap",filters:["exchangeCode-is-NASE"],index:"symbols"},
+          stockFixed:{},
+          initialDynamicViews:{default:"Overview",active:"Overview",items:[
+            {name:"Overview",ids:["no","s","n","marketCap","price","change","revenue"]}
+          ]},
+          columnId:"exchange"
+        },uses:{}}]
+      });
+    </script>
+  </body>
+</html>
+"""
+
+DIVIDEND_PAGE_HTML = """
+<html><body>
+  <script>kit.start(app, element, {data:[{type:"data",data:{
+    infoTable:{yield:"6.46%",annual:"2.30 KES",exdiv:"Aug 5, 2026",frequency:"Semi-Annual",
+      payoutRatio:"83.81%",growth:"66.67%",years:"n/a"}
+  }}]});</script>
+</body></html>
 """
 
 
@@ -94,6 +132,62 @@ class TestStockAnalysisScraperSpider(unittest.TestCase):
         )
         self.assertEqual(profile_item["company_name"], "Equity Group Holdings Plc")
         self.assertEqual(profile_item["metrics"]["country"], "Kenya")
+
+    def test_overview_only_payload_requests_symbol_pages(self):
+        """The live payload now carries overview fields only; the rest come from
+        per-symbol pages since the screener API was retired."""
+        response = self._response_from_html(OVERVIEW_ONLY_FIXTURE_HTML)
+        results = list(self.spider.parse(response))
+
+        items = [r for r in results if isinstance(r, dict)]
+        requests = [r for r in results if isinstance(r, Request)]
+
+        # Overview is still emitted straight from the embedded payload.
+        self.assertEqual(len(items), 2)
+        self.assertEqual({item["view"] for item in items}, {"overview"})
+
+        # One request per symbol per configured page.
+        self.assertEqual(len(requests), 2 * len(self.spider._SYMBOL_PAGES))
+        urls = {request.url for request in requests}
+        self.assertIn("https://stockanalysis.com/quote/nase/SCOM/", urls)
+        self.assertIn("https://stockanalysis.com/quote/nase/SCOM/dividend/", urls)
+        self.assertIn("https://stockanalysis.com/quote/nase/EQTY/", urls)
+
+        # Regression lock: the retired screener API must never be requested again.
+        self.assertFalse(
+            [url for url in urls if "api.stockanalysis.com" in url],
+            "screener API must not be requested",
+        )
+
+    def test_parse_symbol_page_yields_pipeline_shaped_items(self):
+        base = {"no": 1, "n": "Safaricom PLC", "price": 35.6, "change": 0.282}
+        request = Request(url="https://stockanalysis.com/quote/nase/SCOM/dividend/")
+        response = HtmlResponse(
+            url=request.url,
+            request=request,
+            body=DIVIDEND_PAGE_HTML.encode("utf-8"),
+            encoding="utf-8",
+        )
+
+        items = list(
+            self.spider._parse_symbol_page(
+                response,
+                symbol="SCOM",
+                page=stockanalysis_pages.DIVIDEND_PAGE,
+                base=base,
+                scraped_at="2026-07-26T00:00:00+00:00",
+            )
+        )
+
+        self.assertEqual(len(items), 1)
+        item = items[0]
+        self.assertEqual(item["source"], "stockanalysis")
+        self.assertEqual(item["view"], "dividends")
+        self.assertEqual(item["ticker_symbol"], "SCOM")
+        # Common fields fall back to the list-page row, as the API path used to do.
+        self.assertEqual(item["stock_price"], 35.6)
+        self.assertEqual(item["company_name"], "Safaricom PLC")
+        self.assertEqual(item["metrics"]["dividendYield"], 6.46)
 
     def test_normalize_metric_value(self):
         self.assertEqual(self.spider._normalize_metric_value("1,500.00"), 1500.0)

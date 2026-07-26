@@ -61,10 +61,20 @@ class NseScraperDownloaderMiddleware:
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
+    # Spiders whose requests may be routed through an outbound proxy, mapped to the
+    # setting holding that proxy URL. afx.kwayisi.org refuses connections from this
+    # host on every one of its addresses, so its traffic can optionally be proxied.
+    PROXY_SETTING_BY_SPIDER = {
+        'afx_scraper': 'AFX_PROXY_URL',
+    }
+
+    def __init__(self, settings=None):
+        self.settings = settings
+
     @classmethod
     def from_crawler(cls, crawler):
         # This method is used by Scrapy to create your spiders.
-        s = cls()
+        s = cls(settings=crawler.settings)
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
@@ -78,26 +88,22 @@ class NseScraperDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
+        proxy_url = self._proxy_for(spider)
+        if proxy_url and 'proxy' not in request.meta:
+            request.meta['proxy'] = proxy_url
         return None
 
-    def process_response(self, request, response, spider):
-        # Called with the response returned from the downloader.
+    def _proxy_for(self, spider):
+        """Proxy URL configured for this spider, or None to leave requests untouched."""
+        if self.settings is None:
+            return None
+        setting_name = self.PROXY_SETTING_BY_SPIDER.get(getattr(spider, 'name', None))
+        if not setting_name:
+            return None
+        return (self.settings.get(setting_name) or '').strip() or None
 
-        # Must either;
-        # - return a Response object
-        # - return a Request object
-        # - or raise IgnoreRequest
-        return response
-
-    def process_exception(self, request, exception, spider):
-        # Called when a download handler or a process_request()
-        # (from other downloader middleware) raises an exception.
-
-        # Must either:
-        # - return None: continue processing this exception
-        # - return a Response object: stops process_exception() chain
-        # - return a Request object: stops process_exception() chain
-        pass
+    # process_response/process_exception are intentionally not defined: Scrapy skips
+    # undefined hooks, and the generated no-op versions used a deprecated signature.
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)

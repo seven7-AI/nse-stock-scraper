@@ -59,6 +59,15 @@ if [[ -d "${REPORTS_DIR}/local_fallback" ]]; then
     tracked_paths+=("${fallback_file}")
   done < <(ls -1 "${REPORTS_DIR}/local_fallback"/*.jsonl 2>/dev/null || true)
 fi
+# Quality reports are committed with the logs so item counts stay queryable in git
+# history -- that is what makes a future silent degradation visible.
+if [[ -d "${REPORTS_DIR}/stats" ]]; then
+  while IFS= read -r stats_file; do
+    tracked_paths+=("${stats_file}")
+  done < <(ls -1 "${REPORTS_DIR}/stats"/*.json 2>/dev/null || true)
+fi
+
+git_exit=0
 
 if [[ "${#tracked_paths[@]}" -gt 0 ]]; then
   if [[ "${NO_GIT_COMMIT}" == "true" ]]; then
@@ -66,11 +75,39 @@ if [[ "${#tracked_paths[@]}" -gt 0 ]]; then
   else
     git add -- "${tracked_paths[@]}"
     if ! git diff --cached --quiet; then
-      git commit -m "chore(log): daily scraper run ${RUN_DATE} - ${status_label}" >> "${TASK_LOG_PATH}" 2>&1 || true
-      if [[ "${NO_GIT_PUSH}" != "true" ]]; then
-        current_branch="$(git branch --show-current)"
-        if [[ -n "${current_branch}" ]]; then
-          git push origin "${current_branch}" >> "${TASK_LOG_PATH}" 2>&1 || true
+      commit_exit=0
+      git commit -m "chore(log): daily scraper run ${RUN_DATE} - ${status_label}" >> "${TASK_LOG_PATH}" 2>&1 || commit_exit=$?
+      if [[ "${commit_exit}" -ne 0 ]]; then
+        log_task "GIT_COMMIT_STATUS FAILED exit=${commit_exit}"
+        git_exit="${commit_exit}"
+      else
+        log_task "GIT_COMMIT_STATUS SUCCESS"
+        if [[ "${NO_GIT_PUSH}" != "true" ]]; then
+          current_branch="$(git branch --show-current)"
+          if [[ -z "${current_branch}" ]]; then
+            log_task "GIT_PUSH_STATUS SKIPPED reason=detached_head"
+            git_exit=1
+          else
+            # origin may have moved (CI or a manual commit); rebase onto it first so
+            # the push is not silently rejected as non-fast-forward.
+            rebase_exit=0
+            git pull --rebase --autostash origin "${current_branch}" >> "${TASK_LOG_PATH}" 2>&1 || rebase_exit=$?
+            if [[ "${rebase_exit}" -ne 0 ]]; then
+              # Never leave the working tree mid-rebase for the next run to trip over.
+              git rebase --abort >> "${TASK_LOG_PATH}" 2>&1 || true
+              log_task "GIT_PUSH_STATUS FAILED exit=${rebase_exit} reason=rebase_conflict"
+              git_exit="${rebase_exit}"
+            else
+              push_exit=0
+              git push origin "${current_branch}" >> "${TASK_LOG_PATH}" 2>&1 || push_exit=$?
+              if [[ "${push_exit}" -ne 0 ]]; then
+                log_task "GIT_PUSH_STATUS FAILED exit=${push_exit}"
+                git_exit="${push_exit}"
+              else
+                log_task "GIT_PUSH_STATUS SUCCESS branch=${current_branch}"
+              fi
+            fi
+          fi
         fi
       fi
     else
@@ -79,4 +116,8 @@ if [[ "${#tracked_paths[@]}" -gt 0 ]]; then
   fi
 fi
 
-exit "${run_exit}"
+# A scrape failure outranks a publishing failure, but neither may exit 0.
+if [[ "${run_exit}" -ne 0 ]]; then
+  exit "${run_exit}"
+fi
+exit "${git_exit}"

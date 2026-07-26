@@ -3,6 +3,7 @@ import logging
 from scrapy.exceptions import DropItem
 
 from .db import create_backend
+from .extensions import DB_FAILED_STAT, DB_OK_STAT
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +18,10 @@ class NseScraperPipeline:
         supabase_url,
         supabase_key,
         supabase_table,
+        stats=None,
     ):
         self.db_backend = db_backend
+        self.stats = stats
         self.storage = create_backend(
             backend_name=db_backend,
             stock_table=stock_table,
@@ -35,7 +38,14 @@ class NseScraperPipeline:
             supabase_url=crawler.settings.get("SUPABASE_URL"),
             supabase_key=crawler.settings.get("SUPABASE_KEY"),
             supabase_table=crawler.settings.get("SUPABASE_TABLE", "stock_data"),
+            # Retained so the data-quality gate can see whether writes succeeded.
+            stats=crawler.stats,
         )
+
+    def _record_write(self, written):
+        if self.stats is None:
+            return
+        self.stats.inc_value(DB_OK_STAT if written else DB_FAILED_STAT)
 
     def open_spider(self, spider=None):
         """Called when spider is opened"""
@@ -62,7 +72,7 @@ class NseScraperPipeline:
             data = dict(item)
             
             # Replace or insert the document
-            self.storage.upsert_stock(data)
+            self._record_write(self.storage.upsert_stock(data))
             logger.debug(f"Upserted stock data for {data['ticker_symbol']}")
             
             return item
@@ -78,9 +88,10 @@ class NseScraperPipeline:
 class StockAnalysisPipeline:
     """Groups per-view StockAnalysis items by ticker_symbol and upserts one row per stock to Supabase."""
 
-    def __init__(self, db_backend, supabase_url, supabase_key, stockanalysis_table):
+    def __init__(self, db_backend, supabase_url, supabase_key, stockanalysis_table, stats=None):
         self.db_backend = (db_backend or "").strip().lower()
         self.stockanalysis_table = stockanalysis_table
+        self.stats = stats
         self.storage = None
         if self.db_backend == "supabase":
             self.storage = create_backend(
@@ -99,7 +110,14 @@ class StockAnalysisPipeline:
             supabase_url=crawler.settings.get("SUPABASE_URL"),
             supabase_key=crawler.settings.get("SUPABASE_KEY"),
             stockanalysis_table=crawler.settings.get("STOCKANALYSIS_TABLE", "stockanalysis_stocks"),
+            # Retained so the data-quality gate can see whether writes succeeded.
+            stats=crawler.stats,
         )
+
+    def _record_write(self, written):
+        if self.stats is None:
+            return
+        self.stats.inc_value(DB_OK_STAT if written else DB_FAILED_STAT)
 
     def open_spider(self, spider=None):
         if self.storage:
@@ -149,9 +167,14 @@ class StockAnalysisPipeline:
             else:
                 record[f"{view_name}_metrics"] = dict(raw)
         try:
-            self.storage.upsert_stockanalysis_stock(record)
-            logger.debug("Upserted stockanalysis_stocks: %s", ticker_symbol)
+            self._record_write(self.storage.upsert_stockanalysis_stock(record))
+            logger.debug(
+                "Upserted stockanalysis_stocks: %s (views: %s)",
+                ticker_symbol,
+                ",".join(sorted(v for v in STOCKANALYSIS_VIEWS if views.get(v))) or "none",
+            )
         except Exception as e:
+            self._record_write(False)
             logger.error("Failed to upsert stockanalysis_stocks %s: %s", ticker_symbol, e, exc_info=True)
 
     def process_item(self, item, spider=None):
@@ -166,7 +189,30 @@ class StockAnalysisPipeline:
             return item
         if not self.storage:
             return item
-        self._buffer.setdefault(ticker, {})[view] = item
-        if len(self._buffer[ticker]) == len(STOCKANALYSIS_VIEWS):
-            self._upsert_one(ticker, self._buffer.pop(ticker))
+        # Buffered until close_spider rather than flushed as soon as all five views
+        # arrive: views now come from separate per-symbol pages, and a straggler
+        # arriving after an eager flush would re-upsert a thinner record.
+        views = self._buffer.setdefault(ticker, {})
+        existing = views.get(view)
+        views[view] = self._merge_view(existing, item) if existing else item
         return item
+
+    @staticmethod
+    def _merge_view(existing, item):
+        """Combine two items for the same view, keeping values already populated.
+
+        A view can be assembled from more than one page (profile comes from both the
+        quote and company pages), and arrival order is not guaranteed, so neither
+        contributor may blank the other's fields.
+        """
+        merged = dict(existing)
+        for key in ("metrics_raw", "metrics"):
+            combined = dict(existing.get(key) or {})
+            for name, value in (item.get(key) or {}).items():
+                if value is not None or name not in combined:
+                    combined[name] = value
+            merged[key] = combined
+        for key, value in item.items():
+            if key not in ("metrics_raw", "metrics") and merged.get(key) is None:
+                merged[key] = value
+        return merged

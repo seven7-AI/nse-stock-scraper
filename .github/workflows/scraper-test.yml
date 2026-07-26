@@ -30,13 +30,18 @@ jobs:
     - name: Run unit tests
       run: |
         make test
-    - name: scraper-test
+    # Spiders are registered and importable. This deliberately does NOT crawl:
+    # afx.kwayisi.org refuses connections from every runner, so the previous live
+    # `scrapy crawl afx_scraper` spent ~9 minutes timing out on every push while
+    # proving nothing. Real crawl health is measured by the data-quality gate in
+    # scripts/run_daily_job.sh, which reports item counts per run.
+    - name: Check spiders are loadable
       run: |
         export DB_BACKEND=supabase
         export SUPABASE_URL=https://example.supabase.co
         export SUPABASE_KEY=fake_service_role_key
-        scrapy crawl afx_scraper --loglevel=INFO
-        
+        scrapy list
+
 #     - name: Test with pytest
 #       run: |
 #         pip install pytest

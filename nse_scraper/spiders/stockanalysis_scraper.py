@@ -2,10 +2,11 @@ import json
 import logging
 import os
 import re
-from urllib.parse import quote
 from datetime import datetime, timezone
 
 from scrapy import Request, Spider
+
+from .. import stockanalysis_pages
 
 
 logger = logging.getLogger(__name__)
@@ -19,10 +20,39 @@ def _stockanalysis_pipelines():
 
 class StockAnalysisScraperSpider(Spider):
     name = "stockanalysis_scraper"
-    allowed_domains = ["stockanalysis.com", "api.stockanalysis.com"]
+    allowed_domains = ["stockanalysis.com"]
     start_urls = ["https://stockanalysis.com/list/nairobi-stock-exchange/"]
-    custom_settings = {"ITEM_PIPELINES": _stockanalysis_pipelines()}
-    _SCREENER_API_BASE = "https://api.stockanalysis.com/api"
+    # Enriching every ticker means a few hundred requests per run instead of one, and
+    # the site starts returning 403 well before that at the project-wide rate. These
+    # settings are scoped to this spider so afx_scraper is unaffected.
+    custom_settings = {
+        "ITEM_PIPELINES": _stockanalysis_pipelines(),
+        "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
+        "DOWNLOAD_DELAY": float(os.getenv("STOCKANALYSIS_DOWNLOAD_DELAY", "2")),
+        "RANDOMIZE_DOWNLOAD_DELAY": True,
+        "AUTOTHROTTLE_ENABLED": True,
+        "AUTOTHROTTLE_START_DELAY": 2,
+        "AUTOTHROTTLE_MAX_DELAY": 60,
+        "AUTOTHROTTLE_TARGET_CONCURRENCY": 1.0,
+        # 403 here means "slowing down required", not "forbidden forever": the same
+        # URLs succeed when requested at a lower rate.
+        "RETRY_HTTP_CODES": [500, 502, 503, 504, 408, 429, 403],
+        "RETRY_TIMES": 4,
+    }
+    # Cap the number of symbols enriched with per-symbol page requests. 0 means no
+    # cap; a small value gives a fast smoke test during development.
+    _MAX_SYMBOLS = int(os.getenv("STOCKANALYSIS_MAX_SYMBOLS", "0"))
+    # Which per-symbol pages to fetch. Dropping "company" removes a third of the
+    # requests and loses only `country`, since the quote page carries the other
+    # profile fields -- worth it if the site starts rate-limiting a full crawl.
+    _SYMBOL_PAGES = tuple(
+        page.strip()
+        for page in os.getenv(
+            "STOCKANALYSIS_SYMBOL_PAGES",
+            ",".join(stockanalysis_pages.DEFAULT_SYMBOL_PAGES),
+        ).split(",")
+        if page.strip()
+    )
     _TARGET_VIEW_COLUMNS = {
         "overview": [
             "no",
@@ -78,7 +108,7 @@ class StockAnalysisScraperSpider(Spider):
         scraped_at = datetime.now(timezone.utc).isoformat()
 
         if stock_data and view_map:
-            if stock_query and self._should_fetch_views_from_api(stock_data):
+            if stock_query and self._needs_symbol_page_enrichment(stock_data):
                 base_by_symbol = {}
                 for row in stock_data:
                     symbol = self._extract_symbol(row.get("s"))
@@ -115,22 +145,27 @@ class StockAnalysisScraperSpider(Spider):
                         "scraped_at": scraped_at,
                     }
 
-                for view_name, column_ids in self._TARGET_VIEW_COLUMNS.items():
-                    if view_name == "overview":
-                        continue
-                    api_url = self._build_screener_api_url(stock_query, column_ids)
-                    if not api_url:
-                        continue
-                    yield Request(
-                        url=api_url,
-                        callback=self._parse_screener_api_view,
-                        cb_kwargs={
-                            "view_name": view_name,
-                            "column_ids": column_ids,
-                            "base_by_symbol": base_by_symbol,
-                            "scraped_at": scraped_at,
-                        },
-                    )
+                # The screener API that used to serve the other four views is gone
+                # (404 on every variant), so they are rebuilt from the per-symbol
+                # pages, which are still server-rendered.
+                symbols = list(base_by_symbol)
+                if self._MAX_SYMBOLS > 0:
+                    symbols = symbols[: self._MAX_SYMBOLS]
+                    logger.info("Limiting enrichment to %s symbols", len(symbols))
+
+                for symbol in symbols:
+                    for page in self._SYMBOL_PAGES:
+                        yield Request(
+                            url=stockanalysis_pages.symbol_page_url(symbol, page),
+                            callback=self._parse_symbol_page,
+                            errback=self._handle_symbol_page_error,
+                            cb_kwargs={
+                                "symbol": symbol,
+                                "page": page,
+                                "base": base_by_symbol.get(symbol, {}),
+                                "scraped_at": scraped_at,
+                            },
+                        )
                 return
 
             logger.info(
@@ -221,8 +256,13 @@ class StockAnalysisScraperSpider(Spider):
             logger.exception("Failed to decode embedded StockAnalysis payload")
             return None, None, None
 
-    def _should_fetch_views_from_api(self, stock_data):
-        """Detect whether payload only includes overview fields and needs API enrichment."""
+    def _needs_symbol_page_enrichment(self, stock_data):
+        """Detect whether the payload only includes overview fields.
+
+        Kept as a gate rather than always fetching per-symbol pages: if the site ever
+        restores the full payload, this returns False and the spider reverts to the
+        cheap single-request path on its own.
+        """
         for view_name, column_ids in self._TARGET_VIEW_COLUMNS.items():
             metric_ids = [c for c in column_ids if c not in {"no", "s", "n"}]
             if not metric_ids:
@@ -234,104 +274,70 @@ class StockAnalysisScraperSpider(Spider):
             )
             if not has_any:
                 logger.info(
-                    "View '%s' missing in embedded payload; fetching via screener API",
+                    "View '%s' missing in embedded payload; rebuilding from per-symbol pages",
                     view_name,
                 )
                 return True
         return False
 
-    def _build_screener_api_url(self, stock_query, column_ids):
-        if not stock_query:
-            return None
-
-        query_type = stock_query.get("type") or "s"
-        main = stock_query.get("main") or "marketCap"
-        sort_direction = stock_query.get("sortDirection") or "desc"
-        sort_column = stock_query.get("sortColumn")
-        count = stock_query.get("count")
-        filters = stock_query.get("filters") or []
-        dedupe = stock_query.get("dedupe")
-        index = stock_query.get("index")
-
-        # Match StockAnalysis client behavior: ensure main column is always requested.
-        ordered_columns = list(dict.fromkeys(column_ids))
-        if main not in ordered_columns:
-            ordered_columns.append(main)
-        columns_csv = ",".join(ordered_columns)
-
-        parts = [
-            f"{self._SCREENER_API_BASE}/screener/{query_type}/f",
-            f"m={main}",
-            f"s={sort_direction}",
-            f"c={quote(columns_csv, safe=',')}",
-        ]
-        if sort_column:
-            parts.append(f"sc={quote(str(sort_column), safe='')}")
-        if count:
-            parts.append(f"cn={count}")
-        if filters:
-            encoded_filters = ",".join(
-                quote(str(v).replace("%", " "), safe="") for v in filters
-            )
-            parts.append(f"f={encoded_filters}")
-        if dedupe:
-            parts.append("dd=true")
-        if index:
-            parts.append(f"i={quote(str(index), safe='')}")
-
-        query_string = "&".join(parts[1:])
-        return f"{parts[0]}?{query_string}" if query_string else parts[0]
-
-    def _parse_screener_api_view(
-        self, response, view_name, column_ids, base_by_symbol, scraped_at
-    ):
+    def _parse_symbol_page(self, response, symbol, page, base, scraped_at):
+        """Emit view items rebuilt from one per-symbol page."""
         try:
-            payload = json.loads(response.text)
-            rows = (payload.get("data") or {}).get("data") or []
+            views = stockanalysis_pages.parse_symbol_page(
+                page,
+                response.text,
+                self._normalize_metric_value,
+                self._loads_js_like,
+                base=base,
+            )
         except Exception:
-            logger.exception("Failed to parse screener API JSON for view '%s'", view_name)
+            logger.exception("Failed to parse %s page for %s", page, symbol)
             return
 
-        if not rows:
-            logger.warning("Screener API returned no rows for view '%s'", view_name)
+        if not views:
+            logger.warning("No fields parsed from %s page for %s", page, symbol)
+            self._inc_stat(f"stockanalysis/empty_page/{page}")
             return
 
-        for row in rows:
-            symbol = self._extract_symbol(row.get("s"))
-            if not symbol:
-                continue
+        for view_name, metrics_raw in views.items():
+            yield self._build_view_item(
+                view_name, symbol, base, metrics_raw, scraped_at
+            )
 
-            base = base_by_symbol.get(symbol, {})
-            metrics_raw = {}
-            metrics = {}
-            for column_id in column_ids:
-                if column_id in {"no", "s", "n"}:
-                    continue
-                raw_value = row.get(column_id)
-                metrics_raw[column_id] = raw_value
-                metrics[column_id] = self._normalize_metric_value(raw_value)
+    def _handle_symbol_page_error(self, failure):
+        request = failure.request
+        logger.warning(
+            "Per-symbol page request failed: %s (%s)", request.url, failure.value
+        )
+        self._inc_stat("stockanalysis/symbol_page_failed")
 
-            yield {
-                "source": "stockanalysis",
-                "view": view_name,
-                "symbol": symbol,
-                "ticker_symbol": symbol,
-                "rank": row.get("no") if row.get("no") is not None else base.get("no"),
-                "company_name": row.get("n") or base.get("n"),
-                "stock_name": row.get("n") or base.get("n"),
-                "stock_price": (
-                    row.get("price") if row.get("price") is not None else base.get("price")
-                ),
-                "stock_change": (
-                    row.get("change")
-                    if row.get("change") is not None
-                    else base.get("change")
-                ),
-                "created_at": scraped_at,
-                "metrics_raw": metrics_raw,
-                "metrics": metrics,
-                "scraped_at": scraped_at,
-            }
+    def _inc_stat(self, key):
+        """Bump a crawl stat; no-op when the spider is used outside a crawler."""
+        crawler = getattr(self, "crawler", None)
+        if crawler is not None and getattr(crawler, "stats", None) is not None:
+            crawler.stats.inc_value(key)
+
+    def _build_view_item(self, view_name, symbol, base, metrics_raw, scraped_at):
+        """Build an item in the shape StockAnalysisPipeline already consumes."""
+        base = base or {}
+        return {
+            "source": "stockanalysis",
+            "view": view_name,
+            "symbol": symbol,
+            "ticker_symbol": symbol,
+            "rank": base.get("no"),
+            "company_name": base.get("n"),
+            "stock_name": base.get("n"),
+            "stock_price": base.get("price"),
+            "stock_change": base.get("change"),
+            "created_at": scraped_at,
+            "metrics_raw": dict(metrics_raw),
+            "metrics": {
+                key: self._normalize_metric_value(value)
+                for key, value in metrics_raw.items()
+            },
+            "scraped_at": scraped_at,
+        }
 
     def _view_map_from_payload(self, views_payload):
         items = views_payload.get("items", [])

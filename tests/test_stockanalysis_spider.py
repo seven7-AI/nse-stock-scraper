@@ -159,6 +159,24 @@ class TestStockAnalysisScraperSpider(unittest.TestCase):
             "screener API must not be requested",
         )
 
+    def test_symbol_rotation_covers_the_list_over_successive_days(self):
+        """Runs enrich a slice at a time because the site rate-limits a full crawl."""
+        symbols = ["S{}".format(i) for i in range(63)]
+        self.spider._MAX_SYMBOLS = 16
+
+        selected = self.spider._symbols_for_this_run(symbols)
+        self.assertEqual(len(selected), 16)
+        self.assertTrue(set(selected).issubset(symbols))
+        # Deterministic within a day, so a re-run repeats rather than skips.
+        self.assertEqual(selected, self.spider._symbols_for_this_run(symbols))
+
+    def test_no_rotation_when_cap_disabled_or_list_is_small(self):
+        symbols = ["A", "B", "C"]
+        self.spider._MAX_SYMBOLS = 0
+        self.assertEqual(self.spider._symbols_for_this_run(symbols), symbols)
+        self.spider._MAX_SYMBOLS = 16
+        self.assertEqual(self.spider._symbols_for_this_run(symbols), symbols)
+
     def test_parse_symbol_page_yields_pipeline_shaped_items(self):
         base = {"no": 1, "n": "Safaricom PLC", "price": 35.6, "change": 0.282}
         request = Request(url="https://stockanalysis.com/quote/nase/SCOM/dividend/")

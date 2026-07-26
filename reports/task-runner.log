@@ -2988,3 +2988,17 @@ time="2026-07-26T20:07:18+02:00" level=warning msg="Found orphan containers ([de
 [2026-07-26T18:26:00+0000] RUN_STATUS FAILED afx_exit=0 stockanalysis_exit=2
 
 [2026-07-26T20:26:01+0200] DOCKER_RUN_STATUS FAILED exit=1
+[main e2d8371] chore(log): daily scraper run 2026-07-26 - FAILED
+ 7 files changed, 5373 insertions(+)
+ create mode 100644 reports/local_fallback/stockanalysis_stocks_fallback-2026-07-26.jsonl
+ create mode 100644 reports/run-2026-07-26_180719.log
+ create mode 100644 reports/stats/afx_scraper-2026-07-26_180925.json
+ create mode 100644 reports/stats/afx_scraper-latest.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-07-26_182558.json
+ create mode 100644 reports/stats/stockanalysis_scraper-latest.json
+[2026-07-26T20:26:01+0200] GIT_COMMIT_STATUS SUCCESS
+From github.com:seven7-AI/nse-stock-scraper
+ * branch            main       -> FETCH_HEAD
+To github.com:seven7-AI/nse-stock-scraper.git
+   61bde90..e2d8371  main -> main
+[2026-07-26T20:26:06+0200] GIT_PUSH_STATUS SUCCESS branch=main

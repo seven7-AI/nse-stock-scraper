@@ -26,7 +26,7 @@ Optional:
 - `LOG_LEVEL=INFO`
 - `DOWNLOAD_TIMEOUT` (default: `30`) — seconds before a request is abandoned
 - `AFX_PROXY_URL` — route `afx_scraper` through an outbound proxy (see below)
-- `STOCKANALYSIS_MAX_SYMBOLS` (default: `0` = no cap) — limit per-symbol enrichment; set to a small number for a fast smoke test
+- `STOCKANALYSIS_MAX_SYMBOLS` (default: `16`, `0` = no cap) — symbols enriched per run; runs rotate through the list so every ticker is refreshed every few days
 - `STOCKANALYSIS_SYMBOL_PAGES` (default: `quote,dividend`) — which per-symbol pages to fetch; add `company` to also collect `country`, at ~50% more requests
 - `STOCKANALYSIS_DOWNLOAD_DELAY` (default: `2`) — seconds between requests to stockanalysis.com
 
@@ -57,11 +57,19 @@ views were retired (they now return 404), so `performance`, `dividends`, `price`
 that only the 1-year return (`tr1y`) is still published for NSE tickers; `tr1m`, `tr6m`,
 `trYTD`, `tr5y` and `tr10y` are not available from any server-rendered source.
 
-Enrichment costs roughly 2 requests per ticker instead of the single screener call, so
-the spider runs at 1 concurrent request with a 2s delay and retries `403`. **The site
-rate-limits this host's IPv4 address** once a full crawl runs too fast — 403 responses
-mean "slow down", not "blocked forever", and the same URLs answer 200 at a lower rate.
-If 403s dominate a run, lower `STOCKANALYSIS_SYMBOL_PAGES` to `quote` or raise
+**The site rate-limits bulk crawling of per-symbol pages.** A full-catalogue run (126
+requests) drew 353 `403` responses against only 36 successes. Three things follow, and
+changing any of them will bring the blocking back:
+
+- `403` is **not** retried — retrying an active rate limit multiplies the requests and
+  deepens the block.
+- Each run enriches only `STOCKANALYSIS_MAX_SYMBOLS` tickers, rotating daily, so the
+  catalogue is covered every few days at ~32 requests per run instead of 126.
+- Requests run 1-at-a-time with a 2s floor and autothrottle on top.
+
+This is a good fit for the data: the enriched fields (dividends, profile, 52-week range)
+move slowly, while `price` and `change` still refresh daily for **every** ticker from the
+single list-page request. If 403s reappear, lower `STOCKANALYSIS_MAX_SYMBOLS` or raise
 `STOCKANALYSIS_DOWNLOAD_DELAY`.
 
 `afx.kwayisi.org` currently refuses connections from the production host on every one of

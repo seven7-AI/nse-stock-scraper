@@ -32,16 +32,21 @@ class StockAnalysisScraperSpider(Spider):
         "RANDOMIZE_DOWNLOAD_DELAY": True,
         "AUTOTHROTTLE_ENABLED": True,
         "AUTOTHROTTLE_START_DELAY": 2,
-        "AUTOTHROTTLE_MAX_DELAY": 60,
+        "AUTOTHROTTLE_MAX_DELAY": 15,
         "AUTOTHROTTLE_TARGET_CONCURRENCY": 1.0,
-        # 403 here means "slowing down required", not "forbidden forever": the same
-        # URLs succeed when requested at a lower rate.
-        "RETRY_HTTP_CODES": [500, 502, 503, 504, 408, 429, 403],
-        "RETRY_TIMES": 4,
+        # 403 is deliberately NOT retried. It signals an active rate limit, and
+        # retrying turned one blocked run into 353 blocked requests that both wasted
+        # 16 minutes and deepened the block. Fewer requests per run is the fix.
+        "RETRY_HTTP_CODES": [500, 502, 503, 504, 408, 429],
+        "RETRY_TIMES": 2,
     }
-    # Cap the number of symbols enriched with per-symbol page requests. 0 means no
-    # cap; a small value gives a fast smoke test during development.
-    _MAX_SYMBOLS = int(os.getenv("STOCKANALYSIS_MAX_SYMBOLS", "0"))
+    # How many symbols to enrich per run. The site rate-limits a full-catalogue crawl
+    # (a 126-request run drew 353 x 403 and only 36 successes), so each run refreshes a
+    # rotating slice instead and the whole list is covered every few days. That suits
+    # the enriched fields -- dividends, profile and 52-week range move slowly -- while
+    # price and change still refresh daily for every ticker from the list page.
+    # 0 disables the cap and enriches everything in one run.
+    _MAX_SYMBOLS = int(os.getenv("STOCKANALYSIS_MAX_SYMBOLS", "16"))
     # Which per-symbol pages to fetch. Dropping "company" removes a third of the
     # requests and loses only `country`, since the quote page carries the other
     # profile fields -- worth it if the site starts rate-limiting a full crawl.
@@ -148,10 +153,7 @@ class StockAnalysisScraperSpider(Spider):
                 # The screener API that used to serve the other four views is gone
                 # (404 on every variant), so they are rebuilt from the per-symbol
                 # pages, which are still server-rendered.
-                symbols = list(base_by_symbol)
-                if self._MAX_SYMBOLS > 0:
-                    symbols = symbols[: self._MAX_SYMBOLS]
-                    logger.info("Limiting enrichment to %s symbols", len(symbols))
+                symbols = self._symbols_for_this_run(list(base_by_symbol))
 
                 for symbol in symbols:
                     for page in self._SYMBOL_PAGES:
@@ -279,6 +281,27 @@ class StockAnalysisScraperSpider(Spider):
                 )
                 return True
         return False
+
+    def _symbols_for_this_run(self, symbols):
+        """Pick this run's slice, advancing the window each day so coverage rotates."""
+        if self._MAX_SYMBOLS <= 0 or len(symbols) <= self._MAX_SYMBOLS:
+            return symbols
+
+        # Keyed on the date so consecutive daily runs pick up where the last left off,
+        # and a re-run on the same day repeats rather than skips.
+        start = (
+            datetime.now(timezone.utc).date().toordinal() * self._MAX_SYMBOLS
+        ) % len(symbols)
+        rotated = symbols[start:] + symbols[:start]
+        selected = rotated[: self._MAX_SYMBOLS]
+        logger.info(
+            "Enriching %s of %s symbols this run (offset %s): %s",
+            len(selected),
+            len(symbols),
+            start,
+            ",".join(selected),
+        )
+        return selected
 
     def _parse_symbol_page(self, response, symbol, page, base, scraped_at):
         """Emit view items rebuilt from one per-symbol page."""

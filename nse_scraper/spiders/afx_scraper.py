@@ -10,7 +10,10 @@ class AfxScraperSpider(Spider):
     name = 'afx_scraper'
     allowed_domains = ['afx.kwayisi.org']
     start_urls = ['https://afx.kwayisi.org/nse/']
-    user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+    # No spider-level user_agent: the previous value was a truncated string missing
+    # the Chrome/Safari tokens and it shadowed the complete UA in settings.py.
+    # Routing through a proxy is opt-in via the AFX_PROXY_URL setting; see
+    # NseScraperDownloaderMiddleware.
 
     def parse(self, response):
         """Parse stock data from the response"""

@@ -1,7 +1,7 @@
-.PHONY: help install test lint docker-run cron-install
+.PHONY: help install test lint docker-run cron-install cron-verify
 
 help:
-	@echo "Targets: install, test, lint, docker-run, cron-install"
+	@echo "Targets: install, test, lint, docker-run, cron-install, cron-verify"
 
 install:
 	python -m pip install --upgrade pip
@@ -20,3 +20,11 @@ docker-run:
 
 cron-install:
 	bash scripts/install_daily_cron.sh
+
+# Fails if the daily entry is missing from the live crontab. Another project running
+# `crontab <file>` silently replaces the whole user crontab; that removed this job on
+# 2026-07-05 and went unnoticed for three weeks.
+cron-verify:
+	@crontab -l 2>/dev/null | grep -Fq 'scripts/run_daily_with_git.sh' \
+		&& echo "OK: daily scraper cron entry is installed" \
+		|| { echo "MISSING: daily scraper cron entry is not installed. Run: make cron-install"; exit 1; }

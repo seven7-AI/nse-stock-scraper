@@ -112,13 +112,30 @@ class SupabaseBackend:
             "profile_metrics": record.get("profile_metrics"),
             "price_history": price_history,
         }
+        # A view we did not scrape must not erase what was stored last time. An
+        # omitted key is left untouched by the ON CONFLICT UPDATE, whereas sending
+        # None writes a NULL -- which is how the four views lost to the retired
+        # screener API were being blanked on every run.
+        for metrics_key in (
+            "overview_metrics",
+            "performance_metrics",
+            "dividends_metrics",
+            "price_metrics",
+            "profile_metrics",
+        ):
+            if payload[metrics_key] is None:
+                del payload[metrics_key]
         # Use upsert to update existing records or insert new ones.
-        # On Supabase failure, write a local fallback record.
+        # On Supabase failure, write a local fallback record. Returns True when the
+        # row actually reached Supabase so callers can distinguish a healthy write
+        # from a silent fallback (see nse_scraper/extensions.py).
         try:
             self.client.table(self.stockanalysis_table).upsert(payload, on_conflict="ticker_symbol").execute()
+            return True
         except Exception:
             logger.exception("Supabase upsert_stockanalysis_stock failed; writing local fallback")
             self._write_local_fallback("stockanalysis_stocks", payload)
+            return False
 
     def upsert_stock(self, record):
         payload = _normalize_record(record)
@@ -165,12 +182,16 @@ class SupabaseBackend:
             "price_history": price_history,
         }
         # Use upsert to update existing records or insert new ones.
-        # On Supabase failure, write a local fallback record.
+        # On Supabase failure, write a local fallback record. Returns True when the
+        # row actually reached Supabase so callers can distinguish a healthy write
+        # from a silent fallback (see nse_scraper/extensions.py).
         try:
             self.client.table(self.supabase_table).upsert(serialized, on_conflict="ticker_symbol").execute()
+            return True
         except Exception:
             logger.exception("Supabase upsert_stock failed; writing local fallback")
             self._write_local_fallback("stock_data", serialized)
+            return False
 
     def get_latest_by_ticker(self, ticker_symbol):
         response = (

@@ -141,3 +141,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+
+# Host-specific record of the installed cron entry (written by install_daily_cron.sh)
+deployment/cron/daily-cron.installed

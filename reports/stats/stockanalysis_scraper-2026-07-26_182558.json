@@ -1,0 +1,16 @@
+{
+  "spider": "stockanalysis_scraper",
+  "finish_reason": "finished",
+  "finished_at": "2026-07-26T18:25:58.125336+00:00",
+  "item_scraped_count": 146,
+  "min_items": 120,
+  "db_upsert_ok": 0,
+  "db_upsert_failed": 63,
+  "log_count_error": 133,
+  "retry_count": 283,
+  "response_received_count": 127,
+  "quality_ok": false,
+  "failures": [
+    "all 63 database writes failed (see reports/local_fallback)"
+  ]
+}

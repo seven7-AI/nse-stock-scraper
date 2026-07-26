@@ -1,0 +1,14 @@
+{
+  "spider": "afx_scraper",
+  "finish_reason": "finished",
+  "finished_at": "2026-07-26T18:09:25.039256+00:00",
+  "item_scraped_count": 0,
+  "min_items": 0,
+  "db_upsert_ok": 0,
+  "db_upsert_failed": 0,
+  "log_count_error": 2,
+  "retry_count": 3,
+  "response_received_count": 0,
+  "quality_ok": true,
+  "failures": []
+}

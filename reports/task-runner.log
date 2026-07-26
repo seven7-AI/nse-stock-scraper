@@ -3002,3 +3002,16 @@ From github.com:seven7-AI/nse-stock-scraper
 To github.com:seven7-AI/nse-stock-scraper.git
    61bde90..e2d8371  main -> main
 [2026-07-26T20:26:06+0200] GIT_PUSH_STATUS SUCCESS branch=main
+time="2026-07-26T20:30:38+02:00" level=warning msg="Found orphan containers ([deployment-api-1 deployment-celery-flower-1 deployment-celery-worker-1 deployment-nginx-1 deployment-minio-1 deployment-redis-1 deployment-certbot-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-ad10c39ea18f Creating 
+ Container deployment-scraper-job-run-ad10c39ea18f Created 
+[2026-07-26T18:30:39+0000] RUN_START
+[2026-07-26T18:30:39+0000] START afx_scraper
+[2026-07-26T18:32:49+0000] END afx_scraper exit=0
+[2026-07-26T18:32:49+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-07-26T18:32:49+0000] START stockanalysis_scraper
+[2026-07-26T18:34:15+0000] END stockanalysis_scraper exit=0
+[2026-07-26T18:34:15+0000] QUALITY stockanalysis_scraper FAILED items=117 min=95 db_ok=0 db_failed=63 all 63 database writes failed (see reports/local_fallback)
+[2026-07-26T18:34:15+0000] RUN_STATUS FAILED afx_exit=0 stockanalysis_exit=2
+
+[2026-07-26T20:34:16+0200] DOCKER_RUN_STATUS FAILED exit=1

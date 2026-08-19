@@ -3590,3 +3590,29 @@ time="2026-08-18T09:00:08+02:00" level=warning msg="Found orphan containers ([de
 [2026-08-18T07:03:23+0000] RUN_STATUS FAILED afx_exit=2 stockanalysis_exit=2
 
 [2026-08-18T09:03:26+0200] DOCKER_RUN_STATUS FAILED exit=1
+[main 1e028bc] chore(log): daily scraper run 2026-08-18 - FAILED
+ 8 files changed, 10606 insertions(+), 9 deletions(-)
+ create mode 100644 reports/local_fallback/stock_data_fallback-2026-08-18.jsonl
+ create mode 100644 reports/local_fallback/stockanalysis_stocks_fallback-2026-08-18.jsonl
+ create mode 100644 reports/run-2026-08-18_070022.log
+ create mode 100644 reports/stats/afx_scraper-2026-08-18_070133.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-08-18_070321.json
+[2026-08-18T09:03:28+0200] GIT_COMMIT_STATUS SUCCESS
+From github.com:seven7-AI/nse-stock-scraper
+ * branch            main       -> FETCH_HEAD
+To github.com:seven7-AI/nse-stock-scraper.git
+   4c122cf..1e028bc  main -> main
+[2026-08-18T09:03:35+0200] GIT_PUSH_STATUS SUCCESS branch=main
+time="2026-08-19T09:00:08+02:00" level=warning msg="Found orphan containers ([deployment-api-1 deployment-celery-flower-1 deployment-celery-worker-1 deployment-nginx-1 deployment-minio-1 deployment-redis-1 deployment-certbot-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-ac9e3584984f Creating 
+ Container deployment-scraper-job-run-ac9e3584984f Created 
+[2026-08-19T07:00:24+0000] RUN_START
+[2026-08-19T07:00:24+0000] START afx_scraper
+[2026-08-19T07:02:56+0000] END afx_scraper exit=0
+[2026-08-19T07:02:56+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-08-19T07:02:56+0000] START stockanalysis_scraper
+[2026-08-19T07:04:36+0000] END stockanalysis_scraper exit=0
+[2026-08-19T07:04:37+0000] QUALITY stockanalysis_scraper FAILED items=115 min=95 db_ok=0 db_failed=63 all 63 database writes failed (see reports/local_fallback)
+[2026-08-19T07:04:37+0000] RUN_STATUS FAILED afx_exit=0 stockanalysis_exit=2
+
+[2026-08-19T09:04:39+0200] DOCKER_RUN_STATUS FAILED exit=1

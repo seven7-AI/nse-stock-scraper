@@ -37,9 +37,8 @@ jobs:
     # scripts/run_daily_job.sh, which reports item counts per run.
     - name: Check spiders are loadable
       run: |
-        export DB_BACKEND=supabase
-        export SUPABASE_URL=https://example.supabase.co
-        export SUPABASE_KEY=fake_service_role_key
+        export DB_BACKEND=sqlite
+        export SQLITE_DB_PATH=data/nse_scraper.sqlite3
         scrapy list
 
 #     - name: Test with pytest

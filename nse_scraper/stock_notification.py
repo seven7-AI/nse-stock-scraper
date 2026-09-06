@@ -11,8 +11,9 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-DB_BACKEND = os.getenv("DB_BACKEND", "supabase").strip().lower()
+DB_BACKEND = os.getenv("DB_BACKEND", "sqlite").strip().lower()
 STOCK_TABLE = os.getenv("STOCK_TABLE", "stock_data")
+SQLITE_DB_PATH = os.getenv("SQLITE_DB_PATH", "data/nse_scraper.sqlite3")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", STOCK_TABLE)
@@ -31,6 +32,7 @@ def stock_query(ticker_symbol="BAT", threshold=38.0):
             supabase_url=SUPABASE_URL,
             supabase_key=SUPABASE_KEY,
             supabase_table=SUPABASE_TABLE,
+            sqlite_path=SQLITE_DB_PATH,
         )
         backend.open()
 

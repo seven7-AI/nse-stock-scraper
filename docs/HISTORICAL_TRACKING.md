@@ -1,5 +1,11 @@
 # Data Storage Behavior
 
+> **Backend note.** Storage moved from Supabase to local SQLite on 2026-09-06
+> ([migration notes](MIGRATION_SUPABASE_TO_SQLITE.md)). The behaviour described here is
+> unchanged — one row per ticker, history in a `price_history` JSON array — but the class
+> is now `SQLiteBackend` and the SQL Editor steps apply only to the Supabase backend.
+
+
 ## Overview
 
 The scraper uses upsert behavior: each daily scrape run **updates** existing records for each ticker_symbol instead of creating duplicates. This ensures you always have the latest data for each stock.
@@ -113,7 +119,7 @@ This means:
 ## Backend Implementation
 
 The backend code uses `upsert()` with `on_conflict="ticker_symbol"`:
-- `SupabaseBackend.upsert_stock()` → updates existing or inserts new
-- `SupabaseBackend.upsert_stockanalysis_stock()` → updates existing or inserts new
+- `SQLiteBackend.upsert_stock()` (or `SupabaseBackend`) → updates existing or inserts new
+- `SQLiteBackend.upsert_stockanalysis_stock()` (or `SupabaseBackend`) → updates existing or inserts new
 
 Duplicate prevention is handled by the primary key constraint on `ticker_symbol`.

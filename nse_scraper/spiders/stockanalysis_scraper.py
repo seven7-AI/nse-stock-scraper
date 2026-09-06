@@ -7,13 +7,25 @@ from datetime import datetime, timezone
 from scrapy import Request, Spider
 
 from .. import stockanalysis_pages
+from ..db import SUPPORTED_BACKENDS
 
 
 logger = logging.getLogger(__name__)
 
 
 def _stockanalysis_pipelines():
-    if os.getenv("DB_BACKEND", "").strip().lower() == "supabase":
+    """Install StockAnalysisPipeline whenever a supported backend is configured.
+
+    Tested against SUPPORTED_BACKENDS rather than a literal backend name. When this read
+    "== supabase" it silently installed no pipeline under any other backend: items were
+    dropped, db_upsert_ok and db_upsert_failed both stayed 0, and the quality gate --
+    which only fails on `db_failed and not db_ok` -- reported SUCCESS for a run that
+    stored nothing.
+
+    Note this reads the environment at import time, so `-s DB_BACKEND=...` on the command
+    line does not affect it; the environment variable does.
+    """
+    if os.getenv("DB_BACKEND", "sqlite").strip().lower() in SUPPORTED_BACKENDS:
         return {"nse_scraper.pipelines.StockAnalysisPipeline": 300}
     return {}
 

@@ -1,7 +1,7 @@
 # Architecture and Data Flow
 
 How a daily run works, end to end: from the cron line firing at 09:00 to a row landing in
-Supabase and the verdict being committed back to git.
+SQLite and the verdict being committed back to git.
 
 **Read this if** you need to trace where a value came from, change throttling or gating
 behaviour, diagnose a `RUN_STATUS FAILED`, or understand why a design decision that looks
@@ -9,6 +9,11 @@ odd is deliberate. For setup see [Quickstart](QUICKSTART.md); for operational co
 [Docker](DOCKER.md) and the [README](../README.md).
 
 Every file reference below is `path:line` against the current tree.
+
+> **Storage note.** As of 2026-09-06 the storage layer is a local SQLite database, not
+> Supabase. Supabase remains selectable with `DB_BACKEND=supabase` but is no longer the
+> default or the production target. See
+> [MIGRATION_SUPABASE_TO_SQLITE.md](MIGRATION_SUPABASE_TO_SQLITE.md) for why and how.
 
 ---
 
@@ -26,10 +31,10 @@ flowchart LR
     AFX --> P1["NseScraperPipeline"]
     SA --> P2["StockAnalysisPipeline"]
 
-    P1 --> BE["SupabaseBackend"]
+    P1 --> BE["SQLiteBackend"]
     P2 --> BE
 
-    BE -->|"ok"| DB[("Supabase<br/>stock_data<br/>stockanalysis_stocks")]
+    BE -->|"ok"| DB[("data/nse_scraper.sqlite3<br/>stock_data<br/>stockanalysis_stocks")]
     BE -->|"failed"| FB["reports/local_fallback/<br/>*.jsonl"]
 
     AFX -.-> GATE["DataQualityGate"]
@@ -48,6 +53,18 @@ Two independent crawls run in sequence inside one container. Neither writes file
 other reads; they are coupled only through the runner's exit-code arithmetic and through
 the two mounted directories, `reports/` and `httpcache/`.
 
+Seen as a data lifecycle rather than a call chain, the same run looks like this:
+
+```mermaid
+flowchart LR
+    A["Scraping<br/>2 spiders"] --> B["Data processing<br/>normalize · merge views"]
+    B --> C["SQLite storage<br/>upsert · price_history"]
+    C --> D["Quality gate<br/>items + write counts"]
+    D --> E["Reports<br/>logs · stats · fallback"]
+    E --> F["Git commit<br/>chore(log): daily scraper run"]
+    F --> G["GitHub push<br/>rebase then push"]
+```
+
 There are eight layers. Each section below covers one.
 
 | # | Layer | Lives in |
@@ -59,7 +76,7 @@ There are eight layers. Each section below covers one.
 | 5 | Scrapy engine + shared config | `nse_scraper/settings.py`, `nse_scraper/middlewares.py` |
 | 6 | Spiders (extraction) | `nse_scraper/spiders/`, `nse_scraper/stockanalysis_pages.py` |
 | 7 | Pipelines (shaping) | `nse_scraper/pipelines.py` |
-| 8 | Storage | `nse_scraper/db/backends.py`, `sql/` |
+| 8 | Storage | `nse_scraper/db/backends.py`, `sql/sqlite/` |
 
 ---
 
@@ -147,10 +164,12 @@ services:
     build: { context: .., dockerfile: deployment/Dockerfile }
     env_file: [ ../.env ]
     environment:
-      DB_BACKEND: supabase        # forced, regardless of .env
+      DB_BACKEND: sqlite          # forced, regardless of .env
+      SQLITE_DB_PATH: /app/data/nse_scraper.sqlite3
     volumes:
       - ../reports:/app/reports   # logs, stats, fallback JSONL escape the container
       - ../httpcache:/app/httpcache
+      - ../data:/app/data         # the database escapes the container
     entrypoint: ["bash", "scripts/run_daily_job.sh"]
 ```
 
@@ -158,13 +177,20 @@ The image's own `ENTRYPOINT` is `python -m scrapy` with `CMD ["crawl", "afx_scra
 (`deployment/Dockerfile:48-49`) — useful for ad-hoc single crawls. Compose overrides it so
 the daily job runs the full two-spider sequence with quality gating instead.
 
-The `../reports` bind mount is load-bearing: without it, the run log, the quality reports
-and the fallback JSONL would die with the container and the host wrapper would have
-nothing to commit.
+Both bind mounts are load-bearing. Without `../reports`, the run log, the quality reports
+and the fallback JSONL would die with the container and the host wrapper would have nothing
+to commit. Without `../data`, the SQLite database would be destroyed on every `--rm` and
+each day would start from an empty table.
+
+The host directories must exist before the first run: Docker creates a missing bind-mount
+source as `root`, and the container runs as uid 1000, so it would then fail to write.
+`reports/.gitkeep` and `data/.gitkeep` are committed for exactly this reason.
 
 The image is a multi-stage `python:3.14-slim` build that runs as a non-root `scraper` user.
-Its `HEALTHCHECK` asserts `DB_BACKEND=supabase` and that both Supabase variables are set —
-a config check, not a liveness check.
+Its `HEALTHCHECK` validates whichever backend is selected — for `sqlite`, that the database
+directory is writable; for `supabase`, that both credentials are set. A config check, not a
+liveness check, but one that catches a missing or read-only `../data` mount before a crawl
+sends 63 rows to the fallback file instead of the database.
 
 ---
 
@@ -343,12 +369,12 @@ flowchart TD
 ```
 
 **Path 1 — embedded payload.** The list page is a SvelteKit app whose `kit.start(...)`
-script carries the whole table as JS object literals. `_extract_embedded_payload` (`:216`)
+script carries the whole table as JS object literals. `_extract_embedded_payload` (`:228`)
 finds the script containing both `stockData:[` and `initialDynamicViews:` and regexes out
 three objects: `stockData` (the rows), `initialDynamicViews` (which column ids belong to
 which tab), and `stockQuery`.
 
-That text is JS, not JSON, so `_loads_js_like` (`:390`) repairs it before `json.loads`:
+That text is JS, not JSON, so `_loads_js_like` (`:402`) repairs it before `json.loads`:
 
 | Repair | Example |
 |--------|---------|
@@ -358,12 +384,12 @@ That text is JS, not JSON, so `_loads_js_like` (`:390`) repairs it before `json.
 | unquoted keys | `{price:1}` → `{"price":1}` |
 | trailing commas | `[1,2,]` → `[1,2]` |
 
-`_view_map_from_payload` (`:365`) then slugs the site's view names and force-overlays the
-five views this project cares about from `_TARGET_VIEW_COLUMNS` (`:61`) — overview is
+`_view_map_from_payload` (`:377`) then slugs the site's view names and force-overlays the
+five views this project cares about from `_TARGET_VIEW_COLUMNS` (`:73`) — overview is
 always overwritten with the full unlocked column list; the rest are only defaults.
 
 **Path 2 — per-symbol enrichment (what runs today).** `_needs_symbol_page_enrichment`
-(`:261`) checks whether *any* row has *any* non-empty value for each view's metric columns.
+(`:273`) checks whether *any* row has *any* non-empty value for each view's metric columns.
 The `api.stockanalysis.com/api/screener/*` endpoints that used to populate performance,
 dividends, price and profile were retired and return 404 for every variant, so today four
 views come back empty and this returns `True`.
@@ -371,23 +397,23 @@ views come back empty and this returns `True`.
 When it does, the spider:
 
 1. **Emits all 63 overview items first**, straight from the embedded payload
-   (`:125-151`). This is why partial data still lands even if every per-symbol request
+   (`:137-163`). This is why partial data still lands even if every per-symbol request
    fails.
 2. Picks this run's slice with `_symbols_for_this_run` and fans out one `Request` per
    (symbol × page) with `cb_kwargs={symbol, page, base, scraped_at}` carrying the
    list-page row along as `base`.
 
-Failures are counted, not raised: `_handle_symbol_page_error` (`:330`) bumps
+Failures are counted, not raised: `_handle_symbol_page_error` (`:342`) bumps
 `stockanalysis/symbol_page_failed`, and a page that parses to nothing bumps
-`stockanalysis/empty_page/<page>` (`:322`).
+`stockanalysis/empty_page/<page>` (`:334`).
 
-**Path 3 — visible table.** `_parse_visible_table` (`:400`) reads `#main-table` directly,
+**Path 3 — visible table.** `_parse_visible_table` (`:412`) reads `#main-table` directly,
 keying columns off `<th id>` attributes. Only reached when the embedded payload cannot be
 decoded at all.
 
 ### 8.2 The rotating window
 
-`_symbols_for_this_run` (`:285`) picks `STOCKANALYSIS_MAX_SYMBOLS` (default 16) symbols per
+`_symbols_for_this_run` (`:297`) picks `STOCKANALYSIS_MAX_SYMBOLS` (default 16) symbols per
 run:
 
 ```python
@@ -412,7 +438,7 @@ and `change` still refresh **daily for every ticker** from the single list-page 
 
 ### 8.3 Why the throttling is what it is
 
-`custom_settings` (`:28-42`) overrides the project defaults for this spider only:
+`custom_settings` (`:40-54`) overrides the project defaults for this spider only:
 
 ```python
 "CONCURRENT_REQUESTS_PER_DOMAIN": 1,
@@ -483,7 +509,7 @@ two different pages arriving in either order. See [§9.2](#92-stockanalysispipel
 
 ### 8.6 Value normalization
 
-`_normalize_metric_value` (`:464`) is applied to every metric, and each item carries
+`_normalize_metric_value` (`:476`) is applied to every metric, and each item carries
 **both** the raw and normalized forms as `metrics_raw` and `metrics`:
 
 | Input | Output |
@@ -496,7 +522,7 @@ two different pages arriving in either order. See [§9.2](#92-stockanalysispipel
 | `1946` | `1946` (numbers pass through untouched) |
 
 The pipeline stores `metrics_raw`, falling back to `metrics` if it is empty
-(`nse_scraper/pipelines.py:162`). Because the list-page payload already contains real
+(`nse_scraper/pipelines.py:178`). Because the list-page payload already contains real
 numbers, `metrics_raw` is numeric there too — the raw/normalized distinction matters mostly
 on the HTML-scraped pages, where `metrics_raw` holds what `stockanalysis_pages` returned
 (itself already normalized, since those parsers call the normalizer directly).
@@ -509,9 +535,9 @@ Two pipelines exist and **they never run together**. Which one is active depends
 spider.
 
 ```python
-# nse_scraper/spiders/stockanalysis_scraper.py:15
+# nse_scraper/spiders/stockanalysis_scraper.py:16
 def _stockanalysis_pipelines():
-    if os.getenv("DB_BACKEND", "").strip().lower() == "supabase":
+    if os.getenv("DB_BACKEND", "sqlite").strip().lower() in SUPPORTED_BACKENDS:
         return {"nse_scraper.pipelines.StockAnalysisPipeline": 300}
     return {}
 ```
@@ -523,7 +549,7 @@ than merges with the global setting. So:
 |--------|----------------|-------|
 | `afx_scraper` | `NseScraperPipeline` (from `settings.py`) | `stock_data` |
 | `stockanalysis_scraper` | `StockAnalysisPipeline` only | `stockanalysis_stocks` |
-| `stockanalysis_scraper` with `DB_BACKEND != supabase` | **none** — items are discarded | — |
+| `stockanalysis_scraper` with an unsupported `DB_BACKEND` | **none** — items are discarded | — |
 
 Note also that `_stockanalysis_pipelines()` reads `os.getenv` at **class-definition time**,
 not from Scrapy settings — so `-s DB_BACKEND=...` on the command line will not change which
@@ -546,7 +572,7 @@ Any non-`DropItem` exception is caught, logged with a traceback, and re-raised a
 
 ### 9.2 `StockAnalysisPipeline`
 
-`nse_scraper/pipelines.py:88`. This one **buffers everything and flushes at the end**.
+`nse_scraper/pipelines.py:91`. This one **buffers everything and flushes at the end**.
 
 ```mermaid
 flowchart LR
@@ -568,11 +594,11 @@ write a record, and then a straggling view would arrive and re-upsert a *thinner
 over it. Buffering to the end means exactly one write per ticker, with everything that
 arrived.
 
-**`_merge_view`** (`:201`) combines two items for the same view. It merges `metrics_raw`
+**`_merge_view`** (`:217`) combines two items for the same view. It merges `metrics_raw`
 and `metrics` key by key, and a `None` never overwrites a populated value. This exists
 because `profile` can be assembled from both the quote page and the company page.
 
-**`_upsert_one`** (`:135`) flattens the buffered views into one record:
+**`_upsert_one`** (`:151`) flattens the buffered views into one record:
 
 - common fields (`company_name`, `rank`, `stock_price`, `stock_change`, `scraped_at`) are
   taken from the `overview` view, falling back to whichever view is available
@@ -587,33 +613,43 @@ the remaining tickers from being flushed.
 
 ## 10. Layer 8 — Storage
 
-`nse_scraper/db/backends.py`. `create_backend` (`:210`) accepts exactly one backend name:
-`supabase`. Anything else raises.
+`nse_scraper/db/backends.py`. `create_backend` accepts the names in `SUPPORTED_BACKENDS`
+— `sqlite` (default) and `supabase`. Anything else raises.
 
-> Mongo and Postgres appear in `.env` comments, `config/.env.example`, and in
-> `nse_scraper/db/models.py` + `alembic/` — **none of that is wired into the runtime.**
-> The SQLAlchemy model and the Alembic environment are vestigial; the live schema is the
-> `sql/*.sql` files applied to Supabase by hand.
+| Backend | Class | Target | Selected by |
+|---|---|---|---|
+| `sqlite` | `SQLiteBackend` | `data/nse_scraper.sqlite3` | `DB_BACKEND=sqlite` (default) |
+| `supabase` | `SupabaseBackend` | PostgREST | `DB_BACKEND=supabase` |
+
+Both subclass `_BaseBackend`, which owns the two storage-agnostic behaviours — the JSONL
+fallback and the price-history append rule — so they cannot drift apart.
+
+> Mongo and Postgres appear in `.env` comments and in `nse_scraper/db/models.py` +
+> `alembic/` — **none of that is wired into the runtime.** The SQLAlchemy model and the
+> Alembic environment are vestigial; the live schema is `sql/sqlite/001_schema.sql`, which
+> `SQLiteBackend._create_schema()` issues on every `open()`. The `sql/0*.sql` files are the
+> Supabase-era DDL, kept as the historical record.
 
 ### 10.1 Both upserts are read-modify-write
 
-`upsert_stock` (`:140`) and `upsert_stockanalysis_stock` (`:68`) follow the same shape:
+`upsert_stock` and `upsert_stockanalysis_stock` follow the same shape:
 
 ```mermaid
 sequenceDiagram
     participant P as Pipeline
-    participant B as SupabaseBackend
-    participant S as Supabase (PostgREST)
+    participant B as SQLiteBackend
+    participant S as data/nse_scraper.sqlite3
     participant F as reports/local_fallback
 
     P->>B: upsert_*(record)
-    B->>S: SELECT price_history, stock_price, stock_change WHERE ticker_symbol = ?
+    B->>S: SELECT price_history WHERE ticker_symbol = ?
     S-->>B: existing row (or nothing)
     Note over B: append {scraped_at, stock_price, stock_change}<br/>only if price or change actually moved
-    Note over B: delete every *_metrics key whose value is None
-    B->>S: upsert(payload, on_conflict="ticker_symbol")
+    Note over B: drop every *_metrics key whose value is None
+    Note over B: build the DO UPDATE SET list from the<br/>keys that remain
+    B->>S: INSERT ... ON CONFLICT(ticker_symbol) DO UPDATE SET ...
     alt success
-        S-->>B: ok
+        S-->>B: committed
         B-->>P: True  (stat: nse/db_upsert_ok)
     else failure
         B->>F: append JSON line to <kind>_fallback-<date>.jsonl
@@ -623,82 +659,101 @@ sequenceDiagram
 
 Three consequences worth knowing:
 
-**Two HTTP round-trips per row.** A 63-row run is ~126 PostgREST calls. The SELECT exists
-only to read `price_history` back so it can be appended to in Python.
+**One local transaction per row, not two network round-trips.** Under Supabase a 63-row run
+meant ~126 PostgREST calls over the internet; the same run is now 63 local transactions.
+The SELECT still exists, to read `price_history` back so it can be appended to in Python.
 
 **History is deduplicated by value, not by time.** A new entry is appended only when the
-price or change differs from the last entry (`:98`, `:172`). A ticker that does not move
-for a week gets one entry, not seven — so `price_history` is a change log, not a daily
-series, and gaps in it mean "unchanged", not "not scraped".
+price or change differs from the last entry (`_extend_price_history`). A ticker that does
+not move for a week gets one entry, not seven — so `price_history` is a change log, not a
+daily series, and gaps in it mean "unchanged", not "not scraped".
 
-**A `None` metric is deleted from the payload, not sent** (`:119-127`):
+**A `None` metric is dropped from the payload, not written**:
 
 ```python
-for metrics_key in ("overview_metrics", "performance_metrics", "dividends_metrics",
-                    "price_metrics", "profile_metrics"):
+for metrics_key in METRICS_COLUMNS:
     if payload[metrics_key] is None:
         del payload[metrics_key]
 ```
 
-An omitted key is left untouched by the `ON CONFLICT UPDATE`, whereas sending `None` writes
-a SQL `NULL`. This is the fix for a real bug: the four views lost to the retired screener
-API were being **blanked on every run** because the pipeline sent `None` for them. Combined
-with the rotating window, this is what lets a ticker keep last week's dividend data on a
-day when it was not enriched.
+A column absent from the payload appears in neither the INSERT nor the `DO UPDATE SET`, so
+it keeps whatever was stored last run; writing `None` would set SQL `NULL` and blank it.
+This is the fix for a real bug: the four views lost to the retired screener API were being
+**blanked on every run** because the pipeline sent `None` for them. Combined with the
+rotating window, it is what lets a ticker keep last week's dividend data on a day when it
+was not enriched.
+
+Under Supabase the omission happened implicitly — PostgREST generated the UPDATE clause
+from the payload keys. In SQLite the SQL is ours, so `_upsert` assembles the `SET` list
+from the keys actually present. That is the single highest-risk line of the migration and
+`tests/test_sqlite_backend.py` locks it in with a real round-trip.
 
 ### 10.2 The local fallback
 
-`_write_local_fallback` (`:54`) appends the exact payload that failed, as one JSON object
+`_write_local_fallback` (`:84`) appends the exact payload that failed, as one JSON object
 per line, to:
 
 ```
 reports/local_fallback/<stock_data|stockanalysis_stocks>_fallback-<YYYY-MM-DD>.jsonl
 ```
 
-These files are committed to git by the wrapper, so nothing is lost when Supabase is
-unreachable — the data is replayable. It also means a crawl can look completely healthy
+These files are committed to git by the wrapper, so nothing is lost when storage is
+unavailable — the data is replayable. It also means a crawl can look completely healthy
 while nothing reached the database, which is precisely the case the quality gate checks for.
+
+The fallback was **kept** after the move to SQLite. A local write is more reliable than a
+network write but not infallible: a full or read-only host volume, a permissions mismatch on
+the bind mount, `database is locked`, or a corrupt file all fail. More importantly, the
+fallback is what makes `db_upsert_failed` meaningful — without it a storage failure would
+raise and abort the crawl instead of being counted. Its value was proven in practice: the
+43 days of files it accumulated during the Supabase outage were the source the SQLite
+migration was rebuilt from.
 
 ---
 
 ## 11. Data model
 
-Applied to Supabase from `sql/`. Both tables are keyed on `ticker_symbol` alone: **one row
-per ticker**, updated in place.
+Created automatically by `SQLiteBackend._create_schema()`; the canonical DDL is
+`sql/sqlite/001_schema.sql`. Both tables are keyed on `ticker_symbol` alone: **one row per
+ticker**, updated in place. History lives in the `price_history` JSON array, never in extra
+rows.
 
-### `stock_data` — written by `afx_scraper` (`sql/001_create_stock_data.sql`)
-
-| Column | Type | Notes |
-|--------|------|-------|
-| `ticker_symbol` | `VARCHAR(20)` | primary key |
-| `stock_name` | `VARCHAR(255)` | not null |
-| `stock_price` | `DOUBLE PRECISION` | not null |
-| `stock_change` | `DOUBLE PRECISION` | nullable |
-| `scraped_at` / `created_at` | `TIMESTAMPTZ` | |
-| `price_history` | `JSONB` | `[]` default, GIN indexed |
-
-### `stockanalysis_stocks` — written by `stockanalysis_scraper` (`sql/003_...`)
+### `stock_data` — written by `afx_scraper`
 
 | Column | Type | Notes |
 |--------|------|-------|
-| `ticker_symbol` | `VARCHAR(20)` | primary key |
-| `company_name` | `VARCHAR(255)` | not null |
+| `ticker_symbol` | `TEXT` | primary key |
+| `stock_name` | `TEXT` | not null |
+| `stock_price` | `REAL` | not null |
+| `stock_change` | `REAL` | nullable |
+| `scraped_at` / `created_at` | `TEXT` | ISO-8601; `created_at` is refreshed on each write |
+| `price_history` | `TEXT` | JSON array, `[]` default |
+
+### `stockanalysis_stocks` — written by `stockanalysis_scraper`
+
+| Column | Type | Notes |
+|--------|------|-------|
+| `ticker_symbol` | `TEXT` | primary key |
+| `company_name` | `TEXT` | not null |
 | `rank` | `INTEGER` | market-cap rank from the list page, indexed |
-| `stock_price`, `stock_change` | `DOUBLE PRECISION` | refreshed daily for every ticker |
-| `scraped_at` | `TIMESTAMPTZ` | not null, indexed DESC |
-| `created_at` | `TIMESTAMPTZ` | default `NOW()` |
-| `updated_at` | `TIMESTAMPTZ` | maintained by trigger `tr_stockanalysis_stocks_updated_at` |
-| `overview_metrics` | `JSONB` | GIN indexed |
-| `performance_metrics` | `JSONB` | GIN indexed |
-| `dividends_metrics` | `JSONB` | GIN indexed |
-| `price_metrics` | `JSONB` | GIN indexed |
-| `profile_metrics` | `JSONB` | GIN indexed |
-| `price_history` | `JSONB` | `[]` default, GIN indexed |
+| `stock_price`, `stock_change` | `REAL` | refreshed daily for every ticker |
+| `scraped_at` | `TEXT` | ISO-8601, not null, indexed DESC |
+| `created_at` | `TEXT` | first sight; never rewritten |
+| `updated_at` | `TEXT` | set on every write, in the `DO UPDATE SET` clause |
+| `overview_metrics` | `TEXT` | JSON; queryable with `json_extract` |
+| `performance_metrics` | `TEXT` | JSON |
+| `dividends_metrics` | `TEXT` | JSON |
+| `price_metrics` | `TEXT` | JSON |
+| `profile_metrics` | `TEXT` | JSON |
+| `price_history` | `TEXT` | JSON array, `[]` default |
+
+The five `*_metrics` columns are `NULL` only until a view has been scraped once; after that
+a run that does not re-scrape the view leaves the stored value alone (see §10.1).
 
 ### An actual row
 
-Captured from `reports/local_fallback/stockanalysis_stocks_fallback-2026-09-06.jsonl` —
-`DTK`, one of the 16 symbols enriched that day:
+`DTK`, one of the 16 symbols enriched on 2026-09-06. Shown as the payload the backend
+writes (in the database the JSON columns are TEXT holding exactly these structures):
 
 ```json
 {
@@ -735,6 +790,10 @@ untouched.
 
 ### Schema history
 
+The database was migrated from Supabase to local SQLite on 2026-09-06; see
+[MIGRATION_SUPABASE_TO_SQLITE.md](MIGRATION_SUPABASE_TO_SQLITE.md). The `sql/0*.sql` files
+below are the Supabase-era DDL, kept as the historical record and no longer applied.
+
 The migration numbering records a reversal worth knowing about:
 
 - `005_migrate_to_historical_tracking.sql` moved to a composite key so every scrape
@@ -764,28 +823,29 @@ Following `DTK`'s dividend yield of `4.67` on 2026-09-06, from byte to column.
 | 5 | Scrapy | loads `settings.py`; the spider's `custom_settings` replaces `ITEM_PIPELINES` with `StockAnalysisPipeline` |
 | 6 | spider `:24` | `GET https://stockanalysis.com/list/nairobi-stock-exchange/` |
 | 7 | spider `:216` | `_extract_embedded_payload` pulls `stockData` / `initialDynamicViews` / `stockQuery` out of the SvelteKit script; `_loads_js_like:390` repairs the JS into JSON |
-| 8 | spider `:261` | `_needs_symbol_page_enrichment` → `True` (dividends columns all empty) |
-| 9 | spider `:125` | 63 overview items yielded immediately, `DTK`'s among them, carrying `price=192.5`, `change=0.13`, `rank=15` |
-| 10 | spider `:285` | `_symbols_for_this_run` → `739865 * 16 % 63 = 14` → window starts at index 14 → `DTK` selected |
-| 11 | spider `:160` | `Request("https://stockanalysis.com/quote/nase/DTK/dividend/")` queued with `cb_kwargs={symbol, page, base, scraped_at}` |
+| 8 | spider `:273` | `_needs_symbol_page_enrichment` → `True` (dividends columns all empty) |
+| 9 | spider `:137` | 63 overview items yielded immediately, `DTK`'s among them, carrying `price=192.5`, `change=0.13`, `rank=15` |
+| 10 | spider `:297` | `_symbols_for_this_run` → `739865 * 16 % 63 = 14` → window starts at index 14 → `DTK` selected |
+| 11 | spider `:172` | `Request("https://stockanalysis.com/quote/nase/DTK/dividend/")` queued with `cb_kwargs={symbol, page, base, scraped_at}` |
 | 12 | downloader | 1 request at a time, ≥2s randomized delay, autothrottled; 403 would not be retried |
-| 13 | spider `:306` | `_parse_symbol_page` → `stockanalysis_pages.parse_symbol_page(page="dividend", ...)` |
+| 13 | spider `:318` | `_parse_symbol_page` → `stockanalysis_pages.parse_symbol_page(page="dividend", ...)` |
 | 14 | pages `:217` | `parse_dividend_page` → `_load_object(html, "infoTable")` → `extract_js_object` brace-scan → `_loads_js_like` |
 | 15 | pages `:226` | `"dividendYield": normalize(info.get("yield"))` → `_normalize_metric_value("4.67%")` → `4.67` |
-| 16 | spider `:343` | `_build_view_item("dividends", "DTK", base, metrics_raw, scraped_at)` → item with `metrics_raw.dividendYield = 4.67` |
-| 17 | pipelines `:180` | `process_item` buffers it at `_buffer["DTK"]["dividends"]` (merged with `_merge_view` if a duplicate view arrives) |
-| 18 | pipelines `:127` | `close_spider` → `_upsert_one("DTK", views)` builds the flat record; `dividends_metrics = dict(metrics_raw)` |
-| 19 | backends `:68` | `upsert_stockanalysis_stock` SELECTs `price_history`, appends an entry (price moved), drops `None` metric keys |
-| 20 | backends `:133` | `client.table("stockanalysis_stocks").upsert(payload, on_conflict="ticker_symbol")` |
-| 21 | Supabase | `stockanalysis_stocks.dividends_metrics->>'dividendYield' = 4.67` for `DTK`; `updated_at` set by trigger |
-| 22 | pipelines `:117` | result `True` → `crawler.stats.inc_value("nse/db_upsert_ok")` |
+| 16 | spider `:355` | `_build_view_item("dividends", "DTK", base, metrics_raw, scraped_at)` → item with `metrics_raw.dividendYield = 4.67` |
+| 17 | pipelines `:196` | `process_item` buffers it at `_buffer["DTK"]["dividends"]` (merged with `_merge_view` if a duplicate view arrives) |
+| 18 | pipelines `:143` | `close_spider` → `_upsert_one("DTK", views)` builds the flat record; `dividends_metrics = dict(metrics_raw)` |
+| 19 | backends `:382` | `SQLiteBackend.upsert_stockanalysis_stock` SELECTs `price_history`, appends an entry if the price moved, drops `None` metric keys |
+| 20 | backends `:353` | `_upsert` builds `INSERT ... ON CONFLICT(ticker_symbol) DO UPDATE SET ...` from the surviving keys |
+| 21 | SQLite | `json_extract(dividends_metrics,'$.dividendYield') = 4.67` for `DTK`; `updated_at` set in the same statement |
+| 22 | pipelines `:133` | result `True` → `crawler.stats.inc_value("nse/db_upsert_ok")` |
 | 23 | extensions `:45` | on `spider_closed`, `DataQualityGate` writes `reports/stats/stockanalysis_scraper-latest.json` |
 | 24 | `scripts/run_daily_job.sh:72` | `check_quality` reads that file → `RUN_STATUS SUCCESS` or `FAILED` |
 | 25 | `scripts/run_daily_with_git.sh:76` | logs + stats + any fallback JSONL are committed and pushed |
 
-On 2026-09-06 steps 20–22 failed, so step 19's payload went to
-`reports/local_fallback/stockanalysis_stocks_fallback-2026-09-06.jsonl` instead — which is
-where the JSON in [§11](#an-actual-row) was read from.
+Before the migration, steps 20–22 failed every day: the payload from step 19 went to
+`reports/local_fallback/stockanalysis_stocks_fallback-<date>.jsonl` instead, which is where
+the record in [§11](#an-actual-row) was read from — and, 43 files later, what the SQLite
+database was rebuilt from.
 
 ---
 
@@ -794,7 +854,7 @@ where the JSON in [§11](#an-actual-row) was read from.
 `nse_scraper/extensions.py`. Registered globally at priority 500, it hooks
 `spider_closed` and turns crawl stats into a machine-readable verdict.
 
-**Why it exists:** Scrapy exits 0 when a spider scrapes nothing at all, and the Supabase
+**Why it exists:** Scrapy exits 0 when a spider scrapes nothing at all, and the storage
 backend swallows write failures into a local JSONL file. Without this gate, a run that
 scraped nothing — or that scraped fine and stored nothing — would report SUCCESS.
 
@@ -849,25 +909,30 @@ make cron-verify                                          # is it even scheduled
 
 ## 14. Failure modes and current state
 
-State as of the 2026-09-06 run (`reports/stats/*-latest.json`, `reports/task-runner.log`):
+State as of the first post-migration run, 2026-09-06 (`reports/stats/*-latest.json`,
+`reports/task-runner.log`):
 
 ```
 QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
-QUALITY stockanalysis_scraper FAILED items=123 min=95 db_ok=0 db_failed=63
-        all 63 database writes failed (see reports/local_fallback)
-RUN_STATUS FAILED afx_exit=0 stockanalysis_exit=2
-DOCKER_RUN_STATUS FAILED exit=1
-GIT_COMMIT_STATUS SUCCESS
-GIT_PUSH_STATUS SUCCESS branch=main
+QUALITY stockanalysis_scraper OK items=123 min=95 db_ok=63 db_failed=0
+RUN_STATUS SUCCESS
 ```
 
 Reading that: extraction is healthy (123 items = 63 overview + 60 enriched view items from
-16 symbols × up to 4 views, 4 of which came back empty), storage is entirely down, and the
-evidence was still published to git.
+16 symbols × up to 4 views, 4 of which came back empty) and all 63 rows reached the
+database — the first `SUCCESS` since 2026-07-26.
+
+For the 43 days before it, the same lines read `db_ok=0 db_failed=63` and
+`RUN_STATUS FAILED`, because the Supabase host had stopped resolving. Those runs are why
+`reports/local_fallback/` holds a complete copy of the data, and that copy is what the
+SQLite database was rebuilt from — see
+[MIGRATION_SUPABASE_TO_SQLITE.md](MIGRATION_SUPABASE_TO_SQLITE.md).
 
 | Failure mode | Symptom | Cause | Action |
 |--------------|---------|-------|--------|
-| **Supabase unreachable** | `db_ok=0`, `db_failed=63`, daily fallback JSONL | `SUPABASE_URL` no longer resolves in DNS | restore the project or update `SUPABASE_URL`/`SUPABASE_KEY`, then replay `reports/local_fallback/*.jsonl` |
+| **SQLite writes fail** | `db_ok=0`, `db_failed=63`, new fallback JSONL | `../data` not mounted, owned by root, read-only, or the disk is full | fix the mount/permissions (host `data/` must be writable by uid 1000), then replay the fallback file |
+| **Database missing after a run** | `data/nse_scraper.sqlite3` absent or empty | the `../data` bind mount is not in `docker-compose.yml`, or `SQLITE_DB_PATH` points outside it | restore both, then rebuild with `scripts/migrate_fallback_to_sqlite.py --reset` |
+| **Supabase unreachable** (historical) | `db_ok=0`, `db_failed=63` under `DB_BACKEND=supabase` | `SUPABASE_URL` no longer resolves in DNS | not applicable on the default backend; the cause of the 2026-07-26 → 09-06 outage |
 | **`afx_scraper` returns nothing** | `items=0`, `retry_count=3`, `response_received_count=0` | `afx.kwayisi.org` refuses this host on every address | set `AFX_PROXY_URL`, then raise `MIN_ITEMS_AFX_SCRAPER` to ~40 |
 | **`performance` view is partial** | only `tr1y` present | the other horizons are not published for NSE tickers anywhere server-side | none — by design, they are omitted rather than nulled |
 | **`overview` fields null** | `volume`, `sector`, `netIncome` etc. null | the list-page payload no longer carries them | none available today |
@@ -876,10 +941,9 @@ evidence was still published to git.
 | **Wrong fire time** | runs land at 09:00 host-local, not Nairobi | this cron ignores `CRON_TZ` | set `CRON_HOUR` in `scripts/install_daily_cron.sh` to the equivalent host-local hour |
 | **Push rejected** | `GIT_PUSH_STATUS FAILED reason=rebase_conflict` | origin diverged and the rebase conflicted | resolve by hand; the script already ran `git rebase --abort`, so the tree is clean |
 
-There is a backlog of unreplayed fallback files —
-`reports/local_fallback/stockanalysis_stocks_fallback-*.jsonl`, one per day since the
-Supabase outage began. Each line is a complete upsert payload, so replaying is a matter of
-POSTing them once the project is reachable.
+The 45 fallback files from the Supabase outage have been replayed into SQLite and remain in
+git as the recovery source of record. They are no longer a backlog: `reports/local_fallback/`
+should now stay empty of new files, and any file appearing there dates a storage failure.
 
 ---
 
@@ -908,10 +972,12 @@ nse_scraper/
     afx_scraper.py         one page, one table, flat items
     stockanalysis_scraper.py  embedded payload + rotating per-symbol enrichment
   db/
-    backends.py            SupabaseBackend + create_backend (supabase only)
+    backends.py            SQLiteBackend (default) + SupabaseBackend + create_backend
     models.py              SQLAlchemy StockData — vestigial, not used at runtime
 
-sql/                       hand-applied Supabase DDL; 001/003 are the live schema
+sql/sqlite/001_schema.sql  canonical SQLite DDL (the live schema)
+sql/*.sql                  Supabase-era DDL, kept as the historical record
+data/nse_scraper.sqlite3   the database; gitignored, host-mounted into the container
 alembic/                   configured against db/models.py; not part of the daily flow
 tests/                     unittest suite (`make test`); no network, no database
 reports/                   run logs, quality reports, fallback payloads — all committed

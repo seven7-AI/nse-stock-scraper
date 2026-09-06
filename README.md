@@ -1,9 +1,11 @@
 # NSE Stock Scraper
 
-Scrapy project that collects NSE market data and writes to Supabase.
+Scrapy project that collects NSE market data and writes to a local SQLite database.
 
 For a full walkthrough of the architecture and the data flow from the cron entry to the
-stored row, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+stored row, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Storage moved from Supabase
+to SQLite on 2026-09-06 —
+see [docs/MIGRATION_SUPABASE_TO_SQLITE.md](docs/MIGRATION_SUPABASE_TO_SQLITE.md).
 
 ## What Runs Daily
 
@@ -18,11 +20,14 @@ This project uses the root `.env` file directly.
 
 Required variables:
 
-- `DB_BACKEND=supabase`
-- `SUPABASE_URL`
-- `SUPABASE_KEY`
-- `SUPABASE_TABLE` (default: `stock_data`)
+- `DB_BACKEND=sqlite` (default; `supabase` is the alternate backend)
+- `SQLITE_DB_PATH` (default: `data/nse_scraper.sqlite3`)
+- `STOCK_TABLE` (default: `stock_data`)
 - `STOCKANALYSIS_TABLE` (default: `stockanalysis_stocks`)
+
+Required only when `DB_BACKEND=supabase`:
+
+- `SUPABASE_URL`, `SUPABASE_KEY`, `SUPABASE_TABLE`
 
 Optional:
 
@@ -79,13 +84,37 @@ single list-page request. If 403s reappear, lower `STOCKANALYSIS_MAX_SYMBOLS` or
 its addresses. Set `AFX_PROXY_URL=http://host:port` to route only that spider through a
 proxy; leaving it empty keeps behaviour unchanged.
 
+## Storage
+
+Data is stored in a local SQLite database at `data/nse_scraper.sqlite3`, mounted into the
+container from the host so it survives `docker compose run --rm`. One row per ticker,
+updated in place; price history lives in a `price_history` JSON array that gains an entry
+only when the price or change actually moves.
+
+Inspect it (the `sqlite3` CLI may not be installed; Python always works):
+
+```bash
+python3 -c "
+import sqlite3
+c = sqlite3.connect('data/nse_scraper.sqlite3')
+print(c.execute('SELECT COUNT(*) FROM stockanalysis_stocks').fetchone())
+print(c.execute(\"SELECT ticker_symbol, json_extract(dividends_metrics,'\$.dividendYield') FROM stockanalysis_stocks LIMIT 5\").fetchall())
+"
+```
+
+The database is **not** committed to git. It is rebuildable from
+`reports/local_fallback/*.jsonl`, which is:
+
+```bash
+python3 scripts/migrate_fallback_to_sqlite.py --reset --report reports/migration/
+```
+
 ## Known Outages
 
-- **Supabase project unreachable.** `SUPABASE_URL` no longer resolves in DNS, so every
-  write fails and falls back to `reports/local_fallback/*.jsonl`. Restore the project or
-  update `SUPABASE_URL`/`SUPABASE_KEY`, then replay the fallback files.
 - **`afx_scraper` returns nothing** — see `AFX_PROXY_URL` above.
 - **`performance` view is partial** — only `tr1y` is published for NSE tickers.
+- **Supabase was unreachable from 2026-07-26** and is no longer the storage backend; the
+  43 days of data its failure path preserved were migrated into SQLite on 2026-09-06.
 
 ## Run Locally (without Docker)
 
@@ -180,6 +209,8 @@ nse-stock-scraper/
 ├── docs/
 ├── config/
 ├── reports/
+├── data/
+│   └── nse_scraper.sqlite3   (gitignored)
 └── .env
 ```
 
@@ -187,4 +218,4 @@ nse-stock-scraper/
 
 - Windows PowerShell scheduling scripts were removed.
 - Scheduler is now Linux cron + Docker.
-- Runtime is Supabase-only.
+- Storage is local SQLite; Supabase remains selectable via `DB_BACKEND=supabase`.

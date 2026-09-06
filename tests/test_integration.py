@@ -5,7 +5,7 @@ import unittest
 import os
 import sys
 from pathlib import Path
-from nse_scraper.db import create_backend
+from nse_scraper.db import SUPPORTED_BACKENDS, SQLiteBackend, create_backend
 
 
 class TestProjectStructure(unittest.TestCase):
@@ -68,8 +68,21 @@ class TestDependencies(unittest.TestCase):
         except ImportError:
             self.fail("Scrapy not installed")
 
+    def test_sqlite3_available(self):
+        """The default backend needs stdlib sqlite3 with the JSON1 extension.
+
+        JSON1 is not optional here: the metrics columns are stored as JSON text and both
+        the migration report and the documented queries use json_extract.
+        """
+        import sqlite3
+
+        connection = sqlite3.connect(":memory:")
+        self.addCleanup(connection.close)
+        value = connection.execute("SELECT json_extract('{\"a\": 1}', '$.a')").fetchone()[0]
+        self.assertEqual(value, 1)
+
     def test_supabase_installed(self):
-        """Test Supabase client is installed"""
+        """Test Supabase client is installed (alternate backend)"""
         try:
             import supabase
             self.assertTrue(True)
@@ -131,6 +144,49 @@ class TestBackendFactory(unittest.TestCase):
     def test_supabase_backend_requires_credentials(self):
         with self.assertRaises(ValueError):
             create_backend("supabase", supabase_url=None, supabase_key=None)
+
+    def test_sqlite_backend_requires_a_path(self):
+        with self.assertRaises(ValueError):
+            create_backend("sqlite", sqlite_path=None)
+
+    def test_sqlite_backend_is_selectable(self):
+        backend = create_backend("sqlite", sqlite_path="data/nse_scraper.sqlite3")
+        self.assertIsInstance(backend, SQLiteBackend)
+
+    def test_every_supported_backend_name_is_constructible(self):
+        """SUPPORTED_BACKENDS is what the pipelines and the spider gate on.
+
+        A name listed there but rejected by create_backend would make the stockanalysis
+        spider install a pipeline whose constructor then raises.
+        """
+        self.assertIn("sqlite", SUPPORTED_BACKENDS)
+        for name in SUPPORTED_BACKENDS:
+            with self.subTest(backend=name):
+                backend = create_backend(
+                    name,
+                    sqlite_path="data/nse_scraper.sqlite3",
+                    supabase_url="https://example.supabase.co",
+                    supabase_key="fake",
+                )
+                self.assertTrue(hasattr(backend, "upsert_stock"))
+                self.assertTrue(hasattr(backend, "upsert_stockanalysis_stock"))
+
+
+class TestSqlitePersistenceConfig(unittest.TestCase):
+    """The database must live on a host-mounted volume, or `run --rm` discards it."""
+
+    def setUp(self):
+        project_root = Path(__file__).parent.parent
+        self.compose = (project_root / "deployment" / "docker-compose.yml").read_text()
+
+    def test_data_directory_is_bind_mounted(self):
+        self.assertIn("../data:/app/data", self.compose)
+
+    def test_sqlite_path_points_inside_the_mount(self):
+        self.assertIn("SQLITE_DB_PATH: /app/data/", self.compose)
+
+    def test_compose_selects_the_sqlite_backend(self):
+        self.assertIn("DB_BACKEND: sqlite", self.compose)
 
 
 if __name__ == "__main__":

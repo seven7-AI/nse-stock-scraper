@@ -28,6 +28,10 @@ nse-stock-scraper/
 │   ├── DOCKER.md
 │   └── SUPABASE_SETUP.md
 ├── reports/
+├── data/
+│   └── nse_scraper.sqlite3   (gitignored)
+├── sql/
+│   └── sqlite/001_schema.sql
 ├── tests/
 ├── scrapy.cfg
 └── README.md
@@ -39,4 +43,5 @@ nse-stock-scraper/
 - `scripts/` contains executable operational scripts (Linux-first).
 - `nse_scraper/` remains the Scrapy application package.
 - `docs/` contains operator and developer guidance.
+- `data/` holds the SQLite database; the file is gitignored, the directory is not.
 - `config/` contains env templates only.

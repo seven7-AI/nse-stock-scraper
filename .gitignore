@@ -144,3 +144,13 @@ cython_debug/
 
 # Host-specific record of the installed cron entry (written by install_daily_cron.sh)
 deployment/cron/daily-cron.installed
+
+.env.bak*
+
+# Local SQLite database (DB_BACKEND=sqlite). The data itself is not committed: it is
+# rebuilt from reports/local_fallback/*.jsonl, which IS committed, via
+# scripts/migrate_fallback_to_sqlite.py. Committing a binary rewritten on every run would
+# bloat history and conflict on the wrapper's rebase-then-push.
+data/*.sqlite3
+data/*.sqlite3-wal
+data/*.sqlite3-shm

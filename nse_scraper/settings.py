@@ -8,13 +8,21 @@ BOT_NAME = 'nse_scraper'
 SPIDER_MODULES = ['nse_scraper.spiders']
 NEWSPIDER_MODULE = 'nse_scraper.spiders'
 
-# Supabase-only storage configuration
-DB_BACKEND = os.getenv("DB_BACKEND", "supabase").strip().lower()
+# Storage configuration. SQLite is the default backend; Supabase remains selectable with
+# DB_BACKEND=supabase (see nse_scraper/db/backends.py:create_backend).
+DB_BACKEND = os.getenv("DB_BACKEND", "sqlite").strip().lower()
 STOCK_TABLE = os.getenv("STOCK_TABLE", "stock_data")
+STOCKANALYSIS_TABLE = os.getenv("STOCKANALYSIS_TABLE", "stockanalysis_stocks")
+
+# SQLite: relative paths resolve against the working directory, which is the repo root
+# locally and /app in the container. deployment/docker-compose.yml mounts ../data there,
+# so the database survives `docker compose run --rm` exactly as reports/ does.
+SQLITE_DB_PATH = os.getenv("SQLITE_DB_PATH", "data/nse_scraper.sqlite3")
+
+# Supabase (alternate backend)
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 SUPABASE_TABLE = os.getenv("SUPABASE_TABLE", STOCK_TABLE)
-STOCKANALYSIS_TABLE = os.getenv("STOCKANALYSIS_TABLE", "stockanalysis_stocks")
 
 # Item pipelines
 ITEM_PIPELINES = {

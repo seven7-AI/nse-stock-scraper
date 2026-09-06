@@ -1,0 +1,281 @@
+{
+  "generated_at": "2026-09-06T14:01:18.244341+00:00",
+  "source_dir": "/home/kevin/nse-stock-scraper/reports/local_fallback",
+  "db_path": "/home/kevin/nse-stock-scraper/data/nse_scraper.sqlite3",
+  "dry_run": false,
+  "source": {
+    "stock_data": {
+      "files": 2,
+      "rows": 142,
+      "ok": 142,
+      "failed": 0,
+      "tickers": 71
+    },
+    "stockanalysis_stocks": {
+      "files": 43,
+      "rows": 2772,
+      "ok": 2772,
+      "failed": 0,
+      "tickers": 64
+    }
+  },
+  "database": {
+    "stock_data": {
+      "row_count": 71,
+      "distinct_tickers": 71,
+      "price_history_depths": {
+        "1": 12,
+        "2": 59
+      },
+      "price_history_total_points": 130,
+      "scraped_at_span": [
+        "2026-08-18T07:01:14.467483+00:00",
+        "2026-08-18T07:01:14.492699+00:00"
+      ]
+    },
+    "stockanalysis_stocks": {
+      "row_count": 64,
+      "distinct_tickers": 64,
+      "price_history_depths": {
+        "1": 8,
+        "8": 1,
+        "23": 1,
+        "28": 1,
+        "29": 4,
+        "30": 13,
+        "31": 34,
+        "32": 2
+      },
+      "price_history_total_points": 1691,
+      "scraped_at_span": [
+        "2026-07-27T07:02:16.890444+00:00",
+        "2026-09-06T07:02:25.192442+00:00"
+      ],
+      "metrics_fill": {
+        "overview_metrics": 64,
+        "performance_metrics": 57,
+        "dividends_metrics": 39,
+        "price_metrics": 63,
+        "profile_metrics": 62
+      }
+    },
+    "sample_stockanalysis_record": {
+      "ticker_symbol": "DTK",
+      "company_name": "Diamond Trust Bank Kenya Limited",
+      "rank": 15,
+      "stock_price": 192.5,
+      "stock_change": 0.13,
+      "scraped_at": "2026-09-06T07:02:25.192442+00:00",
+      "created_at": "2026-09-06T14:01:07.777340+00:00",
+      "updated_at": "2026-09-06T14:01:18.060671+00:00",
+      "overview_metrics": {
+        "marketCap": 53823427350,
+        "revenue": 40138564000,
+        "volume": null,
+        "industry": null,
+        "sector": null,
+        "revenueGrowth": null,
+        "netIncome": null,
+        "fcf": null,
+        "netCash": null
+      },
+      "performance_metrics": {
+        "tr1y": 93.47
+      },
+      "dividends_metrics": {
+        "dps": 9.0,
+        "dividendYield": 4.67,
+        "dividendGrowth": 28.57,
+        "exDivDate": "May 25, 2026",
+        "payoutRatio": 17.74,
+        "payoutFrequency": "Annual"
+      },
+      "price_metrics": {
+        "volume": 700079,
+        "low52": 95.5,
+        "high52": 198.5,
+        "low52ch": 101.57,
+        "high52ch": -3.02
+      },
+      "profile_metrics": {
+        "industry": "Commercial Banks",
+        "founded": 1946,
+        "employees": 2957
+      },
+      "price_history": [
+        {
+          "scraped_at": "2026-07-26T18:09:30.633539+00:00",
+          "stock_price": 150.75,
+          "stock_change": 0.836
+        },
+        {
+          "scraped_at": "2026-07-28T07:02:23.088318+00:00",
+          "stock_price": 154.0,
+          "stock_change": 2.156
+        },
+        {
+          "scraped_at": "2026-07-29T07:02:30.353677+00:00",
+          "stock_price": 151.5,
+          "stock_change": -1.623
+        },
+        {
+          "scraped_at": "2026-07-30T07:02:25.958336+00:00",
+          "stock_price": 152.0,
+          "stock_change": 0.33
+        },
+        {
+          "scraped_at": "2026-07-31T07:02:15.744654+00:00",
+          "stock_price": 152.75,
+          "stock_change": 0.493
+        },
+        {
+          "scraped_at": "2026-08-01T07:02:29.855930+00:00",
+          "stock_price": 152.5,
+          "stock_change": -0.164
+        },
+        {
+          "scraped_at": "2026-08-04T07:02:27.459278+00:00",
+          "stock_price": 152.5,
+          "stock_change": 0.0
+        },
+        {
+          "scraped_at": "2026-08-05T07:02:20.613010+00:00",
+          "stock_price": 154.0,
+          "stock_change": 0.984
+        },
+        {
+          "scraped_at": "2026-08-06T07:02:27.129598+00:00",
+          "stock_price": 154.25,
+          "stock_change": 0.162
+        },
+        {
+          "scraped_at": "2026-08-07T07:03:12.662251+00:00",
+          "stock_price": 154.0,
+          "stock_change": -0.162
+        },
+        {
+          "scraped_at": "2026-08-08T07:00:39.679960+00:00",
+          "stock_price": 154.25,
+          "stock_change": 0.162
+        },
+        {
+          "scraped_at": "2026-08-11T07:02:24.434832+00:00",
+          "stock_price": 154.5,
+          "stock_change": 0.162
+        },
+        {
+          "scraped_at": "2026-08-12T07:02:30.365431+00:00",
+          "stock_price": 154.5,
+          "stock_change": 0.0
+        },
+        {
+          "scraped_at": "2026-08-13T07:02:23.234183+00:00",
+          "stock_price": 154.25,
+          "stock_change": -0.162
+        },
+        {
+          "scraped_at": "2026-08-14T07:02:42.431535+00:00",
+          "stock_price": 154.0,
+          "stock_change": -0.162
+        },
+        {
+          "scraped_at": "2026-08-15T07:02:47.240152+00:00",
+          "stock_price": 154.0,
+          "stock_change": 0.0
+        },
+        {
+          "scraped_at": "2026-08-19T07:03:03.685189+00:00",
+          "stock_price": 156.5,
+          "stock_change": 1.623
+        },
+        {
+          "scraped_at": "2026-08-20T07:02:36.477816+00:00",
+          "stock_price": 168.5,
+          "stock_change": 7.668
+        },
+        {
+          "scraped_at": "2026-08-21T07:03:05.096118+00:00",
+          "stock_price": 171.25,
+          "stock_change": 1.632
+        },
+        {
+          "scraped_at": "2026-08-22T07:02:26.581346+00:00",
+          "stock_price": 173.25,
+          "stock_change": 1.168
+        },
+        {
+          "scraped_at": "2026-08-25T07:02:28.341128+00:00",
+          "stock_price": 177.75,
+          "stock_change": 2.597
+        },
+        {
+          "scraped_at": "2026-08-26T07:02:34.931887+00:00",
+          "stock_price": 184.0,
+          "stock_change": 3.516
+        },
+        {
+          "scraped_at": "2026-08-27T07:02:31.282301+00:00",
+          "stock_price": 183.75,
+          "stock_change": -0.136
+        },
+        {
+          "scraped_at": "2026-08-28T07:02:27.798049+00:00",
+          "stock_price": 184.25,
+          "stock_change": 0.272
+        },
+        {
+          "scraped_at": "2026-08-29T07:03:44.751861+00:00",
+          "stock_price": 187.5,
+          "stock_change": 1.764
+        },
+        {
+          "scraped_at": "2026-09-01T07:02:24.703048+00:00",
+          "stock_price": 195.0,
+          "stock_change": 4.0
+        },
+        {
+          "scraped_at": "2026-09-02T07:02:25.466726+00:00",
+          "stock_price": 194.25,
+          "stock_change": -0.385
+        },
+        {
+          "scraped_at": "2026-09-03T07:02:20.011753+00:00",
+          "stock_price": 192.75,
+          "stock_change": -0.772
+        },
+        {
+          "scraped_at": "2026-09-04T07:02:23.128968+00:00",
+          "stock_price": 192.25,
+          "stock_change": -0.259
+        },
+        {
+          "scraped_at": "2026-09-05T07:02:21.665509+00:00",
+          "stock_price": 192.5,
+          "stock_change": 0.13
+        }
+      ]
+    },
+    "sample_stock_data_record": {
+      "ticker_symbol": "ABSA",
+      "stock_name": "Absa Bank Kenya Plc",
+      "stock_price": 34.5,
+      "stock_change": 0.35,
+      "scraped_at": "2026-08-18T07:01:14.467483+00:00",
+      "created_at": "2026-08-18T07:01:14.467483+00:00",
+      "price_history": [
+        {
+          "scraped_at": "2026-08-08T07:00:26.368810+00:00",
+          "stock_price": 33.4,
+          "stock_change": 0.1
+        },
+        {
+          "scraped_at": "2026-08-18T07:01:14.467483+00:00",
+          "stock_price": 34.5,
+          "stock_change": 0.35
+        }
+      ]
+    }
+  },
+  "problems": [],
+  "ok": true
+}

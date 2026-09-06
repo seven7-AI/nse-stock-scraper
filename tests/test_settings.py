@@ -4,6 +4,7 @@ Tests for nse_scraper settings - Configuration validation
 import unittest
 import os
 from nse_scraper import settings
+from nse_scraper.db import SUPPORTED_BACKENDS
 
 
 class TestScrapySettings(unittest.TestCase):
@@ -28,9 +29,18 @@ class TestScrapySettings(unittest.TestCase):
         self.assertIn(log_level, ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"])
 
     def test_db_backend_configured(self):
-        """Test DB backend setting exists and is valid"""
+        """Test DB backend setting exists and names a backend create_backend accepts.
+
+        Asserts membership rather than one literal name: settings.py reads DB_BACKEND from
+        the environment (and a repo-root .env), so pinning the value here fails for any
+        developer who has selected a different backend, and again on every default change.
+        """
         backend = getattr(settings, "DB_BACKEND", None)
-        self.assertEqual(backend, "supabase")
+        self.assertIn(backend, SUPPORTED_BACKENDS)
+
+    def test_sqlite_path_configured(self):
+        """SQLite needs a path; without one create_backend('sqlite') raises."""
+        self.assertTrue(getattr(settings, "SQLITE_DB_PATH", None))
 
     def test_concurrent_requests(self):
         """Test concurrent requests setting"""

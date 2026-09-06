@@ -1,5 +1,10 @@
 # Supabase setup
 
+> **Supabase is no longer the default backend.** Storage moved to a local SQLite database
+> on 2026-09-06 — see [MIGRATION_SUPABASE_TO_SQLITE.md](MIGRATION_SUPABASE_TO_SQLITE.md).
+> This document covers the alternate backend, selected with `DB_BACKEND=supabase`.
+
+
 Use Supabase as the storage backend by switching env and creating the table once.
 
 ## 1. Create the table in Supabase
@@ -58,4 +63,6 @@ From the project root:
 scrapy crawl afx_scraper
 ```
 
-This repository is configured for Supabase-only runtime. Keep `DB_BACKEND=supabase`.
+To use this backend instead of the SQLite default, set `DB_BACKEND=supabase` along with
+`SUPABASE_URL` and `SUPABASE_KEY`. The SQLite database is left untouched and you can
+switch back at any time.

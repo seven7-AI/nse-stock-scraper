@@ -7,8 +7,12 @@ services:
     env_file:
       - ../.env
     environment:
-      DB_BACKEND: supabase
+      DB_BACKEND: sqlite
+      # Inside the ../data mount below, so the database survives `run --rm`. Pointing this
+      # anywhere else in the container filesystem silently discards every run's data.
+      SQLITE_DB_PATH: /app/data/nse_scraper.sqlite3
     volumes:
       - ../reports:/app/reports
       - ../httpcache:/app/httpcache
+      - ../data:/app/data
     entrypoint: ["bash", "scripts/run_daily_job.sh"]

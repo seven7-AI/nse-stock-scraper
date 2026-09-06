@@ -2,7 +2,7 @@
 import logging
 from scrapy.exceptions import DropItem
 
-from .db import create_backend
+from .db import SUPPORTED_BACKENDS, create_backend
 from .extensions import DB_FAILED_STAT, DB_OK_STAT
 
 logger = logging.getLogger(__name__)
@@ -15,9 +15,10 @@ class NseScraperPipeline:
         self,
         db_backend,
         stock_table,
-        supabase_url,
-        supabase_key,
-        supabase_table,
+        supabase_url=None,
+        supabase_key=None,
+        supabase_table="stock_data",
+        sqlite_path=None,
         stats=None,
     ):
         self.db_backend = db_backend
@@ -28,16 +29,18 @@ class NseScraperPipeline:
             supabase_url=supabase_url,
             supabase_key=supabase_key,
             supabase_table=supabase_table,
+            sqlite_path=sqlite_path,
         )
 
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
-            db_backend=crawler.settings.get("DB_BACKEND", "supabase"),
+            db_backend=crawler.settings.get("DB_BACKEND", "sqlite"),
             stock_table=crawler.settings.get("STOCK_TABLE", "stock_data"),
             supabase_url=crawler.settings.get("SUPABASE_URL"),
             supabase_key=crawler.settings.get("SUPABASE_KEY"),
             supabase_table=crawler.settings.get("SUPABASE_TABLE", "stock_data"),
+            sqlite_path=crawler.settings.get("SQLITE_DB_PATH", "data/nse_scraper.sqlite3"),
             # Retained so the data-quality gate can see whether writes succeeded.
             stats=crawler.stats,
         )
@@ -88,18 +91,30 @@ class NseScraperPipeline:
 class StockAnalysisPipeline:
     """Groups per-view StockAnalysis items by ticker_symbol and upserts one row per stock to Supabase."""
 
-    def __init__(self, db_backend, supabase_url, supabase_key, stockanalysis_table, stats=None):
+    def __init__(
+        self,
+        db_backend,
+        stockanalysis_table,
+        supabase_url=None,
+        supabase_key=None,
+        sqlite_path=None,
+        stats=None,
+    ):
         self.db_backend = (db_backend or "").strip().lower()
         self.stockanalysis_table = stockanalysis_table
         self.stats = stats
         self.storage = None
-        if self.db_backend == "supabase":
+        # Built for any supported backend. An unset or unknown backend leaves storage as
+        # None and process_item passes items straight through, which is what keeps an
+        # ad-hoc crawl with no database configured from failing.
+        if self.db_backend in SUPPORTED_BACKENDS:
             self.storage = create_backend(
-                backend_name="supabase",
+                backend_name=self.db_backend,
                 supabase_url=supabase_url,
                 supabase_key=supabase_key,
                 supabase_table="stock_data",
                 stockanalysis_table=stockanalysis_table,
+                sqlite_path=sqlite_path,
             )
         self._buffer = {}
 
@@ -107,9 +122,10 @@ class StockAnalysisPipeline:
     def from_crawler(cls, crawler):
         return cls(
             db_backend=crawler.settings.get("DB_BACKEND"),
+            stockanalysis_table=crawler.settings.get("STOCKANALYSIS_TABLE", "stockanalysis_stocks"),
             supabase_url=crawler.settings.get("SUPABASE_URL"),
             supabase_key=crawler.settings.get("SUPABASE_KEY"),
-            stockanalysis_table=crawler.settings.get("STOCKANALYSIS_TABLE", "stockanalysis_stocks"),
+            sqlite_path=crawler.settings.get("SQLITE_DB_PATH", "data/nse_scraper.sqlite3"),
             # Retained so the data-quality gate can see whether writes succeeded.
             stats=crawler.stats,
         )

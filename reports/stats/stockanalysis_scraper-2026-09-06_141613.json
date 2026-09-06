@@ -1,7 +1,7 @@
 {
   "spider": "stockanalysis_scraper",
   "finish_reason": "finished",
-  "finished_at": "2026-09-06T14:29:03.072114+00:00",
+  "finished_at": "2026-09-06T14:16:13.858806+00:00",
   "item_scraped_count": 123,
   "min_items": 95,
   "db_upsert_ok": 63,

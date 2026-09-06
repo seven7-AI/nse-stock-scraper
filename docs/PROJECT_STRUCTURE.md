@@ -23,6 +23,7 @@ nse-stock-scraper/
 │   └── .env.docker
 ├── docs/
 │   ├── INDEX.md
+│   ├── ARCHITECTURE.md
 │   ├── QUICKSTART.md
 │   ├── DOCKER.md
 │   └── SUPABASE_SETUP.md

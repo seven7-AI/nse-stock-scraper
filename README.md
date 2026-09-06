@@ -2,6 +2,9 @@
 
 Scrapy project that collects NSE market data and writes to Supabase.
 
+For a full walkthrough of the architecture and the data flow from the cron entry to the
+stored row, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## What Runs Daily
 
 - `afx_scraper`

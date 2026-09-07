@@ -4098,3 +4098,23 @@ time="2026-09-06T16:25:26+02:00" level=warning msg="Found orphan containers ([de
 [2026-09-06T14:29:04+0000] QUALITY stockanalysis_scraper OK items=123 min=95 db_ok=63 db_failed=0
 [2026-09-06T14:29:04+0000] RUN_STATUS SUCCESS
 [2026-09-06T16:29:05+0200] DOCKER_RUN_STATUS SUCCESS exit=0
+[main 910f010] chore(log): daily scraper run 2026-09-06 - SUCCESS
+ 8 files changed, 367 insertions(+), 9 deletions(-)
+ create mode 100644 reports/run-2026-09-06_142528.log
+ create mode 100644 reports/stats/afx_scraper-2026-09-06_141455.json
+ create mode 100644 reports/stats/afx_scraper-2026-09-06_142739.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-09-06_141613.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-09-06_142903.json
+[2026-09-06T16:29:06+0200] GIT_COMMIT_STATUS SUCCESS
+time="2026-09-07T09:00:03+02:00" level=warning msg="Found orphan containers ([deployment-api-1 deployment-celery-flower-1 deployment-celery-worker-1 deployment-nginx-1 deployment-minio-1 deployment-redis-1 deployment-certbot-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-ab6e213c2c0a Creating 
+ Container deployment-scraper-job-run-ab6e213c2c0a Created 
+[2026-09-07T07:00:05+0000] RUN_START
+[2026-09-07T07:00:05+0000] START afx_scraper
+[2026-09-07T07:02:15+0000] END afx_scraper exit=0
+[2026-09-07T07:02:15+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-09-07T07:02:15+0000] START stockanalysis_scraper
+[2026-09-07T07:03:38+0000] END stockanalysis_scraper exit=0
+[2026-09-07T07:03:38+0000] QUALITY stockanalysis_scraper OK items=120 min=95 db_ok=63 db_failed=0
+[2026-09-07T07:03:38+0000] RUN_STATUS SUCCESS
+[2026-09-07T09:03:39+0200] DOCKER_RUN_STATUS SUCCESS exit=0

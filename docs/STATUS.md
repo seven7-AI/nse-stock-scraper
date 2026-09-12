@@ -250,3 +250,24 @@ No temporary scripts remain. Test suite in the image: **181 pass** (148 baseline
 - The 2017-03-24 second block is quarantined, not attributed.
 - `adjusted_price` semantics are undocumented in the source; stored verbatim.
 - `afx_scraper` still scrapes 0 items (host unreachable); `stock_data` remains stale.
+
+---
+
+## Phase 11 — 2026 price_history backfill  ✅ 2026-09-12
+
+Before the canonical table existed, the scraper's daily observations lived only in each
+row's `price_history` JSON (appended whenever price or change moved). Those are real
+scrapes dated by `scraped_at`, so `scripts/backfill_observations_from_history.py` replays
+them into `stock_observations`: `data_source='nse_scraper'`, flagged
+`backfilled_from_price_history`, resolved through `instrument_aliases`, `INSERT OR IGNORE`.
+
+| | |
+|---|---|
+| tickers / points read | 64 / 1,961 |
+| inserted | **1,907** (54 were today's rows, already present) |
+| second run | inserted 0 |
+| KCB after 2024-12-31 | 36 points, 2026-07-26 → 2026-09-12 (was 1) |
+| duplicate keys | 0 · validation still PASS |
+
+The 2025-01-01 → 2026-07-25 stretch has no observations from any source and stays a gap.
+This is what the stock-growth diagrams in nse-be draw from.

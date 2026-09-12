@@ -27,6 +27,13 @@ TICKER_ALIASES = (
           "FAHR last 2022-05-31, LAPR first 2023-03-22; Stanlib Fahari I-REIT -> Laptrust Imara I-REIT"),
     Alias("CFCI", "LBTY", "rebrand",
           "CFCI last 2012-12-31, LBTY first 2013-01-02; both rows named 'Liberty Kenya Holdings'"),
+    # Scraper-side code change, not an archive one: the scraper's HFCK row went stale on
+    # 2026-07-27 and HFCB appeared the same day, both named 'HFCB Group Plc'. The archive
+    # (official NSE codes) knows the company as HFCK through 2024-12-31, so HFCK stays
+    # canonical and the scraper's new code resolves onto it.
+    Alias("HFCB", "HFCK", "listing_code_change",
+          "scraper: HFCK last scraped 2026-07-27, HFCB from 2026-07-27, same name 'HFCB Group Plc'; "
+          "archive knows HFCK 2007-01-02..2024-12-31"),
 )
 
 _ALIAS_INDEX = {a.source_ticker: a for a in TICKER_ALIASES}

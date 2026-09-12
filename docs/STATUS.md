@@ -140,7 +140,7 @@ never imported by the scraper itself:
 |---|---|
 | `readers.py` | BOM-safe reading; the four header variants map to one `RawRow`; 1-based `source_row` kept for audit |
 | `normalize.py` | two date layouts (memoised regex — `strptime` was 300µs/call); numbers with commas and `%`; `-` is missing **only when it is the whole cell**; sign preserved |
-| `lineage.py` | the seven aliases as data with evidence; typing by suffix (`-R`, `-P\d`, `^`) with parent ticker |
+| `lineage.py` | the eight aliases as data with evidence; typing by suffix (`-R`, `-P\d`, `^`) with parent ticker |
 | `sectors.py` | the five sector files; the 2023_2024 correction; label rename; 2013 index rows; newest file wins |
 | `repairs.py` | the four evidence-based date repairs |
 | `importer.py` | idempotent load; `INSERT OR IGNORE` everywhere; conflicts quarantined; `import_runs` audit |
@@ -223,13 +223,14 @@ Full report: `reports/historical_validation.md`. Headlines:
   The previous notebook reported 40,367 mismatches on the same data — that was its own
   sign-stripping bug, not the data.
 - 91,262 negative `change_abs` preserved.
-- All seven aliases collapse cleanly; ABSA spans 2007-01-02 → 2026-09-12 in one query.
+- All eight aliases collapse cleanly; ABSA spans 2007-01-02 → 2026-09-12 in one query.
 - Seven spot checks (KCB 2007-01-02, SCOM IPO day, the BBK/ABSA seam, KPLC-P7, ^NASI,
   KCB 2024-12-31) match the CSV line byte-for-byte on code, date, close and volume.
 - 57 of 64 scraped tickers join the archive. Scraper-only: KPC, FMLY, AMAC, SKL, TRFC,
-  ALP (2025 listings) and **HFCB — a scraper-side duplicate of HFCK** (both rows named
-  "HFCB Group Plc"). Not aliased: doing so would drop one price per day. Flagged for the
-  scraper's symbol list.
+  ALP (2025 listings). **HFCB is HF Group's new code at the scraper's source**: the
+  scraper's HFCK row went stale on 2026-07-27 and HFCB appeared the same day, both named
+  "HFCB Group Plc". Aliased HFCB → HFCK (the NSE code the archive uses), so HFCK now
+  spans 2007-01-02 → 2026-09-12. Today's one HFCB row was migrated. 58 of 64 join.
 - Large moves since the archive ended (CGEN 12.5×, SMER 7.5×, UCHM 7.2×) are the same
   companies by name — thinly traded small caps, informational only.
 

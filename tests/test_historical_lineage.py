@@ -62,7 +62,11 @@ class TestAliasesAgainstTheArchive(unittest.TestCase):
         for alias in lineage.TICKER_ALIASES:
             old = self.spans.get(alias.source_ticker)
             new = self.spans.get(alias.canonical_ticker)
-            self.assertIsNotNone(old, alias.source_ticker)
+            if old is None:
+                # A scraper-side code change (HFCB): the source code never appears in the
+                # archive, so there is nothing to overlap with. The canonical must exist.
+                self.assertIsNotNone(new, alias.canonical_ticker)
+                continue
             self.assertIsNotNone(new, alias.canonical_ticker)
             self.assertLess(old[1], new[0], "{} overlaps {}".format(alias.source_ticker, alias.canonical_ticker))
 

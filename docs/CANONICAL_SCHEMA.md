@@ -52,6 +52,7 @@ Rights and preference shares inherit their parent's sector. Indices carry `Indic
 | C&G | CGEN | listing_code_change | same seam |
 | FAHR | LAPR | rebrand | 2022-05-31 → 2023-03-22 |
 | CFCI | LBTY | rebrand | same seam; both named "Liberty Kenya Holdings" |
+| HFCB | HFCK | listing_code_change | scraper-side: HFCK stale from 2026-07-27, HFCB from the same day, same name; archive uses HFCK |
 
 The scraper resolves through this table on every write, so a code the exchange retires
 tomorrow only needs a row here. `CFCI → CIC` was considered and rejected: both trade

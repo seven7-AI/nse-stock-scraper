@@ -1,7 +1,7 @@
 {
   "spider": "afx_scraper",
   "finish_reason": "finished",
-  "finished_at": "2026-09-12T16:25:21.558224+00:00",
+  "finished_at": "2026-09-12T16:20:48.653577+00:00",
   "item_scraped_count": 0,
   "min_items": 0,
   "db_upsert_ok": 0,

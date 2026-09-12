@@ -1,6 +1,6 @@
 # Historical import validation
 
-**Overall: FAIL**
+**Overall: PASS**
 
 ## Summary
 
@@ -43,7 +43,8 @@
 | ✅ | no non-positive close prices | 0 |
 | ℹ️ | missing values are NULL, not invented | archive rows without volume: 61803; without change: 106762; without name: 48 |
 | ℹ️ | quality flags | {"backfilled_from_price_history": 1907, "date_repaired": 228, "scrape_date_is_observation_date": 1970} |
-| ❌ | every instrument trading in 2024 has a sector | unclassified-but-active: ['ALP', 'AMAC', 'FMLY', 'KPC', 'SKL', 'TRFC'] |
+| ✅ | every instrument the archive saw in 2024 has a sector | unclassified-but-active: none |
+| ℹ️ | scraper-only listings awaiting a sector (absent from every sector file; never guessed) | ['ALP', 'AMAC', 'FMLY', 'KPC', 'SKL', 'TRFC'] |
 | ℹ️ | unclassified instruments (delisted pre-2013, never guessed) | 17: ['ACCS', 'ALP', 'AMAC', 'BAUM', 'BERG', 'CITY', 'CMC', 'FMLY', 'ICDC', 'KPC', 'MASH', 'PAFR', 'REA', 'SKL', 'TRFC', 'UTK', '^NBDI'] |
 | ℹ️ | ordinary shares by sector | NULL=16; Commercial and Services=13; Banking=12; Manufacturing and Allied=8; Insurance=6; Agricultural=6; Investment=5; Energy and Petroleum=5; Construction and Allied=5; Telecommunication=1; Investment Services=1; Automobiles and Accessories=1 |
 | ✅ | KCB has an unbroken 2007 -> latest series | 4517 rows, 2007-01-02..2026-09-12, 19 distinct years |

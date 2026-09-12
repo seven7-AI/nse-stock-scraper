@@ -154,15 +154,25 @@ def _quality_checks(c):
 
 
 def _sector_checks(c):
+    # Sector files cover the archive, so the strict check is scoped to instruments the
+    # ARCHIVE saw in its final year. Listings that exist only in the scraper (2025+)
+    # appear in no sector file; NULL is the honest value and they are reported apart.
     active_unclassified = [r[0] for r in c.execute(
-        "SELECT ticker_symbol FROM instruments WHERE sector IS NULL AND instrument_type != 'index' "
-        "AND last_seen_date >= '2024-01-01' ORDER BY 1")]
+        "SELECT i.ticker_symbol FROM instruments i WHERE i.sector IS NULL AND i.instrument_type != 'index' "
+        "AND EXISTS (SELECT 1 FROM stock_observations o WHERE o.ticker_symbol = i.ticker_symbol "
+        "AND o.data_source LIKE 'nse_archive:%' AND o.trade_date >= '2024-01-01') ORDER BY 1")]
+    scraper_only_unclassified = [r[0] for r in c.execute(
+        "SELECT i.ticker_symbol FROM instruments i WHERE i.sector IS NULL AND i.instrument_type != 'index' "
+        "AND NOT EXISTS (SELECT 1 FROM stock_observations o WHERE o.ticker_symbol = i.ticker_symbol "
+        "AND o.data_source LIKE 'nse_archive:%') ORDER BY 1")]
     unclassified = [r[0] for r in c.execute("SELECT ticker_symbol FROM instruments WHERE sector IS NULL ORDER BY 1")]
     by_sector = c.execute(
         "SELECT sector, count(*) FROM instruments WHERE instrument_type = 'ordinary' GROUP BY 1 ORDER BY 2 DESC").fetchall()
     return [
-        _check("every instrument trading in 2024 has a sector", not active_unclassified,
+        _check("every instrument the archive saw in 2024 has a sector", not active_unclassified,
                "unclassified-but-active: {}".format(active_unclassified or "none")),
+        _check("scraper-only listings awaiting a sector (absent from every sector file; never guessed)", None,
+               "{}".format(scraper_only_unclassified or "none")),
         _check("unclassified instruments (delisted pre-2013, never guessed)", None,
                "{}: {}".format(len(unclassified), unclassified)),
         _check("ordinary shares by sector", None,

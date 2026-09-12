@@ -126,6 +126,44 @@ class TestSchemaCreation(_SqliteTestCase):
             actual = [(r[1], r[2], r[5]) for r in live.execute("PRAGMA table_info({})".format(table))]
             self.assertEqual(expected, actual, table)
 
+    def test_canonical_ddl_matches_the_runtime_schema(self):
+        """sql/sqlite/002_canonical.sql, the CANONICAL_SCHEMA_SQL the runtime executes, and
+        the Alembic revision that imports that same constant must all describe the same
+        tables. Comparing the shipped .sql to the live database covers all three."""
+        from nse_scraper.db.canonical_schema import CANONICAL_TABLES
+
+        ddl_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+            "sql", "sqlite", "002_canonical.sql",
+        )
+        reference = sqlite3.connect(":memory:")
+        self.addCleanup(reference.close)
+        with open(ddl_path, encoding="utf-8") as handle:
+            reference.executescript(handle.read())
+
+        live = sqlite3.connect(self.db_path)
+        self.addCleanup(live.close)
+        for table in CANONICAL_TABLES:
+            expected = [(r[1], r[2], r[3], r[5]) for r in reference.execute("PRAGMA table_info({})".format(table))]
+            actual = [(r[1], r[2], r[3], r[5]) for r in live.execute("PRAGMA table_info({})".format(table))]
+            self.assertTrue(expected, "{} missing from the shipped DDL".format(table))
+            self.assertEqual(expected, actual, table)
+            # the unique key that makes ingestion idempotent
+            if table == "stock_observations":
+                indexes = [r[1] for r in live.execute("PRAGMA index_list(stock_observations)") if r[2] == 1]
+                cols = [live.execute("PRAGMA index_info({})".format(i)).fetchall() for i in indexes]
+                self.assertTrue(any([c[2] for c in ci] == ["ticker_symbol", "trade_date"] for ci in cols),
+                                "UNIQUE(ticker_symbol, trade_date) must exist")
+
+    def test_alembic_revision_uses_the_same_ddl(self):
+        """The migration must not carry its own copy of the schema that could drift."""
+        path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "alembic", "versions", "20260912_0002_canonical_observations.py")
+        with open(path, encoding="utf-8") as handle:
+            source = handle.read()
+        self.assertIn("from nse_scraper.db.canonical_schema import CANONICAL_SCHEMA_SQL, CANONICAL_TABLES", source)
+        self.assertNotIn("CREATE TABLE", source)
+
 
 class TestUpsertBehaviour(_SqliteTestCase):
     def test_repeated_writes_keep_one_row_per_ticker(self):

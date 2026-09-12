@@ -5,6 +5,8 @@ import os
 import re
 import sqlite3
 
+from nse_scraper.db.canonical_schema import CANONICAL_SCHEMA_SQL
+
 logger = logging.getLogger(__name__)
 
 # The five per-view JSONB/JSON columns on stockanalysis_stocks. Order matters only for
@@ -53,6 +55,15 @@ def _iso(value):
 
 def _float_or_none(value):
     return float(value) if value is not None else None
+
+
+def _int_or_none(value):
+    if value is None:
+        return None
+    try:
+        return int(round(float(value)))
+    except (TypeError, ValueError):
+        return None
 
 
 def _quote_identifier(name):
@@ -335,6 +346,9 @@ class SQLiteBackend(_BaseBackend):
                 sa_name=self.stockanalysis_table,
             )
         )
+        # Canonical (ticker, trade_date) tables. Purely additive: the two per-ticker
+        # tables above are untouched, and every statement is IF NOT EXISTS.
+        self.connection.executescript(CANONICAL_SCHEMA_SQL)
         self.connection.commit()
 
     def _existing_price_history(self, table_sql, ticker_symbol):
@@ -425,6 +439,11 @@ class SQLiteBackend(_BaseBackend):
                 json_columns=METRICS_COLUMNS + ("price_history",),
                 immutable_on_update=("created_at",),
             )
+            # The per-ticker row is now stored. Also append today's observation to the
+            # canonical (ticker, trade_date) timeline. Kept separate so a failure here
+            # can never mask the success above or change the quality gate's accounting:
+            # the record is preserved to its own fallback file for replay instead.
+            self._record_observation(record, scraped_at)
             return True
         except Exception:
             logger.exception("SQLite upsert_stockanalysis_stock failed; writing local fallback")
@@ -432,6 +451,75 @@ class SQLiteBackend(_BaseBackend):
                 payload.pop("created_at", None)
                 payload.pop("updated_at", None)
             self._write_local_fallback("stockanalysis_stocks", payload if payload is not None else dict(record))
+            return False
+
+    # -- canonical timeline ------------------------------------------------------
+    def _canonical_ticker(self, ticker_symbol):
+        """Resolve a scraped code through instrument_aliases (BBK -> ABSA). Cached."""
+        cache = getattr(self, "_alias_cache", None)
+        if cache is None:
+            cache = self._alias_cache = {}
+        if ticker_symbol in cache:
+            return cache[ticker_symbol]
+        row = self.connection.execute(
+            "SELECT canonical_ticker FROM instrument_aliases WHERE source_ticker = ?",
+            (ticker_symbol,),
+        ).fetchone()
+        cache[ticker_symbol] = row["canonical_ticker"] if row else ticker_symbol
+        return cache[ticker_symbol]
+
+    def _record_observation(self, record, scraped_at_iso):
+        """Append one row to stock_observations for this scrape's calendar day.
+
+        INSERT OR IGNORE on the (ticker_symbol, trade_date) unique key: a second run
+        on the same day is a no-op, and a re-run after the archive import cannot
+        overwrite an archive row. An instrument the archive never saw is created on
+        first sight with sector NULL rather than guessed.
+        """
+        ticker = (record.get("ticker_symbol") or "").strip().upper()
+        price = _float_or_none(record.get("stock_price"))
+        if not ticker or price is None:
+            return False
+        try:
+            canonical = self._canonical_ticker(ticker)
+            trade_date = str(scraped_at_iso)[:10]
+            now = datetime.now(timezone.utc).isoformat()
+            price_metrics = record.get("price_metrics") or {}
+            if not isinstance(price_metrics, dict):
+                price_metrics = {}
+            with self.connection as connection:
+                connection.execute(
+                    "INSERT OR IGNORE INTO instruments (ticker_symbol, company_name, instrument_type, "
+                    "created_at, updated_at) VALUES (?, ?, 'ordinary', ?, ?)",
+                    (canonical, record.get("company_name") or canonical, now, now),
+                )
+                cursor = connection.execute(
+                    "INSERT OR IGNORE INTO stock_observations ("
+                    "ticker_symbol, trade_date, source_ticker, company_name, close_price, change_abs, "
+                    "volume, year_low, year_high, data_source, source_date_raw, quality_flags, "
+                    "created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (
+                        canonical, trade_date, ticker, record.get("company_name"), price,
+                        _float_or_none(record.get("stock_change")),
+                        _int_or_none(price_metrics.get("volume")),
+                        _float_or_none(price_metrics.get("low52")),
+                        _float_or_none(price_metrics.get("high52")),
+                        "nse_scraper", str(scraped_at_iso),
+                        json.dumps(["scrape_date_is_observation_date"]),
+                        now, now,
+                    ),
+                )
+            if cursor.rowcount == 1:
+                logger.debug("observation recorded %s %s", canonical, trade_date)
+            return True
+        except Exception:
+            logger.exception("stock_observations insert failed for %s; writing local fallback", ticker)
+            self._write_local_fallback(
+                "stock_observations",
+                {"ticker_symbol": ticker, "scraped_at": str(scraped_at_iso),
+                 "stock_price": price, "stock_change": record.get("stock_change"),
+                 "company_name": record.get("company_name"), "price_metrics": price_metrics},
+            )
             return False
 
     def upsert_stock(self, record):

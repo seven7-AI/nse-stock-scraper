@@ -154,3 +154,5 @@ deployment/cron/daily-cron.installed
 data/*.sqlite3
 data/*.sqlite3-wal
 data/*.sqlite3-shm
+.codegraph/
+data/backups/

@@ -7,3 +7,6 @@
 - [Docker](DOCKER.md) - Docker job and cron scheduling
 - [Project Structure](PROJECT_STRUCTURE.md) - repository organization
 - [Supabase Setup](SUPABASE_SETUP.md) - alternate backend: table and key setup
+
+- [CANONICAL_SCHEMA.md](CANONICAL_SCHEMA.md) — the ticker+date timeline tables, lineage, repairs, idempotency
+- [STATUS.md](STATUS.md) — phase-by-phase record of the 2007→today unification, with validation results

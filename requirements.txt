@@ -1,3 +1,4 @@
+alembic==1.16.1
 attrs==25.4.0
 Automat==25.4.16
 beautifulsoup4==4.14.3

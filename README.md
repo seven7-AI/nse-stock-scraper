@@ -7,6 +7,24 @@ stored row, see [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Storage moved from
 to SQLite on 2026-09-06 —
 see [docs/MIGRATION_SUPABASE_TO_SQLITE.md](docs/MIGRATION_SUPABASE_TO_SQLITE.md).
 
+
+## Canonical stock timeline (2007 → today)
+
+Since 2026-09-12 the database also holds one row per **ticker + trading day**:
+the 2007–2024 NSE archive (285,819 rows) plus every daily scrape, in
+`stock_observations`, with `instruments` (official sector, type) and
+`instrument_aliases` (BBK → ABSA, …). See `docs/CANONICAL_SCHEMA.md` and `docs/STATUS.md`.
+
+```bash
+docker compose -f deployment/docker-compose.yml build      # REQUIRED after pulling: the job runs the image's code
+python -m alembic upgrade head                              # additive; safe to repeat
+python scripts/import_historical.py --validate --report reports/historical_validation.md
+```
+
+The daily job then appends today's observations itself. Re-running either step inserts
+nothing.
+
+
 ## What Runs Daily
 
 - `afx_scraper`

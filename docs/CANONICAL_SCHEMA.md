@@ -99,6 +99,42 @@ One row per file per invocation: `file_sha256`, counts of read / inserted /
 already_present / quarantined / rejected, and a JSON `notes` of repairs, flags and
 rejection reasons. The second run of a file must show `rows_already_present == rows_read`.
 
+### `financial_statements` — line items, append-only, point-in-time
+
+Added 2026-09-13 (`sql/sqlite/003_financials.sql`, Alembic `20260913_0003`). One row per
+`(ticker, statement, period_type, fiscal_period_end, line_item, value_raw)`, parsed from
+the stockanalysis.com `/financials/{income-statement,balance-sheet,cash-flow-statement,
+ratios}/` pages (annual and `?p=quarterly`) by `nse_scraper/stockanalysis_financials.py`.
+
+| Column | Meaning |
+|---|---|
+| `ticker_symbol` / `source_ticker` | canonical ticker (through `instrument_aliases`) / the code the page was fetched under |
+| `statement` | `income` · `balance` · `cashflow` · `ratios` |
+| `period_type` | `annual` · `quarterly` · `semiannual` (H1/H2 reporters) · `ttm` · `current` (ratios page, today's multiples) |
+| `fiscal_period_end` / `fiscal_label` | `2025-12-31` / `FY 2025`, `Q2 2026`, `H1 2026`, `TTM`, `Current` |
+| `line_item` / `label` / `row_key` | `net_income` / `Net Income` / the site's own row id when it has one |
+| `value` / `value_raw` | parsed number / exactly as displayed (`-` = the site shows nothing; `value` is then NULL, never 0) |
+| `unit` | `millions_kes` · `kes` (per-share rows) · `percent` · `ratio` · `millions` (share counts) — values are **not** scaled here |
+| `first_seen_at` / `last_seen_at` | when this exact value was first / most recently scraped |
+
+The displayed value is part of the unique key on purpose: a restated figure is a **new
+row** with its own `first_seen_at` and the old row stays, so a consumer can ask "what was
+known about FY2024 on 2026-10-01" with `first_seen_at <= '2026-10-01'`. Re-scraping an
+unchanged page only refreshes `last_seen_at`. Statements first captured in the
+2026-09 backfill carry that date as `first_seen_at`; their true publication date is
+earlier, which nse-be handles with a configurable publication lag.
+
+Coverage on 2026-09-13: FY2021–FY2025 annual (+ TTM), quarterly/half-yearly back to
+Q3-2021, fiscal year ends per company (KCB Dec, SCOM Mar, KEGN Jun). Some companies have
+no quarterly cash-flow table; that page stores nothing and is counted, not failed.
+
+### `fundamental_snapshots` — the daily metric views, kept
+
+`stockanalysis_stocks` is overwritten every run. This table appends the same
+`overview / performance / dividends / price / profile` metric JSON once per
+`(ticker, snapshot_date, view)` (`INSERT OR IGNORE`), so market cap, yield, payout,
+52-week range and industry have a history from 2026-09-13 onwards.
+
 ## Repairs — the four dates the source got wrong
 
 | File | As written | Stored as | Evidence |

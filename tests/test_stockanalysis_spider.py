@@ -146,12 +146,22 @@ class TestStockAnalysisScraperSpider(unittest.TestCase):
         self.assertEqual(len(items), 2)
         self.assertEqual({item["view"] for item in items}, {"overview"})
 
-        # One request per symbol per configured page.
-        self.assertEqual(len(requests), 2 * len(self.spider._SYMBOL_PAGES))
+        # One request per symbol per configured page, plus the financial-statement
+        # pages (four statements x annual/quarterly) for the statements slice, which
+        # with two symbols is both of them.
+        statement_requests = [r for r in requests if "/financials/" in r.url]
+        self.assertEqual(
+            len(requests) - len(statement_requests), 2 * len(self.spider._SYMBOL_PAGES)
+        )
+        self.assertEqual(
+            len(statement_requests),
+            2 * len(self.spider._FINANCIALS_STATEMENTS) * len(self.spider._FINANCIALS_PERIODS),
+        )
         urls = {request.url for request in requests}
         self.assertIn("https://stockanalysis.com/quote/nase/SCOM/", urls)
         self.assertIn("https://stockanalysis.com/quote/nase/SCOM/dividend/", urls)
         self.assertIn("https://stockanalysis.com/quote/nase/EQTY/", urls)
+        self.assertIn("https://stockanalysis.com/quote/nase/EQTY/financials/balance-sheet/?p=quarterly", urls)
 
         # Regression lock: the retired screener API must never be requested again.
         self.assertFalse(

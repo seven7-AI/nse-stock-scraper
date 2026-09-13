@@ -5,7 +5,7 @@ import os
 import re
 import sqlite3
 
-from nse_scraper.db.canonical_schema import CANONICAL_SCHEMA_SQL
+from nse_scraper.db.canonical_schema import CANONICAL_SCHEMA_SQL, FINANCIALS_SCHEMA_SQL
 
 logger = logging.getLogger(__name__)
 
@@ -105,6 +105,12 @@ class _BaseBackend:
                 f.write(json.dumps(payload, default=str) + "\n")
         except Exception:
             logger.exception("Failed to write local fallback record for %s", kind)
+
+    def record_financial_statements(self, item):
+        """Store one parsed statement page. Only the SQLite backend keeps statements."""
+        logger.warning("record_financial_statements is not supported by %s", type(self).__name__)
+        self._write_local_fallback("financial_statements", dict(item))
+        return False
 
     @staticmethod
     def _extend_price_history(price_history, scraped_at, stock_price, stock_change):
@@ -349,6 +355,8 @@ class SQLiteBackend(_BaseBackend):
         # Canonical (ticker, trade_date) tables. Purely additive: the two per-ticker
         # tables above are untouched, and every statement is IF NOT EXISTS.
         self.connection.executescript(CANONICAL_SCHEMA_SQL)
+        # Financial statements + daily fundamentals snapshot (append-only, point-in-time).
+        self.connection.executescript(FINANCIALS_SCHEMA_SQL)
         self.connection.commit()
 
     def _existing_price_history(self, table_sql, ticker_symbol):
@@ -444,6 +452,10 @@ class SQLiteBackend(_BaseBackend):
             # can never mask the success above or change the quality gate's accounting:
             # the record is preserved to its own fallback file for replay instead.
             self._record_observation(record, scraped_at)
+            # And keep today's metrics as a dated snapshot: the per-ticker row above is
+            # overwritten every day, so without this the history of market cap, yield
+            # or payout would not exist and nothing could be evaluated point-in-time.
+            self._record_fundamental_snapshot(record, scraped_at)
             return True
         except Exception:
             logger.exception("SQLite upsert_stockanalysis_stock failed; writing local fallback")
@@ -520,6 +532,95 @@ class SQLiteBackend(_BaseBackend):
                  "stock_price": price, "stock_change": record.get("stock_change"),
                  "company_name": record.get("company_name"), "price_metrics": price_metrics},
             )
+            return False
+
+    def _record_fundamental_snapshot(self, record, scraped_at_iso):
+        """Append the scraped metric views for this calendar day. INSERT OR IGNORE per view."""
+        ticker = (record.get("ticker_symbol") or "").strip().upper()
+        if not ticker:
+            return 0
+        canonical = self._canonical_ticker(ticker)
+        snapshot_date = str(scraped_at_iso)[:10]
+        now = datetime.now(timezone.utc).isoformat()
+        written = 0
+        try:
+            with self.connection as connection:
+                connection.execute(
+                    "INSERT OR IGNORE INTO instruments (ticker_symbol, company_name, instrument_type, "
+                    "created_at, updated_at) VALUES (?, ?, 'ordinary', ?, ?)",
+                    (canonical, record.get("company_name") or canonical, now, now),
+                )
+                for metrics_key in METRICS_COLUMNS:
+                    metrics = record.get(metrics_key)
+                    if not metrics:
+                        continue
+                    view = metrics_key[: -len("_metrics")]
+                    cursor = connection.execute(
+                        "INSERT OR IGNORE INTO fundamental_snapshots (ticker_symbol, source_ticker, "
+                        "snapshot_date, view, metrics, stock_price, scraped_at, created_at) "
+                        "VALUES (?,?,?,?,?,?,?,?)",
+                        (
+                            canonical, ticker, snapshot_date, view,
+                            json.dumps(metrics, default=str),
+                            _float_or_none(record.get("stock_price")),
+                            str(scraped_at_iso), now,
+                        ),
+                    )
+                    written += cursor.rowcount if cursor.rowcount > 0 else 0
+            return written
+        except Exception:
+            logger.exception("fundamental_snapshots insert failed for %s", ticker)
+            return 0
+
+    def record_financial_statements(self, item):
+        """Append the line items of one parsed statement page.
+
+        ``ON CONFLICT DO UPDATE SET last_seen_at`` on the unique key that includes the
+        displayed value: re-scraping an unchanged page only refreshes ``last_seen_at``;
+        a restated figure inserts a NEW row with its own ``first_seen_at`` and the old
+        row stays. Nothing is ever overwritten, which is what lets a consumer ask
+        "what was known about FY2024 on a given date".
+        """
+        records = item.get("records") or []
+        ticker = (item.get("ticker_symbol") or item.get("symbol") or "").strip().upper()
+        if not ticker or not records:
+            return False
+        try:
+            canonical = self._canonical_ticker(ticker)
+            now = datetime.now(timezone.utc).isoformat()
+            scraped_at = _iso(item.get("scraped_at") or now)
+            source_url = item.get("source_url") or ""
+            rows = []
+            for record in records:
+                rows.append(
+                    (
+                        canonical, ticker, record["statement"], record["period_type"],
+                        record["fiscal_period_end"], record["fiscal_label"], record["line_item"],
+                        record["label"], record.get("row_key"), _float_or_none(record.get("value")),
+                        record.get("value_raw") or "-", record["unit"], record.get("currency") or "KES",
+                        item.get("data_source") or "stockanalysis", source_url, scraped_at, scraped_at,
+                    )
+                )
+            with self.connection as connection:
+                connection.execute(
+                    "INSERT OR IGNORE INTO instruments (ticker_symbol, company_name, instrument_type, "
+                    "created_at, updated_at) VALUES (?, ?, 'ordinary', ?, ?)",
+                    (canonical, item.get("company_name") or canonical, now, now),
+                )
+                connection.executemany(
+                    "INSERT INTO financial_statements (ticker_symbol, source_ticker, statement, "
+                    "period_type, fiscal_period_end, fiscal_label, line_item, label, row_key, value, "
+                    "value_raw, unit, currency, data_source, source_url, first_seen_at, last_seen_at) "
+                    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
+                    "ON CONFLICT (ticker_symbol, statement, period_type, fiscal_period_end, line_item, value_raw) "
+                    "DO UPDATE SET last_seen_at = excluded.last_seen_at",
+                    rows,
+                )
+            logger.debug("financial_statements: %s %s/%s %s rows", canonical, item.get("statement"), item.get("period_type"), len(rows))
+            return True
+        except Exception:
+            logger.exception("financial_statements insert failed for %s; writing local fallback", ticker)
+            self._write_local_fallback("financial_statements", dict(item))
             return False
 
     def upsert_stock(self, record):

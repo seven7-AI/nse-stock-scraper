@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 # Stats keys incremented by the pipelines when a Supabase write succeeds/fails.
 DB_OK_STAT = "nse/db_upsert_ok"
 DB_FAILED_STAT = "nse/db_upsert_failed"
+# Financial-statement pages stored / failed (stockanalysis_scraper only). Reported,
+# and a run where every statement write failed is a gate failure like the above.
+FINANCIALS_OK_STAT = "nse_scraper/financials_ok"
+FINANCIALS_FAILED_STAT = "nse_scraper/financials_failed"
 
 
 def min_items_setting_name(spider_name):
@@ -60,6 +64,14 @@ class DataQualityGate:
             failures.append(
                 "all {} database writes failed (see reports/local_fallback)".format(db_failed)
             )
+        financials_ok = stats.get(FINANCIALS_OK_STAT, 0) or 0
+        financials_failed = stats.get(FINANCIALS_FAILED_STAT, 0) or 0
+        if financials_failed and not financials_ok:
+            failures.append(
+                "all {} financial-statement writes failed (see reports/local_fallback)".format(
+                    financials_failed
+                )
+            )
 
         report = {
             "spider": spider.name,
@@ -69,6 +81,8 @@ class DataQualityGate:
             "min_items": min_items,
             "db_upsert_ok": db_ok,
             "db_upsert_failed": db_failed,
+            "financials_ok": financials_ok,
+            "financials_failed": financials_failed,
             "log_count_error": stats.get("log_count/ERROR", 0) or 0,
             "retry_count": stats.get("retry/count", 0) or 0,
             "response_received_count": stats.get("response_received_count", 0) or 0,

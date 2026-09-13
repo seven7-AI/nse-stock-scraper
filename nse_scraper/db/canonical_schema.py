@@ -1,4 +1,4 @@
-"""DDL for the canonical stock-observation tables.
+"""DDL for the canonical stock-observation and fundamentals tables.
 
 Lives in the package (not under sql/) because the Docker image does not ship sql/;
 ``SQLiteBackend._create_schema()`` executes this on every open() so a fresh database is
@@ -115,4 +115,60 @@ CREATE TABLE IF NOT EXISTS import_runs (
     notes                 TEXT
 );
 CREATE INDEX IF NOT EXISTS ix_import_runs_file ON import_runs (source_file, started_at DESC);
+"""
+
+# --- fundamentals (2026-09-13) -------------------------------------------------------
+# Financial statements and the daily fundamentals snapshot. Both are APPEND-ONLY and
+# point-in-time: a value is stored with the moment it was first seen and is never
+# updated in place, so an analysis "as of" a past date can be limited to what was
+# actually known then. sql/sqlite/003_financials.sql is the human-readable copy and
+# alembic/versions/20260913_0003_financial_statements.py the reversible migration;
+# tests/test_sqlite_backend.py asserts all three describe the same tables.
+
+FINANCIALS_TABLES = (
+    "financial_statements",
+    "fundamental_snapshots",
+)
+
+FINANCIALS_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS financial_statements (
+    id                 INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker_symbol      TEXT NOT NULL REFERENCES instruments (ticker_symbol),
+    source_ticker      TEXT NOT NULL,
+    statement          TEXT NOT NULL,
+    period_type        TEXT NOT NULL,
+    fiscal_period_end  TEXT NOT NULL,
+    fiscal_label       TEXT NOT NULL,
+    line_item          TEXT NOT NULL,
+    label              TEXT NOT NULL,
+    row_key            TEXT,
+    value              REAL,
+    value_raw          TEXT NOT NULL,
+    unit               TEXT NOT NULL,
+    currency           TEXT NOT NULL DEFAULT 'KES',
+    data_source        TEXT NOT NULL DEFAULT 'stockanalysis',
+    source_url         TEXT NOT NULL,
+    first_seen_at      TEXT NOT NULL,
+    last_seen_at       TEXT NOT NULL,
+    UNIQUE (ticker_symbol, statement, period_type, fiscal_period_end, line_item, value_raw)
+);
+CREATE INDEX IF NOT EXISTS ix_financial_statements_ticker_period
+    ON financial_statements (ticker_symbol, statement, fiscal_period_end);
+CREATE INDEX IF NOT EXISTS ix_financial_statements_first_seen
+    ON financial_statements (first_seen_at);
+
+CREATE TABLE IF NOT EXISTS fundamental_snapshots (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker_symbol  TEXT NOT NULL REFERENCES instruments (ticker_symbol),
+    source_ticker  TEXT NOT NULL,
+    snapshot_date  TEXT NOT NULL,
+    view           TEXT NOT NULL,
+    metrics        TEXT NOT NULL,
+    stock_price    REAL,
+    scraped_at     TEXT NOT NULL,
+    created_at     TEXT NOT NULL,
+    UNIQUE (ticker_symbol, snapshot_date, view)
+);
+CREATE INDEX IF NOT EXISTS ix_fundamental_snapshots_ticker_date
+    ON fundamental_snapshots (ticker_symbol, snapshot_date DESC);
 """

@@ -55,6 +55,10 @@ Optional:
 - `STOCKANALYSIS_MAX_SYMBOLS` (default: `16`, `0` = no cap) — symbols enriched per run; runs rotate through the list so every ticker is refreshed every few days
 - `STOCKANALYSIS_SYMBOL_PAGES` (default: `quote,dividend`) — which per-symbol pages to fetch; add `company` to also collect `country`, at ~50% more requests
 - `STOCKANALYSIS_DOWNLOAD_DELAY` (default: `2`) — seconds between requests to stockanalysis.com
+- `STOCKANALYSIS_FINANCIALS_ENABLED` (default: `1`) — also fetch the financial statements (income statement, balance sheet, cash flow, ratios; annual and quarterly) into the append-only `financial_statements` table
+- `STOCKANALYSIS_FINANCIALS_MAX_SYMBOLS` (default: `8`, `0` = no cap) — symbols whose statements are fetched per run (8 requests each); rotates daily, independently of the enrichment slice
+- `STOCKANALYSIS_FINANCIALS_SYMBOLS` — comma-separated list that pins the statements slice (backfills, debugging), e.g. `KCB,SCOM`
+- `STOCKANALYSIS_FINANCIALS_STATEMENTS` / `STOCKANALYSIS_FINANCIALS_PERIODS` (defaults: all four statements; `annual,quarterly`)
 
 Data-quality thresholds (default `0`, i.e. the gate reports but never fails):
 

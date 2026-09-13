@@ -3,11 +3,15 @@ import logging
 from scrapy.exceptions import DropItem
 
 from .db import SUPPORTED_BACKENDS, create_backend
-from .extensions import DB_FAILED_STAT, DB_OK_STAT
+from .extensions import DB_FAILED_STAT, DB_OK_STAT, FINANCIALS_FAILED_STAT, FINANCIALS_OK_STAT
 
 logger = logging.getLogger(__name__)
 
 STOCKANALYSIS_VIEWS = ("overview", "performance", "dividends", "price", "profile")
+#: Item view name carrying one parsed financial-statement page (see
+#: nse_scraper.stockanalysis_financials). Written straight through, never buffered:
+#: each page is self-contained and idempotent on its own unique key.
+FINANCIAL_STATEMENTS_VIEW = "financial_statements"
 
 
 class NseScraperPipeline:
@@ -201,6 +205,10 @@ class StockAnalysisPipeline:
         ticker = item.get("ticker_symbol") or item.get("symbol")
         if source != "stockanalysis" or not view or not ticker:
             return item
+        if view == FINANCIAL_STATEMENTS_VIEW:
+            if self.storage:
+                self._record_statements(item)
+            return item
         if view not in STOCKANALYSIS_VIEWS:
             return item
         if not self.storage:
@@ -212,6 +220,21 @@ class StockAnalysisPipeline:
         existing = views.get(view)
         views[view] = self._merge_view(existing, item) if existing else item
         return item
+
+    def _record_statements(self, item):
+        """Persist one statement page; counted separately from the per-ticker upserts."""
+        try:
+            written = bool(self.storage.record_financial_statements(item))
+        except Exception as e:
+            written = False
+            logger.error(
+                "Failed to store financial statements %s %s/%s: %s",
+                item.get("ticker_symbol"), item.get("statement"), item.get("period_type"), e,
+                exc_info=True,
+            )
+        if self.stats is not None:
+            self.stats.inc_value(FINANCIALS_OK_STAT if written else FINANCIALS_FAILED_STAT)
+        return written
 
     @staticmethod
     def _merge_view(existing, item):

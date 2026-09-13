@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from scrapy import Request, Spider
 
-from .. import stockanalysis_pages
+from .. import stockanalysis_financials, stockanalysis_pages
 from ..db import SUPPORTED_BACKENDS
 
 
@@ -69,6 +69,35 @@ class StockAnalysisScraperSpider(Spider):
             ",".join(stockanalysis_pages.DEFAULT_SYMBOL_PAGES),
         ).split(",")
         if page.strip()
+    )
+    # Financial statements (income, balance sheet, cash flow, ratios; annual and
+    # quarterly) are eight more requests per symbol, so they get their own, smaller
+    # rotating slice: 8 symbols a day covers the ~64-ticker list in about a week, which
+    # is plenty for figures that change once a quarter. 0 disables the cap;
+    # STOCKANALYSIS_FINANCIALS_SYMBOLS=KCB,SCOM pins the slice (backfills, debugging);
+    # STOCKANALYSIS_FINANCIALS_ENABLED=0 switches the statements off entirely.
+    _FINANCIALS_ENABLED = os.getenv("STOCKANALYSIS_FINANCIALS_ENABLED", "1").strip().lower() not in {
+        "0", "false", "no", "off", ""
+    }
+    _FINANCIALS_MAX_SYMBOLS = int(os.getenv("STOCKANALYSIS_FINANCIALS_MAX_SYMBOLS", "8"))
+    _FINANCIALS_SYMBOLS = tuple(
+        symbol.strip().upper()
+        for symbol in os.getenv("STOCKANALYSIS_FINANCIALS_SYMBOLS", "").split(",")
+        if symbol.strip()
+    )
+    _FINANCIALS_STATEMENTS = tuple(
+        statement.strip()
+        for statement in os.getenv(
+            "STOCKANALYSIS_FINANCIALS_STATEMENTS", ",".join(stockanalysis_financials.STATEMENTS)
+        ).split(",")
+        if statement.strip()
+    )
+    _FINANCIALS_PERIODS = tuple(
+        period.strip()
+        for period in os.getenv(
+            "STOCKANALYSIS_FINANCIALS_PERIODS", ",".join(stockanalysis_financials.PERIOD_TYPES)
+        ).split(",")
+        if period.strip()
     )
     _TARGET_VIEW_COLUMNS = {
         "overview": [
@@ -180,6 +209,8 @@ class StockAnalysisScraperSpider(Spider):
                                 "scraped_at": scraped_at,
                             },
                         )
+                for request in self._financial_statement_requests(list(base_by_symbol), base_by_symbol, scraped_at):
+                    yield request
                 return
 
             logger.info(
@@ -314,6 +345,86 @@ class StockAnalysisScraperSpider(Spider):
             ",".join(selected),
         )
         return selected
+
+    def _financial_symbols_for_this_run(self, symbols):
+        """The statements slice: pinned list, everything, or a daily-rotating window.
+
+        Rotated independently of the enrichment slice (different cap, different
+        offset) so the two windows drift across the list rather than always landing on
+        the same tickers.
+        """
+        if not self._FINANCIALS_ENABLED:
+            return []
+        if self._FINANCIALS_SYMBOLS:
+            known = set(symbols)
+            return [symbol for symbol in self._FINANCIALS_SYMBOLS if symbol in known]
+        if self._FINANCIALS_MAX_SYMBOLS <= 0 or len(symbols) <= self._FINANCIALS_MAX_SYMBOLS:
+            return list(symbols)
+        start = (
+            datetime.now(timezone.utc).date().toordinal() * self._FINANCIALS_MAX_SYMBOLS
+        ) % len(symbols)
+        rotated = list(symbols[start:]) + list(symbols[:start])
+        selected = rotated[: self._FINANCIALS_MAX_SYMBOLS]
+        logger.info(
+            "Fetching financial statements for %s of %s symbols this run (offset %s): %s",
+            len(selected), len(symbols), start, ",".join(selected),
+        )
+        return selected
+
+    def _financial_statement_requests(self, symbols, base_by_symbol, scraped_at):
+        """One request per (symbol, statement, period type) for this run's slice."""
+        for symbol in self._financial_symbols_for_this_run(symbols):
+            for statement in self._FINANCIALS_STATEMENTS:
+                for period_type in self._FINANCIALS_PERIODS:
+                    yield Request(
+                        url=stockanalysis_financials.statement_url(symbol, statement, period_type),
+                        callback=self._parse_statement_page,
+                        errback=self._handle_statement_page_error,
+                        cb_kwargs={
+                            "symbol": symbol,
+                            "statement": statement,
+                            "period_type": period_type,
+                            "base": base_by_symbol.get(symbol, {}),
+                            "scraped_at": scraped_at,
+                        },
+                    )
+
+    def _parse_statement_page(self, response, symbol, statement, period_type, base, scraped_at):
+        """Emit one financial_statements item per page (all line items, all periods)."""
+        try:
+            parsed = stockanalysis_financials.parse_statement_page(
+                response.text, symbol, statement, period_type
+            )
+        except Exception:
+            logger.exception("Failed to parse %s/%s statement page for %s", statement, period_type, symbol)
+            self._inc_stat("stockanalysis/statement_page_failed")
+            return
+        if not parsed["records"]:
+            # Some companies have no quarterly cash-flow table; the site renders an
+            # empty section rather than a 404. Not an error, but worth counting.
+            logger.info("No %s/%s statement rows for %s", statement, period_type, symbol)
+            self._inc_stat("stockanalysis/statement_page_empty")
+            return
+        base = base or {}
+        yield {
+            "source": "stockanalysis",
+            "view": "financial_statements",
+            "symbol": symbol,
+            "ticker_symbol": symbol,
+            "company_name": base.get("n"),
+            "statement": statement,
+            "period_type": period_type,
+            "source_url": response.url,
+            "units": parsed["units"],
+            "columns": parsed["columns"],
+            "records": parsed["records"],
+            "scraped_at": scraped_at,
+        }
+
+    def _handle_statement_page_error(self, failure):
+        request = failure.request
+        logger.warning("Statement page request failed: %s (%s)", request.url, failure.value)
+        self._inc_stat("stockanalysis/statement_page_failed")
 
     def _parse_symbol_page(self, response, symbol, page, base, scraped_at):
         """Emit view items rebuilt from one per-symbol page."""

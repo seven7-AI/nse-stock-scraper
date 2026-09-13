@@ -271,3 +271,60 @@ them into `stock_observations`: `data_source='nse_scraper'`, flagged
 
 The 2025-01-01 → 2026-07-25 stretch has no observations from any source and stays a gap.
 This is what the stock-growth diagrams in nse-be draw from.
+
+---
+
+## Phase 12 — financial statements & fundamentals snapshots  ✅ 2026-09-13
+
+Issue [#2](https://github.com/seven7-AI/nse-stock-scraper/issues/2) of the nse-be quant
+engine epic (`Nairobi-stock-Exchange#24`). Verified first (through the scraper image,
+same UA) that stockanalysis.com serves `/financials/income-statement/`,
+`/financials/balance-sheet/`, `/financials/cash-flow-statement/` and `/financials/ratios/`
+for NSE tickers, annual and `?p=quarterly`: FY2021–FY2025 (+TTM), quarters back to
+Q3-2021, company-specific year ends. There is **no** daily price-history page (404), so
+the 2025-01 → 2026-07 gap remains a gap.
+
+**What was built**
+
+- `nse_scraper/stockanalysis_financials.py` — pure parser: every statement table on a
+  page (the ratios page has four sections, each its own `<table id="main-table-…">`),
+  period ends from `<th id="YYYY-MM-DD">` (fallback: the "Period Ending" row), values
+  as displayed + parsed + a per-row unit, `-` kept as NULL. Not a single generated CSS
+  class is relied on.
+- `financial_statements` and `fundamental_snapshots` tables — `canonical_schema.py`
+  (runtime, executed on every `open()`), `sql/sqlite/003_financials.sql` (reference),
+  Alembic `20260913_0003` (imports the same constant; `tests/test_financial_statements.py`
+  asserts the three agree). Append-only: `ON CONFLICT … DO UPDATE SET last_seen_at`
+  on a key that includes the displayed value, so restatements append.
+- Spider: `_financial_statement_requests` — 8 requests per symbol for a rotating
+  slice of `STOCKANALYSIS_FINANCIALS_MAX_SYMBOLS` (default 8; whole list in ~8 days),
+  pinnable with `STOCKANALYSIS_FINANCIALS_SYMBOLS`. Items flow through
+  `StockAnalysisPipeline` straight to `SQLiteBackend.record_financial_statements`;
+  the quality gate reports `financials_ok/failed` and fails when every statement write
+  failed.
+- `upsert_stockanalysis_stock` now also appends the day's metric views to
+  `fundamental_snapshots` (`INSERT OR IGNORE` per view).
+
+**Tests** — 42 new (223 total, all green in the image): 24 real-page fixtures under
+`tests/fixtures/financials/` (KCB/SCOM/KEGN × 4 statements × annual/quarterly, trimmed
+to the tables), hand-checked values (KCB FY2025 revenue 173,395 m; FY2021 net income
+34,092 m; EPS 20.80 KES; OCF −126,832 m), negative values, `-` cells, growth rows,
+half-year columns, missing quarterly cash flow, unknown columns dropped not guessed,
+one unit per line item across all 24 pages, storage idempotency (7,8xx rows, second
+run +0), restatement appends and PIT query, alias → canonical, malformed → fallback
+file, snapshot once per day, pipeline routing/stats, spider rotation/pinning/disable.
+
+**Live run** (rebuilt image, statements slice pinned to `KCB,SCOM,KEGN,EQTY`,
+2026-09-13 11:12 UTC, DB backed up first to `data/backups/nse_scraper.pre-financials-*`):
+
+| | |
+|---|---|
+| requests | 41 responses, **0 × 403**, 0 retries |
+| statement pages stored / empty / failed | **30 / 2 / 0** (KCB and EQTY have no quarterly cash-flow table) |
+| `financial_statements` rows | **10,765** across 4 tickers, FY2021→FY2026 annual + TTM, quarterly/half-yearly back to Q3-2021 (KEGN H1-2021) |
+| `fundamental_snapshots` rows | 79 for 2026-09-13 (overview for all 63 tickers; dividends/performance/price/profile for the enrichment slice) |
+| quality gate | OK — `db_upsert_ok=63`, `financials_ok=30`, `financials_failed=0` |
+| `stock_observations` | unchanged (today's rows already present, `INSERT OR IGNORE`) |
+
+From tomorrow the cron run picks statements for 8 rotating tickers a day; the whole list
+is covered in about a week and re-confirmed (`last_seen_at`) every week after that.

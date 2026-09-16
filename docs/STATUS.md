@@ -328,3 +328,49 @@ file, snapshot once per day, pipeline routing/stats, spider rotation/pinning/dis
 
 From tomorrow the cron run picks statements for 8 rotating tickers a day; the whole list
 is covered in about a week and re-confirmed (`last_seen_at`) every week after that.
+
+## Phase 13 — the quant engine consumes this database  ✅ 2026-09-16
+
+Issue `Nairobi-stock-Exchange#22` (hardening) of the nse-be quant engine epic
+(`Nairobi-stock-Exchange#24`, issues #2–#23 all merged). Nothing in this repository
+changed for the engine beyond Phase 12; this entry records how the two projects fit
+together so the next person does not have to rediscover it.
+
+**What the engine reads (read-only, `mode=ro`, bind-mounted `:ro`)**
+
+| Table | Used for |
+|---|---|
+| `instruments`, `instrument_aliases` | universe, index membership, first / last seen (delistings stay in) |
+| `stock_observations` | every price metric: returns, momentum, risk, liquidity, backtests, forecasts |
+| `financial_statements` | point-in-time fundamentals — a row counts only once `first_seen_at ≤ as_of` (or `fiscal_period_end` + the publication lag for rows first seen after the fact) |
+| `fundamental_snapshots` | market cap, dividend and profile metrics as of each day |
+| `stockanalysis_stocks` | industry (classification evidence) |
+
+nse-be never writes here. Its own results live in its `data/nse_analytics.sqlite3`
+(`docs/quant-engine.md` there). The engine's data-quality job re-derives defects from
+this database every morning and halts its pipeline on **new** error-severity findings;
+the ones already known and handled: the 2024-12-31 → 2026-07-26 price gap (572 days,
+every window crossing it is `unavailable`), `^N20I` 2024-11-26 decimal slip, `^NASI`
+missing 2021-12 → 2022-06, indices absent after 2024-12-31, volume present for ~70 % of
+2013–2024 rows and almost none since.
+
+**The daily chain (`CRON_TZ=Africa/Nairobi`)**
+
+```
+09:00  this repo    scripts/run_daily_with_git.sh   → prices + 8 tickers' statements, commit + push
+09:40  nse-be       nse-analysis analytics jobs daily          (quality gate → metrics → factors → rankings → fair value → scenarios)
+10:10  nse-be       nse-analysis analytics jobs fundamentals   (only when financial_statements changed)
+10:30  Sat, nse-be  nse-analysis analytics jobs weekly         (regime, forecasts + evaluation, Monte Carlo)
+```
+
+The analytics jobs skip every step whose inputs (row count plus `max(trade_date)`,
+`max(first_seen_at)` or `max(snapshot_date)` per table read here) are unchanged, so a failed or late scrape costs nothing
+downstream and a rerun is idempotent.
+
+**Statement coverage after the 2026-09-15 scrape** — three rotations in: 38,423
+`financial_statements` rows across 17 tickers (BAT, BKG, BRIT, CGEN, DTK, EQTY, HFCK,
+JUB, KCB, KEGN, KNRE, KPLC, KQ, SBIC, SCBK, SCOM, TOTL), 205 `fundamental_snapshots`
+rows for all 63 enriched tickers; the remaining tickers arrive at 8 a day. The engine
+reports fundamentals for a ticker as `missing` (with the statement named) until its
+first crawl and `unavailable` for 5-year growth until FY2020 exists — it never fills a
+number in.

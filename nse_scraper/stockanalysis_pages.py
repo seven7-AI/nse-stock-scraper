@@ -16,6 +16,7 @@ Functions here are pure: they take HTML plus the spider's normalizer and return
 """
 
 import logging
+import json
 import re
 
 from parsel import Selector
@@ -36,11 +37,13 @@ SYMBOL_PAGE_PATHS = {
 # Every page this module can parse.
 SYMBOL_PAGES = (QUOTE_PAGE, DIVIDEND_PAGE, COMPANY_PAGE)
 
-# Fetched by default. The company page is excluded because the quote page already
-# carries industry/founded/employees, so including it would add a third more requests
-# to gain only `country` -- and the site returns 403 once a full-catalogue crawl runs
-# too hot. Re-enable it with STOCKANALYSIS_SYMBOL_PAGES=quote,dividend,company.
-DEFAULT_SYMBOL_PAGES = (QUOTE_PAGE, DIVIDEND_PAGE)
+# Fetched by default. The company page was excluded while every symbol was enriched in
+# one run (a third more requests, and the site returns 403 once a full-catalogue crawl
+# runs too hot); the enrichment slice is 16 symbols a day now, and the page is the
+# only source of the home country, the business description (which names the
+# countries a group operates in), website, address, exchange, fiscal year, currency,
+# SIC code and executives. Drop it with STOCKANALYSIS_SYMBOL_PAGES=quote,dividend.
+DEFAULT_SYMBOL_PAGES = (QUOTE_PAGE, DIVIDEND_PAGE, COMPANY_PAGE)
 
 # Profile labels carried by the quote page's own infoTable. Having these means the
 # company page can be dropped (a third of all requests) at the cost of `country`,
@@ -233,8 +236,36 @@ def parse_dividend_page(html, normalize, loads):
     return {"dividends": metrics}
 
 
+_BR = re.compile(r"<br\s*/?>", re.IGNORECASE)
+_TAG = re.compile(r"<[^>]+>")
+
+
+def _html_text(value, separator=" "):
+    """Plain text from a fragment of HTML: paragraphs and line breaks become ``separator``."""
+    if not isinstance(value, str):
+        return None
+    text = _BR.sub(separator, value)
+    text = re.sub(r"</p>\s*<p>", separator, text, flags=re.IGNORECASE)
+    text = _TAG.sub("", text)
+    return _clean(text)
+
+
+def _extract_js_string(text, key):
+    """The value of a top-level ``key:"..."`` string, unescaped; None when absent."""
+    match = re.search(r'\b' + re.escape(key) + r'\s*:\s*"((?:[^"\\]|\\.)*)"', text)
+    if not match:
+        return None
+    raw = match.group(1)
+    try:
+        return json.loads('"' + raw + '"')
+    except ValueError:
+        return raw
+
+
 def parse_company_page(html, normalize, loads):
-    """Profile view from the page's ``profile`` object."""
+    """Profile view from the company page: the ``profile`` object plus the description,
+    contact and details the page carries next to it. Everything lands in the one
+    ``profile`` view so the quote page's industry / founded / employees merge with it."""
     profile = _load_object(html, "profile", loads)
     if not isinstance(profile, dict):
         return {}
@@ -245,15 +276,53 @@ def parse_company_page(html, normalize, loads):
             return value.get("value")
         return value
 
+    contact = _load_object(html, "contact", loads) or {}
+    details = _load_object(html, "details", loads) or {}
+    executives = _executives(html, loads)
     metrics = {
         "industry": _nested("industry"),
         "country": profile.get("country"),
         "employees": normalize(_nested("employees")),
         "founded": normalize(profile.get("founded")),
+        "ceo": profile.get("ceo") or None,
+        "description": _html_text(_extract_js_string(html, "description")),
+        "website": (contact.get("website") if isinstance(contact, dict) else None) or None,
+        "address": _html_text(contact.get("address") if isinstance(contact, dict) else None, ", "),
+        "exchange": (details.get("exchange") if isinstance(details, dict) else None) or None,
+        "fiscal_year": (details.get("fiscalYear") if isinstance(details, dict) else None) or None,
+        "currency": (details.get("currency") if isinstance(details, dict) else None) or None,
+        "sic": (details.get("sic") if isinstance(details, dict) else None) or None,
+        "executives": executives or None,
     }
     if all(value is None for value in metrics.values()):
         return {}
     return {"profile": metrics}
+
+
+def _executives(html, loads):
+    """``[{name, title}, ...]`` from the page's ``executives`` array."""
+    match = re.search(r"\bexecutives\s*:\s*\[", html)
+    if not match:
+        return []
+    start = match.end() - 1
+    depth = 0
+    for index in range(start, len(html)):
+        char = html[index]
+        if char == "[":
+            depth += 1
+        elif char == "]":
+            depth -= 1
+            if depth == 0:
+                try:
+                    rows = loads(html[start : index + 1])
+                except Exception:
+                    return []
+                return [
+                    {"name": row.get("Name"), "title": row.get("Title")}
+                    for row in rows
+                    if isinstance(row, dict) and row.get("Name")
+                ]
+    return []
 
 
 def parse_symbol_page(page, html, normalize, loads, base=None):

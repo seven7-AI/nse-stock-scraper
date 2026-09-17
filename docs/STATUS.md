@@ -374,3 +374,46 @@ rows for all 63 enriched tickers; the remaining tickers arrive at 8 a day. The e
 reports fundamentals for a ticker as `missing` (with the statement named) until its
 first crawl and `unavailable` for 5-year growth until FY2020 exists — it never fills a
 number in.
+
+## Phase 14 — the company page: country, description, contact, details  ✅ 2026-09-17
+
+Issue [#5](https://github.com/seven7-AI/nse-stock-scraper/issues/5), asked for by the
+nse-be dashboard's "geographic exposure" block, which had nothing to show. The company
+page (`/quote/nase/<SYMBOL>/company/`) carries far more than the `country` the parser
+used to read: a business **description** that names the countries a group operates in
+("… banking services in Kenya, Tanzania, South Sudan, Rwanda, Uganda, Burundi, and the
+Democratic Republic of Congo"), `contact` (address, website, phone), `details`
+(exchange, fiscal year, reporting currency, SIC code) and the `executives` list.
+
+**What changed**
+
+- `nse_scraper/stockanalysis_pages.py`: `parse_company_page` now returns the profile
+  view with `industry, country, employees, founded, ceo, description` (HTML stripped,
+  paragraphs joined), `website, address` (line breaks → ", "), `exchange, fiscal_year,
+  currency, sic, executives` (`[{name, title}]`). Everything stays in the one `profile`
+  view, so the quote page's industry / founded / employees merge with it and neither
+  `stockanalysis_stocks.profile_metrics` nor `fundamental_snapshots` (view `profile`)
+  needed a schema change. Absent fields are `None`, never invented.
+- `DEFAULT_SYMBOL_PAGES` now includes `company`: the exclusion dated from enriching the
+  whole catalogue in one run; the daily slice is 16 symbols, so the page adds 16
+  requests a day. `STOCKANALYSIS_SYMBOL_PAGES=quote,dividend` drops it again.
+- `tests/fixtures/company/kcb.html`: the real KCB page as served on 2026-09-17, trimmed
+  to the data payload the parser reads; `test_real_company_page_yields_the_full_profile`
+  hand-checks industry Commercial Banks, Kenya, founded 1896, 11,253 employees, CEO
+  Paul Russo, the description's first sentence and its "headquartered in Nairobi,
+  Kenya." ending, website https://kcbgroup.com, address "Kencom House, Nairobi, 00100,
+  Kenya", exchange, fiscal year January–December, KES, SIC 6020 and the three
+  executives. 224 tests in the image, all green.
+
+**Live run** (rebuilt image, `STOCKANALYSIS_MAX_SYMBOLS=4`, statements off, DB backed
+up first to `data/backups/nse_scraper.pre-company-*`): slice BRIT, KPLC, KQ, JUB —
+13 requests, 12 × 200, 1 × 404 (the list endpoint that is always rebuilt from the
+per-symbol pages), **0 × 403**; 82 items, `db_upsert_ok=63`; the four profile rows now
+carry country Kenya, CEO (Tom Gitogo, Joseph Siror, George Kamal, Julius Kipng'etich),
+description, website, address, exchange, fiscal year (KPLC July–June), currency KES,
+SIC (6300, 4911, 4512, 6311) and 2–4 executives each, and `fundamental_snapshots`
+has a `profile` row per ticker for 2026-09-17 with the same fields. From tomorrow the
+09:00 run captures the page for its rotating 16; the whole list is covered in four
+days. nse-be follow-up: flip the dashboard's geographic block from `unavailable` to
+these facts (home country, the operating countries named in the description) — still
+no regional revenue split, which the source does not publish.

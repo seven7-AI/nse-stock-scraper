@@ -7,6 +7,7 @@ the embedded kit.start payload, and the 52-week range and volume live in visible
 two-cell table rows whose classes are generated and unstable.
 """
 import unittest
+from pathlib import Path
 
 from nse_scraper import stockanalysis_pages as pages
 from nse_scraper.spiders.stockanalysis_scraper import StockAnalysisScraperSpider
@@ -52,6 +53,9 @@ COMPANY_PAGE_HTML = """
 """
 
 
+FIXTURES = Path(__file__).resolve().parent / "fixtures"
+
+
 class TestSymbolPageUrls(unittest.TestCase):
     def test_symbol_page_url_per_page(self):
         self.assertEqual(
@@ -71,14 +75,10 @@ class TestSymbolPageUrls(unittest.TestCase):
         with self.assertRaises(ValueError):
             pages.symbol_page_url("SCOM", "not-a-page")
 
-    def test_default_pages_exclude_company_to_limit_request_volume(self):
-        self.assertEqual(
-            pages.DEFAULT_SYMBOL_PAGES, (pages.QUOTE_PAGE, pages.DIVIDEND_PAGE)
-        )
-        self.assertIn(pages.COMPANY_PAGE, pages.SYMBOL_PAGES)
+    def test_default_pages_include_company_for_the_profile_fields(self):
+        self.assertEqual(pages.DEFAULT_SYMBOL_PAGES, (pages.QUOTE_PAGE, pages.DIVIDEND_PAGE, pages.COMPANY_PAGE))
+        self.assertEqual(set(pages.DEFAULT_SYMBOL_PAGES), set(pages.SYMBOL_PAGES))
 
-
-class TestHelpers(unittest.TestCase):
     def test_extract_js_object_handles_nested_braces(self):
         text = 'profile:{a:1,industry:{value:"X"},b:2} ,other:{}'
         self.assertEqual(
@@ -162,14 +162,42 @@ class TestPageParsers(unittest.TestCase):
         views = pages.parse_company_page(COMPANY_PAGE_HTML, self.normalize, self.loads)
 
         self.assertEqual(set(views), {"profile"})
+        profile = views["profile"]
+        self.assertEqual(profile["industry"], "Radiotelephone Communications")
+        self.assertEqual(profile["country"], "Kenya")
+        self.assertEqual(profile["employees"], 6616)
+        self.assertEqual(profile["founded"], 1997)
+        # the synthetic page carries no description, contact or details: nothing invented
+        for key in ("description", "website", "address", "exchange", "fiscal_year", "currency", "sic", "ceo", "executives"):
+            self.assertIsNone(profile[key], key)
+
+    def test_real_company_page_yields_the_full_profile(self):
+        """The KCB company page as served on 2026-09-17 (trimmed to its data payload)."""
+        html = (FIXTURES / "company" / "kcb.html").read_text()
+        views = pages.parse_company_page(html, self.normalize, self.loads)
+
+        profile = views["profile"]
+        self.assertEqual(profile["industry"], "Commercial Banks")
+        self.assertEqual(profile["country"], "Kenya")
+        self.assertEqual(profile["founded"], 1896)
+        self.assertEqual(profile["employees"], 11253)
+        self.assertEqual(profile["ceo"], "Paul Russo")
+        self.assertTrue(profile["description"].startswith("KCB Group PLC, together with its subsidiaries, provides corporate, investment, and retail banking services in Kenya, Tanzania, South Sudan, Rwanda, Uganda, Burundi, and the Democratic Republic of Congo."))
+        self.assertNotIn("<", profile["description"])
+        self.assertTrue(profile["description"].endswith("headquartered in Nairobi, Kenya."))
+        self.assertEqual(profile["website"], "https://kcbgroup.com")
+        self.assertEqual(profile["address"], "Kencom House, Nairobi, 00100, Kenya")
+        self.assertEqual(profile["exchange"], "Nairobi Stock Exchange")
+        self.assertEqual(profile["fiscal_year"], "January - December")
+        self.assertEqual(profile["currency"], "KES")
+        self.assertEqual(profile["sic"], "6020")
         self.assertEqual(
-            views["profile"],
-            {
-                "industry": "Radiotelephone Communications",
-                "country": "Kenya",
-                "employees": 6616,
-                "founded": 1997,
-            },
+            profile["executives"],
+            [
+                {"name": "Paul Russo", "title": "Chief Executive Officer"},
+                {"name": "Lawrence Kiambi", "title": "Chief Financial Officer"},
+                {"name": "David Kitheka", "title": "Head of Investor Relations"},
+            ],
         )
 
     def test_pages_without_payload_yield_nothing(self):

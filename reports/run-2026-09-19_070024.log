@@ -1,0 +1,347 @@
+[2026-09-19T07:00:24+0000] RUN_START
+[2026-09-19T07:00:25+0000] START afx_scraper
+2026-09-19 07:01:01 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+2026-09-19 07:01:01 [scrapy.utils.log] INFO: Versions:
+{'lxml': '6.0.2',
+ 'libxml2': '2.14.6',
+ 'cssselect': '1.4.0',
+ 'parsel': '1.11.0',
+ 'w3lib': '2.3.1',
+ 'Twisted': '25.5.0',
+ 'Python': '3.14.7 (main, Sep  1 2026, 00:05:20) [GCC 14.2.0]',
+ 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+ 'cryptography': '46.0.4',
+ 'Platform': 'Linux-6.8.0-100-generic-x86_64-with-glibc2.41'}
+2026-09-19 07:01:01 [scrapy.addons] INFO: Enabled addons:
+[]
+2026-09-19 07:01:01 [scrapy.extensions.telnet] INFO: Telnet Password: 4bbbd9e9cfe681df
+2026-09-19 07:01:02 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.logcount.LogCount',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats',
+ 'scrapy.extensions.throttle.AutoThrottle',
+ 'nse_scraper.extensions.DataQualityGate']
+2026-09-19 07:01:02 [scrapy.crawler] INFO: Overridden settings:
+{'AUTOTHROTTLE_ENABLED': True,
+ 'AUTOTHROTTLE_MAX_DELAY': 20,
+ 'AUTOTHROTTLE_START_DELAY': 1,
+ 'BOT_NAME': 'nse_scraper',
+ 'CONCURRENT_REQUESTS': 8,
+ 'CONCURRENT_REQUESTS_PER_DOMAIN': 2,
+ 'DOWNLOAD_DELAY': 1,
+ 'DOWNLOAD_TIMEOUT': 30,
+ 'HTTPCACHE_ENABLED': 'False',
+ 'HTTPCACHE_EXPIRATION_SECS': 3600,
+ 'LOG_LEVEL': 'INFO',
+ 'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+ 'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+ 'RETRY_TIMES': 3,
+ 'SPIDER_MODULES': ['nse_scraper.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+               '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+2026-09-19 07:01:03 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'nse_scraper.middlewares.NseScraperDownloaderMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2026-09-19 07:01:03 [py.warnings] WARNING: /usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py:44: ScrapyDeprecationWarning: NseScraperDownloaderMiddleware.process_request() requires a spider argument, this is deprecated and the argument will not be passed in future Scrapy versions. If you need to access the spider instance you can save the crawler instance passed to from_crawler() and use its spider attribute.
+  self._check_mw_method_spider_arg(mw.process_request)
+
+2026-09-19 07:01:04 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+ 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2026-09-19 07:01:04 [scrapy.middleware] INFO: Enabled item pipelines:
+['nse_scraper.pipelines.NseScraperPipeline']
+2026-09-19 07:01:04 [scrapy.core.engine] INFO: Spider opened
+2026-09-19 07:01:04 [nse_scraper.db.backends] INFO: SQLite backend ready: /app/data/nse_scraper.sqlite3
+2026-09-19 07:01:04 [nse_scraper.pipelines] INFO: Storage backend active: sqlite
+2026-09-19 07:01:04 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-09-19 07:01:04 [afx_scraper] INFO: Spider opened: afx_scraper
+2026-09-19 07:01:04 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2026-09-19 07:02:04 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-09-19 07:03:04 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-09-19 07:03:05 [scrapy.downloadermiddlewares.retry] ERROR: Gave up retrying <GET https://afx.kwayisi.org/nse/> (failed 4 times): User timeout caused connection failure.
+2026-09-19 07:03:05 [scrapy.core.scraper] ERROR: Error downloading <GET https://afx.kwayisi.org/nse/>
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1853, in _inlineCallbacks
+    result = context.run(
+        cast(Failure, result).throwExceptionIntoGenerator, gen
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/python/failure.py", line 467, in throwExceptionIntoGenerator
+    return g.throw(self.value.with_traceback(self.tb))
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/engine.py", line 490, in _download
+    result = yield self.downloader.fetch(request)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1853, in _inlineCallbacks
+    result = context.run(
+        cast(Failure, result).throwExceptionIntoGenerator, gen
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/python/failure.py", line 467, in throwExceptionIntoGenerator
+    return g.throw(self.value.with_traceback(self.tb))
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 144, in fetch
+    yield deferred_from_coro(
+        self.middleware.download_async(self._enqueue_request, request)
+    )
+  File "/usr/local/lib/python3.14/site-packages/twisted/internet/defer.py", line 1257, in adapt
+    extracted: _SelfResultT | Failure = result.result()
+                                        ~~~~~~~~~~~~~^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 158, in download_async
+    result = await process_exception(ex)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 150, in process_exception
+    raise exception
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 153, in download_async
+    result: Response | Request = await process_request(request)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py", line 97, in process_request
+    return await download_func(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 202, in _enqueue_request
+    return await maybe_deferred_to_future(d)  # fired in _wait_for_download()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 269, in _wait_for_download
+    response = await self._download(slot, request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/__init__.py", line 239, in _download
+    response: Response = await self.handlers.download_request_async(request)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/handlers/__init__.py", line 156, in download_request_async
+    return await handler.download_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.14/site-packages/scrapy/core/downloader/handlers/http11.py", line 113, in download_request
+    return await maybe_deferred_to_future(agent.download_request(request))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+twisted.internet.error.TimeoutError: User timeout caused connection failure.
+2026-09-19 07:03:05 [scrapy.core.engine] INFO: Closing spider (finished)
+2026-09-19 07:03:05 [nse_scraper.pipelines] INFO: Storage backend closed
+2026-09-19 07:03:05 [nse_scraper.extensions] INFO: Data quality gate passed for afx_scraper: 0 items (minimum 0)
+2026-09-19 07:03:06 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/exception_count': 4,
+ 'downloader/exception_type_count/twisted.internet.error.TimeoutError': 4,
+ 'downloader/request_bytes': 1276,
+ 'downloader/request_count': 4,
+ 'downloader/request_method_count/GET': 4,
+ 'elapsed_time_seconds': 121.676189,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2026, 9, 19, 7, 3, 5, 966037, tzinfo=datetime.timezone.utc),
+ 'items_per_minute': 0.0,
+ 'log_count/ERROR': 2,
+ 'log_count/INFO': 7,
+ 'memusage/max': 92037120,
+ 'memusage/startup': 91381760,
+ 'responses_per_minute': 0.0,
+ 'retry/count': 3,
+ 'retry/max_reached': 1,
+ 'retry/reason_count/twisted.internet.error.TimeoutError': 3,
+ 'scheduler/dequeued': 4,
+ 'scheduler/dequeued/memory': 4,
+ 'scheduler/enqueued': 4,
+ 'scheduler/enqueued/memory': 4,
+ 'start_time': datetime.datetime(2026, 9, 19, 7, 1, 4, 289848, tzinfo=datetime.timezone.utc)}
+2026-09-19 07:03:06 [scrapy.core.engine] INFO: Spider closed (finished)
+[2026-09-19T07:03:08+0000] END afx_scraper exit=0
+[2026-09-19T07:03:09+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-09-19T07:03:09+0000] START stockanalysis_scraper
+2026-09-19 07:03:25 [scrapy.utils.log] INFO: Scrapy 2.14.1 started (bot: nse_scraper)
+2026-09-19 07:03:25 [scrapy.utils.log] INFO: Versions:
+{'lxml': '6.0.2',
+ 'libxml2': '2.14.6',
+ 'cssselect': '1.4.0',
+ 'parsel': '1.11.0',
+ 'w3lib': '2.3.1',
+ 'Twisted': '25.5.0',
+ 'Python': '3.14.7 (main, Sep  1 2026, 00:05:20) [GCC 14.2.0]',
+ 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.5 27 Jan 2026)',
+ 'cryptography': '46.0.4',
+ 'Platform': 'Linux-6.8.0-100-generic-x86_64-with-glibc2.41'}
+2026-09-19 07:03:25 [scrapy.addons] INFO: Enabled addons:
+[]
+2026-09-19 07:03:25 [scrapy.extensions.telnet] INFO: Telnet Password: 4b6c604e8c42c087
+2026-09-19 07:03:27 [scrapy.middleware] INFO: Enabled extensions:
+['scrapy.extensions.corestats.CoreStats',
+ 'scrapy.extensions.logcount.LogCount',
+ 'scrapy.extensions.telnet.TelnetConsole',
+ 'scrapy.extensions.memusage.MemoryUsage',
+ 'scrapy.extensions.logstats.LogStats',
+ 'scrapy.extensions.throttle.AutoThrottle',
+ 'nse_scraper.extensions.DataQualityGate']
+2026-09-19 07:03:27 [scrapy.crawler] INFO: Overridden settings:
+{'AUTOTHROTTLE_ENABLED': True,
+ 'AUTOTHROTTLE_MAX_DELAY': 15,
+ 'AUTOTHROTTLE_START_DELAY': 2,
+ 'BOT_NAME': 'nse_scraper',
+ 'CONCURRENT_REQUESTS': 8,
+ 'CONCURRENT_REQUESTS_PER_DOMAIN': 1,
+ 'DOWNLOAD_DELAY': 2.0,
+ 'DOWNLOAD_TIMEOUT': 30,
+ 'HTTPCACHE_ENABLED': 'False',
+ 'HTTPCACHE_EXPIRATION_SECS': 3600,
+ 'LOG_LEVEL': 'INFO',
+ 'NEWSPIDER_MODULE': 'nse_scraper.spiders',
+ 'RETRY_HTTP_CODES': [500, 502, 503, 504, 408, 429],
+ 'SPIDER_MODULES': ['nse_scraper.spiders'],
+ 'USER_AGENT': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 '
+               '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+2026-09-19 07:03:30 [scrapy.middleware] INFO: Enabled downloader middlewares:
+['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+ 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+ 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+ 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+ 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+ 'nse_scraper.middlewares.NseScraperDownloaderMiddleware',
+ 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+ 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+ 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+ 'scrapy.downloadermiddlewares.cookies.CookiesMiddleware',
+ 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+ 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2026-09-19 07:03:30 [py.warnings] WARNING: /usr/local/lib/python3.14/site-packages/scrapy/core/downloader/middleware.py:44: ScrapyDeprecationWarning: NseScraperDownloaderMiddleware.process_request() requires a spider argument, this is deprecated and the argument will not be passed in future Scrapy versions. If you need to access the spider instance you can save the crawler instance passed to from_crawler() and use its spider attribute.
+  self._check_mw_method_spider_arg(mw.process_request)
+
+2026-09-19 07:03:30 [scrapy.middleware] INFO: Enabled spider middlewares:
+['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+ 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+ 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+ 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+ 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2026-09-19 07:03:30 [scrapy.middleware] INFO: Enabled item pipelines:
+['nse_scraper.pipelines.StockAnalysisPipeline']
+2026-09-19 07:03:30 [scrapy.core.engine] INFO: Spider opened
+2026-09-19 07:03:31 [nse_scraper.db.backends] INFO: SQLite backend ready: /app/data/nse_scraper.sqlite3
+2026-09-19 07:03:31 [nse_scraper.pipelines] INFO: StockAnalysisPipeline: Supabase storage active
+2026-09-19 07:03:31 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2026-09-19 07:03:31 [stockanalysis_scraper] INFO: Spider opened: stockanalysis_scraper
+2026-09-19 07:03:31 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2026-09-19 07:03:34 [nse_scraper.spiders.stockanalysis_scraper] INFO: View 'performance' missing in embedded payload; rebuilding from per-symbol pages
+2026-09-19 07:03:34 [nse_scraper.spiders.stockanalysis_scraper] INFO: Enriching 16 of 63 symbols this run (offset 33): SASN,WTK,KAPC,LBTY,TPSE,SMER,BOC,AMAC,LAPR,UMME,UNGA,NMG,NBV,LIMT,TCL,EGAD
+2026-09-19 07:03:34 [nse_scraper.spiders.stockanalysis_scraper] INFO: Fetching financial statements for 8 of 63 symbols this run (offset 48): EGAD,SCAN,SKL,LKL,SGL,HAFR,UCHM,CABL
+2026-09-19 07:04:31 [scrapy.extensions.logstats] INFO: Crawled 26 pages (at 26 pages/min), scraped 88 items (at 88 items/min)
+2026-09-19 07:05:09 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/ratios/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:12 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/ratios/ (Ignoring non-200 response)
+2026-09-19 07:05:15 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/cash-flow-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:17 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/cash-flow-statement/ (Ignoring non-200 response)
+2026-09-19 07:05:20 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/balance-sheet/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:21 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/balance-sheet/ (Ignoring non-200 response)
+2026-09-19 07:05:24 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/income-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:25 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SKL/financials/income-statement/ (Ignoring non-200 response)
+2026-09-19 07:05:30 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/ratios/ (Ignoring non-200 response)
+2026-09-19 07:05:31 [scrapy.extensions.logstats] INFO: Crawled 51 pages (at 25 pages/min), scraped 104 items (at 16 items/min)
+2026-09-19 07:05:32 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/cash-flow-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:35 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/cash-flow-statement/ (Ignoring non-200 response)
+2026-09-19 07:05:37 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/balance-sheet/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:40 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/balance-sheet/ (Ignoring non-200 response)
+2026-09-19 07:05:43 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/income-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:46 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/SCAN/financials/income-statement/ (Ignoring non-200 response)
+2026-09-19 07:05:48 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/ratios/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:51 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/ratios/ (Ignoring non-200 response)
+2026-09-19 07:05:53 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/cash-flow-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:05:56 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/cash-flow-statement/ (Ignoring non-200 response)
+2026-09-19 07:05:58 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/balance-sheet/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:06:00 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/balance-sheet/ (Ignoring non-200 response)
+2026-09-19 07:06:02 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/income-statement/?p=quarterly (Ignoring non-200 response)
+2026-09-19 07:06:05 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Statement page request failed: https://stockanalysis.com/quote/nase/EGAD/financials/income-statement/ (Ignoring non-200 response)
+2026-09-19 07:06:07 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/EGAD/company/ (Ignoring non-200 response)
+2026-09-19 07:06:09 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/EGAD/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:12 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/EGAD/ (Ignoring non-200 response)
+2026-09-19 07:06:14 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TCL/company/ (Ignoring non-200 response)
+2026-09-19 07:06:16 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TCL/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:18 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TCL/ (Ignoring non-200 response)
+2026-09-19 07:06:20 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LIMT/company/ (Ignoring non-200 response)
+2026-09-19 07:06:23 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LIMT/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:24 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LIMT/ (Ignoring non-200 response)
+2026-09-19 07:06:27 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NBV/company/ (Ignoring non-200 response)
+2026-09-19 07:06:29 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NBV/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:31 [scrapy.extensions.logstats] INFO: Crawled 76 pages (at 25 pages/min), scraped 104 items (at 0 items/min)
+2026-09-19 07:06:32 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NBV/ (Ignoring non-200 response)
+2026-09-19 07:06:35 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NMG/company/ (Ignoring non-200 response)
+2026-09-19 07:06:38 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NMG/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:41 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/NMG/ (Ignoring non-200 response)
+2026-09-19 07:06:43 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UNGA/company/ (Ignoring non-200 response)
+2026-09-19 07:06:45 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UNGA/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:48 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UNGA/ (Ignoring non-200 response)
+2026-09-19 07:06:51 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UMME/company/ (Ignoring non-200 response)
+2026-09-19 07:06:53 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UMME/dividend/ (Ignoring non-200 response)
+2026-09-19 07:06:56 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/UMME/ (Ignoring non-200 response)
+2026-09-19 07:06:58 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LAPR/company/ (Ignoring non-200 response)
+2026-09-19 07:07:00 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LAPR/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:02 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LAPR/ (Ignoring non-200 response)
+2026-09-19 07:07:04 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/AMAC/company/ (Ignoring non-200 response)
+2026-09-19 07:07:06 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/AMAC/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:09 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/AMAC/ (Ignoring non-200 response)
+2026-09-19 07:07:12 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/BOC/company/ (Ignoring non-200 response)
+2026-09-19 07:07:14 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/BOC/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:16 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/BOC/ (Ignoring non-200 response)
+2026-09-19 07:07:19 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SMER/company/ (Ignoring non-200 response)
+2026-09-19 07:07:22 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SMER/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:25 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SMER/ (Ignoring non-200 response)
+2026-09-19 07:07:27 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TPSE/company/ (Ignoring non-200 response)
+2026-09-19 07:07:30 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TPSE/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:31 [scrapy.extensions.logstats] INFO: Crawled 100 pages (at 24 pages/min), scraped 104 items (at 0 items/min)
+2026-09-19 07:07:33 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/TPSE/ (Ignoring non-200 response)
+2026-09-19 07:07:35 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LBTY/company/ (Ignoring non-200 response)
+2026-09-19 07:07:37 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LBTY/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:40 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/LBTY/ (Ignoring non-200 response)
+2026-09-19 07:07:43 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/KAPC/company/ (Ignoring non-200 response)
+2026-09-19 07:07:45 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/KAPC/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:48 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/KAPC/ (Ignoring non-200 response)
+2026-09-19 07:07:50 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/WTK/company/ (Ignoring non-200 response)
+2026-09-19 07:07:53 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/WTK/dividend/ (Ignoring non-200 response)
+2026-09-19 07:07:54 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/WTK/ (Ignoring non-200 response)
+2026-09-19 07:07:57 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SASN/company/ (Ignoring non-200 response)
+2026-09-19 07:08:00 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SASN/dividend/ (Ignoring non-200 response)
+2026-09-19 07:08:03 [nse_scraper.spiders.stockanalysis_scraper] WARNING: Per-symbol page request failed: https://stockanalysis.com/quote/nase/SASN/ (Ignoring non-200 response)
+2026-09-19 07:08:03 [scrapy.core.engine] INFO: Closing spider (finished)
+2026-09-19 07:08:09 [nse_scraper.extensions] INFO: Data quality gate passed for stockanalysis_scraper: 104 items (minimum 95)
+2026-09-19 07:08:09 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+{'downloader/request_bytes': 49634,
+ 'downloader/request_count': 113,
+ 'downloader/request_method_count/GET': 113,
+ 'downloader/response_bytes': 2290325,
+ 'downloader/response_count': 113,
+ 'downloader/response_status_count/200': 42,
+ 'downloader/response_status_count/403': 63,
+ 'downloader/response_status_count/404': 8,
+ 'elapsed_time_seconds': 278.40214,
+ 'finish_reason': 'finished',
+ 'finish_time': datetime.datetime(2026, 9, 19, 7, 8, 9, 579810, tzinfo=datetime.timezone.utc),
+ 'httpcompression/response_bytes': 10154727,
+ 'httpcompression/response_count': 113,
+ 'item_scraped_count': 104,
+ 'items_per_minute': 22.446043165467625,
+ 'log_count/INFO': 11,
+ 'log_count/WARNING': 71,
+ 'memusage/max': 108527616,
+ 'memusage/startup': 92536832,
+ 'nse/db_upsert_ok': 63,
+ 'nse_scraper/financials_ok': 41,
+ 'request_depth_max': 1,
+ 'response_received_count': 113,
+ 'responses_per_minute': 24.388489208633093,
+ 'scheduler/dequeued': 113,
+ 'scheduler/dequeued/memory': 113,
+ 'scheduler/enqueued': 113,
+ 'scheduler/enqueued/memory': 113,
+ 'start_time': datetime.datetime(2026, 9, 19, 7, 3, 31, 177670, tzinfo=datetime.timezone.utc),
+ 'stockanalysis/statement_page_failed': 23,
+ 'stockanalysis/symbol_page_failed': 48}
+2026-09-19 07:08:09 [scrapy.core.engine] INFO: Spider closed (finished)
+[2026-09-19T07:08:13+0000] END stockanalysis_scraper exit=0
+[2026-09-19T07:08:13+0000] QUALITY stockanalysis_scraper OK items=104 min=95 db_ok=63 db_failed=0
+[2026-09-19T07:08:13+0000] RUN_STATUS SUCCESS

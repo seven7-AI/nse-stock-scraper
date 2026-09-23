@@ -14,7 +14,7 @@ import os
 import sqlite3
 from collections import OrderedDict
 
-from nse_scraper.historical import lineage, normalize, readers
+from nse_scraper.historical import lineage, normalize, readers, sectors
 
 #: What the audit of the source files predicts. A drift here is a real finding.
 EXPECTED = {
@@ -33,8 +33,10 @@ SPOT_CHECKS = (
     ("ABSA", "2012-12-31"),       # last BBK row, resolved to ABSA
     ("ABSA", "2013-01-02"),       # first native ABSA row - the seam
     ("KPLC-P7", "2015-06-30"),    # preference share
-    ("^NASI", "2024-12-31"),      # index series, last day
-    ("KCB", "2024-12-31"),        # last day of the archive
+    ("^NASI", "2024-12-31"),      # index series, last day the sector files cover
+    ("KCB", "2024-12-31"),        # the 2024/2025 archive seam
+    ("KCB", "2025-12-31"),        # last day of the archive
+    ("SMWF", "2025-08-05"),       # ETF listed mid-2025, after every sector file
 )
 
 
@@ -47,7 +49,7 @@ def validate(db_path, archive_dir):
         checks += _structural_checks(connection, summary)
         checks += _lineage_checks(connection)
         checks += _quality_checks(connection)
-        checks += _sector_checks(connection)
+        checks += _sector_checks(connection, archive_dir)
         checks += _timeline_checks(connection)
         checks += _spot_checks(connection, archive_dir)
         checks += _scraper_overlap_checks(connection)
@@ -153,26 +155,36 @@ def _quality_checks(c):
     ]
 
 
-def _sector_checks(c):
-    # Sector files cover the archive, so the strict check is scoped to instruments the
-    # ARCHIVE saw in its final year. Listings that exist only in the scraper (2025+)
-    # appear in no sector file; NULL is the honest value and they are reported apart.
+def _sector_checks(c, archive_dir):
+    # The sector files cover a period, not "the archive": the newest one ends in its own
+    # last year, and price archives can be newer than it. So the strict check is scoped to
+    # the window the files actually claim, read from the newest file's tag. A listing that
+    # first trades after that window appears in no sector file - whether it reached us
+    # through a later archive or through the scraper - and NULL is the honest value for it;
+    # those are reported apart, never guessed.
+    covered_to = sectors.coverage_end(archive_dir)
+    if covered_to is None:
+        return [_check("sector files present", False, "no NSE_data_stock_market_sectors_*.csv in {}".format(archive_dir))]
+    covered_from = "{}-01-01".format(covered_to[:4])
     active_unclassified = [r[0] for r in c.execute(
         "SELECT i.ticker_symbol FROM instruments i WHERE i.sector IS NULL AND i.instrument_type != 'index' "
         "AND EXISTS (SELECT 1 FROM stock_observations o WHERE o.ticker_symbol = i.ticker_symbol "
-        "AND o.data_source LIKE 'nse_archive:%' AND o.trade_date >= '2024-01-01') ORDER BY 1")]
-    scraper_only_unclassified = [r[0] for r in c.execute(
+        "AND o.data_source LIKE 'nse_archive:%' AND o.trade_date BETWEEN ? AND ?) ORDER BY 1",
+        (covered_from, covered_to))]
+    newer_than_files = [r[0] for r in c.execute(
         "SELECT i.ticker_symbol FROM instruments i WHERE i.sector IS NULL AND i.instrument_type != 'index' "
         "AND NOT EXISTS (SELECT 1 FROM stock_observations o WHERE o.ticker_symbol = i.ticker_symbol "
-        "AND o.data_source LIKE 'nse_archive:%') ORDER BY 1")]
+        "AND o.trade_date <= ?) ORDER BY 1", (covered_to,))]
     unclassified = [r[0] for r in c.execute("SELECT ticker_symbol FROM instruments WHERE sector IS NULL ORDER BY 1")]
     by_sector = c.execute(
         "SELECT sector, count(*) FROM instruments WHERE instrument_type = 'ordinary' GROUP BY 1 ORDER BY 2 DESC").fetchall()
     return [
-        _check("every instrument the archive saw in 2024 has a sector", not active_unclassified,
-               "unclassified-but-active: {}".format(active_unclassified or "none")),
-        _check("scraper-only listings awaiting a sector (absent from every sector file; never guessed)", None,
-               "{}".format(scraper_only_unclassified or "none")),
+        _check("every instrument the archive saw in {}, the sector files' final year, has a sector".format(covered_to[:4]),
+               not active_unclassified,
+               "window {}..{}; unclassified-but-active: {}".format(
+                   covered_from, covered_to, active_unclassified or "none")),
+        _check("listings newer than the sector files, awaiting a sector (absent from every one; never guessed)", None,
+               "first traded after {}: {}".format(covered_to, newer_than_files or "none")),
         _check("unclassified instruments (delisted pre-2013, never guessed)", None,
                "{}: {}".format(len(unclassified), unclassified)),
         _check("ordinary shares by sector", None,

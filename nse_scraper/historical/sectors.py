@@ -53,6 +53,20 @@ def file_tag(path):
     return match.group("tag") if match else None
 
 
+def coverage_end(archive_dir):
+    """Last day the sector files claim to cover, or None when there are none.
+
+    The newest file's tag names its last year: "2023_2024" -> "2024-12-31". Listings
+    that first trade after this day appear in no sector file; they are reported,
+    never judged, and never guessed.
+    """
+    files = list_sector_files(archive_dir)
+    if not files:
+        return None
+    tag = file_tag(files[-1])
+    return "{}-12-31".format(tag.split("_")[-1])
+
+
 def _normalize_label(label, code):
     label = " ".join((label or "").split())
     if code.startswith("^") or label.startswith("^"):

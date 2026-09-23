@@ -47,6 +47,7 @@ _KNOWN_TYPES = {
     "GLD": "etf",     # NewGold ETF
     "LAPR": "reit",   # Laptrust Imara I-REIT
     "FAHR": "reit",   # Stanlib Fahari I-REIT (alias source; typed for completeness)
+    "SMWF": "etf",    # Satrix MSCI World Feeder ETF, listed 2025 on the NSE ETF segment
 }
 
 

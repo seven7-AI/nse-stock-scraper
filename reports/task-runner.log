@@ -4602,3 +4602,27 @@ time="2026-09-27T09:00:05+02:00" level=warning msg="Found orphan containers ([de
 [2026-09-27T07:06:55+0000] QUALITY stockanalysis_scraper OK items=111 min=95 db_ok=63 db_failed=0
 [2026-09-27T07:06:55+0000] RUN_STATUS SUCCESS
 [2026-09-27T09:06:56+0200] DOCKER_RUN_STATUS SUCCESS exit=0
+[main 4b573d1] chore(log): daily scraper run 2026-09-27 - SUCCESS
+ 6 files changed, 397 insertions(+), 2 deletions(-)
+ create mode 100644 reports/run-2026-09-27_070008.log
+ create mode 100644 reports/stats/afx_scraper-2026-09-27_070216.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-09-27_070654.json
+[2026-09-27T09:06:57+0200] GIT_COMMIT_STATUS SUCCESS
+From github.com:seven7-AI/nse-stock-scraper
+ * branch            main       -> FETCH_HEAD
+To github.com:seven7-AI/nse-stock-scraper.git
+   4485d01..4b573d1  main -> main
+[2026-09-27T09:07:01+0200] GIT_PUSH_STATUS SUCCESS branch=main
+time="2026-09-28T09:00:12+02:00" level=warning msg="Found orphan containers ([deployment-api-1 deployment-celery-flower-1 deployment-celery-worker-1 deployment-nginx-1 deployment-minio-1 deployment-redis-1 deployment-certbot-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-40cb528f57e6 Creating 
+ Container deployment-scraper-job-run-40cb528f57e6 Created 
+[2026-09-28T07:00:19+0000] RUN_START
+[2026-09-28T07:00:19+0000] START afx_scraper
+[2026-09-28T07:02:46+0000] END afx_scraper exit=0
+[2026-09-28T07:02:46+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-09-28T07:02:46+0000] START stockanalysis_scraper
+[2026-09-28T07:07:27+0000] END stockanalysis_scraper exit=0
+[2026-09-28T07:07:27+0000] QUALITY stockanalysis_scraper FAILED items=91 min=95 db_ok=63 db_failed=0 scraped 91 items, below minimum of 95
+[2026-09-28T07:07:27+0000] RUN_STATUS FAILED afx_exit=0 stockanalysis_exit=2
+
+[2026-09-28T09:07:28+0200] DOCKER_RUN_STATUS FAILED exit=1

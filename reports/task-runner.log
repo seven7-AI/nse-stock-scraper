@@ -4764,3 +4764,26 @@ time="2026-10-04T09:00:03+02:00" level=warning msg="Found orphan containers ([de
 [2026-10-04T07:06:50+0000] QUALITY stockanalysis_scraper OK items=104 min=95 db_ok=63 db_failed=0
 [2026-10-04T07:06:51+0000] RUN_STATUS SUCCESS
 [2026-10-04T09:06:51+0200] DOCKER_RUN_STATUS SUCCESS exit=0
+[main a6eecc0] chore(log): daily scraper run 2026-10-04 - SUCCESS
+ 6 files changed, 406 insertions(+), 4 deletions(-)
+ create mode 100644 reports/run-2026-10-04_070008.log
+ create mode 100644 reports/stats/afx_scraper-2026-10-04_070215.json
+ create mode 100644 reports/stats/stockanalysis_scraper-2026-10-04_070650.json
+[2026-10-04T09:06:51+0200] GIT_COMMIT_STATUS SUCCESS
+From github.com:seven7-AI/nse-stock-scraper
+ * branch            main       -> FETCH_HEAD
+To github.com:seven7-AI/nse-stock-scraper.git
+   c0cbcf4..a6eecc0  main -> main
+[2026-10-04T09:06:55+0200] GIT_PUSH_STATUS SUCCESS branch=main
+time="2026-10-05T09:00:03+02:00" level=warning msg="Found orphan containers ([deployment-api-1 deployment-celery-flower-1 deployment-celery-worker-1 deployment-nginx-1 deployment-minio-1 deployment-redis-1 deployment-certbot-1]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up."
+ Container deployment-scraper-job-run-9c37e573d209 Creating 
+ Container deployment-scraper-job-run-9c37e573d209 Created 
+[2026-10-05T07:00:08+0000] RUN_START
+[2026-10-05T07:00:08+0000] START afx_scraper
+[2026-10-05T07:02:16+0000] END afx_scraper exit=0
+[2026-10-05T07:02:16+0000] QUALITY afx_scraper OK items=0 min=0 db_ok=0 db_failed=0
+[2026-10-05T07:02:16+0000] START stockanalysis_scraper
+[2026-10-05T07:06:59+0000] END stockanalysis_scraper exit=0
+[2026-10-05T07:06:59+0000] QUALITY stockanalysis_scraper OK items=117 min=95 db_ok=63 db_failed=0
+[2026-10-05T07:06:59+0000] RUN_STATUS SUCCESS
+[2026-10-05T09:07:00+0200] DOCKER_RUN_STATUS SUCCESS exit=0

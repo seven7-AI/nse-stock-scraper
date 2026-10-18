@@ -1,0 +1,16 @@
+{
+  "spider": "stockanalysis_scraper",
+  "finish_reason": "finished",
+  "finished_at": "2026-10-18T07:06:54.464373+00:00",
+  "item_scraped_count": 147,
+  "min_items": 95,
+  "db_upsert_ok": 63,
+  "db_upsert_failed": 0,
+  "financials_ok": 64,
+  "financials_failed": 0,
+  "log_count_error": 0,
+  "retry_count": 0,
+  "response_received_count": 113,
+  "quality_ok": true,
+  "failures": []
+}

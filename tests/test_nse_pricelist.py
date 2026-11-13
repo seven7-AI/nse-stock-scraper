@@ -8,8 +8,10 @@ actual conditions this parser has to survive.
 import unittest
 
 from nse_scraper.nse_pricelist import (
+    normalise_company,
     parse_line,
     parse_pricelist,
+    resolve_ticker,
     to_number,
     validate,
 )
@@ -110,6 +112,79 @@ class TestValidate(unittest.TestCase):
         row = parse_line(KCB)
         row.vwap = 427.5
         self.assertIn("outside the day's range", validate(row))
+
+
+class TestResolveTicker(unittest.TestCase):
+    """The list prints company names; stock_observations keys on tickers."""
+
+    UNIVERSE = {
+        "KCB": "KCB Group Plc",
+        "CGEN": "Car and General (K) Ltd",
+        "COOP": "Co-operative Bank of Kenya Ltd",
+        "CIC": "CIC Insurance Group Ltd",
+        "TPSE": "TPS Eastern Africa (Serena) Ltd",
+        "CTUM": "Centum Investment Company Plc",
+        "ICDC": "Centum Investment",
+    }
+
+    def resolve(self, printed):
+        return resolve_ticker(printed, self.UNIVERSE)
+
+    def test_the_share_class_is_not_part_of_the_name(self):
+        self.assertEqual(self.resolve("KCB Group Plc Ord 1.00"), "KCB")
+
+    def test_ampersand_matches_the_word_and(self):
+        """The exchange prints "Car & General", the master "Car and General"."""
+        self.assertEqual(self.resolve("Car & General (K) Ltd Ord 5.00"), "CGEN")
+
+    def test_a_leading_the_is_ignored(self):
+        self.assertEqual(
+            self.resolve("The Co-operative Bank of Kenya Ltd Ord 1.00"), "COOP"
+        )
+
+    def test_the_corporate_form_need_not_agree(self):
+        """The list prints CIC as Plc - and the scan as "Ple" - the master holds Ltd."""
+        self.assertEqual(self.resolve("CIC Insurance Group Ple Ord.1.00"), "CIC")
+
+    def test_the_master_may_hold_the_longer_name(self):
+        """"TPS Eastern Africa" on the list, "(Serena)" only in the master."""
+        self.assertEqual(self.resolve("TPS Eastern Africa Ltd Ord 1.00"), "TPSE")
+
+    def test_an_unknown_company_resolves_to_nothing(self):
+        self.assertIsNone(self.resolve("Some Unlisted Holdings Plc Ord 1.00"))
+
+    def test_two_equally_good_candidates_resolve_to_nothing(self):
+        """Guessing would put a real price against the wrong instrument."""
+        self.assertIsNone(
+            resolve_ticker(
+                "Example Holdings Plc Ord 1.00",
+                {"AAA": "Example Holdings Plc", "BBB": "Example Holdings Ltd"},
+            )
+        )
+
+    def test_an_alias_outranks_an_ambiguous_master(self):
+        """CTUM and ICDC both carry "Centum Investment" and both are active ordinary
+        lines, so token matching cannot separate them and would refuse the row. The
+        alias is how that is settled - explicitly, and visible in review.
+        """
+        ambiguous = {"CTUM": "Centum Investment Company Plc", "ICDC": "Centum Investment"}
+        self.assertEqual(resolve_ticker("Centum Investment Co Plc Ord 0.50", ambiguous), "CTUM")
+
+    def test_an_alias_settles_what_the_scan_corrupted(self):
+        """The scan reads HF Group as "HFCB Group"; no token match can recover that."""
+        self.assertEqual(resolve_ticker("HFCB Group Plc Ord 5.00", self.UNIVERSE), "HFCK")
+        self.assertEqual(resolve_ticker("Brita Holdings Ple Ord 0.10", self.UNIVERSE), "BRIT")
+
+    def test_a_rights_line_cannot_absorb_an_ordinary_price(self):
+        """Callers pass ordinary lines only; a rights line shares the whole name.
+
+        Included so the constraint is recorded where it is relied upon: with the rights
+        line present there is no unique answer, which is why the runner filters on
+        instrument_type before it ever gets here.
+        """
+        with_rights = dict(self.UNIVERSE)
+        with_rights["TPSE-R"] = "TPS Eastern Africa (Serena) (Rights)"
+        self.assertIsNone(resolve_ticker("TPS Eastern Africa Ltd Ord 1.00", with_rights))
 
 
 class TestParsePricelist(unittest.TestCase):

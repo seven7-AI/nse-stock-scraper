@@ -50,6 +50,44 @@ ISIN_TOKEN = re.compile(r"^[Kk][E€e][A-Za-z0-9]{10}$")
 #: A token that could be a number once OCR noise is removed.
 NUMERIC_TOKEN = re.compile(r"^[\d][\d,. ]*$")
 
+#: Everything from the share class onwards: "Ord 1.25", "ord.5.00", "Ord.1.00". The
+#: nominal value is not part of the company's identity, and the scan appends footnote
+#: letters to it ("Ord 5.00sue", "Ord 10.00sne") which would otherwise poison a match.
+SHARE_CLASS = re.compile(r"\bord\b|\bord\.", re.IGNORECASE)
+
+#: Corporate-form words, dropped before matching. They are both the noisiest tokens on
+#: a scan ("Plc" reads as "Ple", "Pic", "P1c") and the least reliable: the exchange
+#: prints CIC Insurance Group as "Plc" while the instrument master holds "Ltd". Nothing
+#: distinguishes two NSE listings by their form alone.
+FORM_WORDS = frozenset(
+    ["plc", "ple", "pic", "p1c", "ltd", "limited", "co", "company", "the", "and"]
+)
+
+#: Normalised list names that no amount of token matching will resolve, mapped to the
+#: ticker they mean. Two separate causes, both deliberate to state rather than paper
+#: over with fuzzy matching - an edit-distance match on a scanned company name is how a
+#: price ends up against the wrong instrument, which is worse than having no price.
+#:
+#: Scan corruption, confirmed against the printed list:
+#:   "HFCB Group"        - HF Group Ltd, the scan doubles the letters
+#:   "Brita Holdings"    - Britam Holdings Plc, the scan drops the m
+#:   "B.0.C Kenya"       - BOC Kenya Plc, zero for the letter O
+#:   "E.APortland Cement" - East African Portland Cement Ltd, no space after E.A
+#: Names the exchange and the instrument master genuinely disagree on:
+#:   "KenGen"            - held as Kenya Electricity Generating Company Plc
+#:   "I&M Group"         - held under its former name, I&M Holdings
+#:   "Centum Investment" - CTUM and ICDC both carry this name and both are active
+#:                         ordinary lines, so nothing in the master separates them
+NAME_ALIASES = {
+    ("hfcb", "group"): "HFCK",
+    ("brita", "holdings"): "BRIT",
+    ("b", "0", "c", "kenya"): "BOC",
+    ("e", "aportland", "cement"): "PORT",
+    ("kengen",): "KEGN",
+    ("i", "m", "group"): "IMH",
+    ("centum", "investment"): "CTUM",
+}
+
 #: ``554,00`` -> ``554.00``. A comma with exactly two digits behind it and nothing else
 #: after is a decimal point the scan rendered as a comma; ``166,895`` is a thousands
 #: separator and keeps its meaning.
@@ -169,6 +207,67 @@ def validate(row):
     if row.volume is not None and row.volume < 0:
         return "negative volume {}".format(row.volume)
     return None
+
+
+def normalise_company(text):
+    """A company name reduced to the tokens that actually identify it.
+
+    The list prints names and the store keys on tickers, so the two have to be matched
+    on something stable. Dropped: the share class and its footnote letters, corporate
+    form, punctuation, and ``&`` versus ``and`` - the exchange writes "Car & General",
+    the instrument master "Car and General".
+    """
+    lowered = text.lower().replace("&", " and ")
+    lowered = SHARE_CLASS.split(lowered)[0]
+    cleaned = re.sub(r"[^a-z0-9 ]+", " ", lowered)
+    return tuple(
+        token for token in cleaned.split() if token and token not in FORM_WORDS
+    )
+
+
+def resolve_ticker(name, universe):
+    """The ticker this list row belongs to, or None when it cannot be told.
+
+    ``universe`` maps ticker -> company name, as held in the ``instruments`` table.
+
+    Returns None rather than a best guess whenever the answer is not clear: an exact
+    token match, or exactly one candidate whose every token appears in the list's name.
+    Two candidates matching equally well means the row is dropped and reported. A price
+    attached to the wrong instrument is far worse than a missing one, and OCR gives
+    ample opportunity for exactly that.
+    """
+    wanted = normalise_company(name)
+    if not wanted:
+        return None
+    if wanted in NAME_ALIASES:
+        return NAME_ALIASES[wanted]
+    wanted_set = set(wanted)
+
+    exact, partial = [], []
+    for ticker, company in universe.items():
+        tokens = normalise_company(company or "")
+        if not tokens:
+            continue
+        if tokens == wanted:
+            exact.append(ticker)
+            continue
+        token_set = set(tokens)
+        # Either direction: the master holds "TPS Eastern Africa (Serena) Ltd" where the
+        # list prints "TPS Eastern Africa", and elsewhere the list carries the longer
+        # name. Score by how much of the longer name is accounted for, so a near-complete
+        # match outranks a two-token coincidence.
+        if token_set <= wanted_set or wanted_set <= token_set:
+            partial.append((len(token_set & wanted_set), ticker))
+    if len(exact) == 1:
+        return exact[0]
+    if exact:
+        return None  # two instruments with the same normalised name: ambiguous
+    if not partial:
+        return None
+    partial.sort(reverse=True)
+    if len(partial) > 1 and partial[0][0] == partial[1][0]:
+        return None  # equally good candidates, so no answer
+    return partial[0][1]
 
 
 def parse_pricelist(ocr_text):

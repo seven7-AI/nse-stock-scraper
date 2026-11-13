@@ -3,7 +3,14 @@ import logging
 from scrapy.exceptions import DropItem
 
 from .db import SUPPORTED_BACKENDS, create_backend
-from .extensions import DB_FAILED_STAT, DB_OK_STAT, FINANCIALS_FAILED_STAT, FINANCIALS_OK_STAT
+from .extensions import (
+    DB_FAILED_STAT,
+    DB_OK_STAT,
+    FINANCIALS_FAILED_STAT,
+    FINANCIALS_OK_STAT,
+    PRICE_NULL_STAT,
+    PRICE_PRESENT_STAT,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -139,6 +146,18 @@ class StockAnalysisPipeline:
             return
         self.stats.inc_value(DB_OK_STAT if written else DB_FAILED_STAT)
 
+    def _record_price(self, value):
+        """Count whether this row carried a usable price.
+
+        Deliberately separate from _record_write: a row stores perfectly well with a
+        null price, so write counts cannot tell a healthy scrape from a source that has
+        stopped publishing prices. _record_observation drops exactly these rows, which
+        is how the canonical timeline stalls with nothing reporting a failure.
+        """
+        if self.stats is None:
+            return
+        self.stats.inc_value(PRICE_NULL_STAT if value is None else PRICE_PRESENT_STAT)
+
     def open_spider(self, spider=None):
         if self.storage:
             self.storage.open()
@@ -186,6 +205,7 @@ class StockAnalysisPipeline:
                 record["price_metrics"] = {k: raw[k] for k in raw if k not in ("price", "change")}
             else:
                 record[f"{view_name}_metrics"] = dict(raw)
+        self._record_price(record["stock_price"])
         try:
             self._record_write(self.storage.upsert_stockanalysis_stock(record))
             logger.debug(

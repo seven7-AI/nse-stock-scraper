@@ -23,6 +23,13 @@ DB_FAILED_STAT = "nse/db_upsert_failed"
 # and a run where every statement write failed is a gate failure like the above.
 FINANCIALS_OK_STAT = "nse_scraper/financials_ok"
 FINANCIALS_FAILED_STAT = "nse_scraper/financials_failed"
+# Rows stored with / without a usable price, incremented by StockAnalysisPipeline.
+# db_upsert_ok counts rows that reached the database, which stays high even when the
+# source stops publishing the one field this pipeline exists to deliver: from
+# 2026-11-06 stockanalysis.com served every NSE listing with a null price, and the
+# gate reported SUCCESS for a week while stock_observations went nowhere.
+PRICE_PRESENT_STAT = "nse/price_present"
+PRICE_NULL_STAT = "nse/price_null"
 
 
 def min_items_setting_name(spider_name):
@@ -52,8 +59,29 @@ class DataQualityGate:
         min_items = self.crawler.settings.getint(min_items_setting_name(spider.name), 0)
         db_ok = stats.get(DB_OK_STAT, 0) or 0
         db_failed = stats.get(DB_FAILED_STAT, 0) or 0
+        requests_made = stats.get("downloader/request_count", 0) or 0
+        responses = stats.get("response_received_count", 0) or 0
+        price_present = stats.get(PRICE_PRESENT_STAT, 0) or 0
+        price_null = stats.get(PRICE_NULL_STAT, 0) or 0
 
         failures = []
+        # A crawl that asked for pages and got none back is an unreachable source, not
+        # an empty one. Keyed on requests rather than on the response count alone so a
+        # run that never crawled (CI, a disabled spider) stays inert - see
+        # test_unconfigured_gate_is_inert. afx_scraper sat at 4 requests / 0 responses
+        # for three weeks of TimeoutError while reporting quality_ok.
+        if requests_made and not responses:
+            failures.append(
+                "made {} request(s) and received no response: the source was "
+                "unreachable, not empty".format(requests_made)
+            )
+        # Rows can be written in full while the price field is null for every one of
+        # them. Counting writes cannot see that; counting the field can.
+        if price_null and not price_present:
+            failures.append(
+                "stored {} row(s) and not one carried a price: the source stopped "
+                "publishing it".format(price_null)
+            )
         if item_count < min_items:
             failures.append(
                 "scraped {} items, below minimum of {}".format(item_count, min_items)
@@ -83,9 +111,12 @@ class DataQualityGate:
             "db_upsert_failed": db_failed,
             "financials_ok": financials_ok,
             "financials_failed": financials_failed,
+            "price_present": price_present,
+            "price_null": price_null,
             "log_count_error": stats.get("log_count/ERROR", 0) or 0,
             "retry_count": stats.get("retry/count", 0) or 0,
-            "response_received_count": stats.get("response_received_count", 0) or 0,
+            "request_count": requests_made,
+            "response_received_count": responses,
             "quality_ok": not failures,
             "failures": failures,
         }

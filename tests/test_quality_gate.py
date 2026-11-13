@@ -13,6 +13,8 @@ import unittest
 from nse_scraper.extensions import (
     DB_FAILED_STAT,
     DB_OK_STAT,
+    PRICE_NULL_STAT,
+    PRICE_PRESENT_STAT,
     DataQualityGate,
     min_items_setting_name,
 )
@@ -126,6 +128,93 @@ class TestDataQualityGate(unittest.TestCase):
         self.assertEqual(report["log_count_error"], 2)
         self.assertEqual(report["retry_count"], 4)
         self.assertEqual(report["response_received_count"], 10)
+
+    def test_requests_without_any_response_fail(self):
+        """afx_scraper's real shape: 4 requests, 0 responses, three weeks of SUCCESS.
+
+        Every retry timed out, Scrapy exited 0, min_items was 0 so the floor could not
+        fail, and the gate published quality_ok. An unreachable source must not read as
+        an empty one.
+        """
+        report = self._run(
+            "afx_scraper",
+            {
+                "item_scraped_count": 0,
+                "downloader/request_count": 4,
+                "response_received_count": 0,
+                "log_count/ERROR": 2,
+                "retry/count": 3,
+            },
+            {},
+        )
+        self.assertFalse(report["quality_ok"])
+        self.assertIn("received no response", " ".join(report["failures"]))
+
+    def test_a_crawl_that_never_ran_stays_inert(self):
+        """The CI invariant, restated against the new checks.
+
+        No requests, no rows: nothing was attempted, so there is nothing to fail. This
+        is what keeps test_unconfigured_gate_is_inert true.
+        """
+        report = self._run("afx_scraper", {"item_scraped_count": 0}, {})
+        self.assertTrue(report["quality_ok"])
+        self.assertEqual(report["failures"], [])
+
+    def test_rows_stored_without_a_price_fail(self):
+        """stockanalysis_scraper's real shape from 2026-11-06.
+
+        120 items scraped, 64 rows written, every one with a null price. db_upsert_ok
+        stayed 64 and the gate passed while stock_observations stalled for a week.
+        """
+        report = self._run(
+            "stockanalysis_scraper",
+            {
+                "item_scraped_count": 120,
+                "downloader/request_count": 113,
+                "response_received_count": 113,
+                DB_OK_STAT: 64,
+                PRICE_NULL_STAT: 64,
+            },
+            {},
+        )
+        self.assertFalse(report["quality_ok"])
+        self.assertIn("not one carried a price", " ".join(report["failures"]))
+        self.assertEqual(report["price_null"], 64)
+        self.assertEqual(report["price_present"], 0)
+
+    def test_priced_rows_pass(self):
+        report = self._run(
+            "stockanalysis_scraper",
+            {
+                "item_scraped_count": 120,
+                "downloader/request_count": 113,
+                "response_received_count": 113,
+                DB_OK_STAT: 64,
+                PRICE_PRESENT_STAT: 63,
+                PRICE_NULL_STAT: 1,
+            },
+            {},
+        )
+        self.assertTrue(report["quality_ok"])
+
+    def test_some_missing_prices_do_not_fail_the_run(self):
+        """A suspended or newly listed name legitimately has no price.
+
+        Only a run where *nothing* carried a price is a source failure, matching how
+        partial write failures are already tolerated.
+        """
+        report = self._run(
+            "stockanalysis_scraper",
+            {
+                "item_scraped_count": 63,
+                "downloader/request_count": 63,
+                "response_received_count": 63,
+                PRICE_PRESENT_STAT: 60,
+                PRICE_NULL_STAT: 3,
+            },
+            {},
+        )
+        self.assertTrue(report["quality_ok"])
 
     def test_timestamped_report_is_written_alongside_latest(self):
         self._run("afx_scraper", {"item_scraped_count": 1}, {})

@@ -18,10 +18,20 @@ FROM python:3.14-slim
 
 WORKDIR /app
 
-# Install runtime dependencies
+# Install runtime dependencies.
+#
+# tesseract-ocr and poppler-utils are not optional extras: the Nairobi Securities
+# Exchange publishes its daily price list only as a scanned image, and since
+# 2026-11-06 that list is the source of the canonical close for every instrument.
+# Without pdftoppm and tesseract in the image, nse_pricelist_job raises on every
+# scheduled run and the timeline stops moving. tesseract-ocr-eng carries the English
+# traineddata the parser is measured against.
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libxml2 \
     libxslt1.1 \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy Python dependencies from builder

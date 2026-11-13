@@ -82,7 +82,9 @@ NAME_ALIASES = {
     ("hfcb", "group"): "HFCK",
     ("brita", "holdings"): "BRIT",
     ("b", "0", "c", "kenya"): "BOC",
+    # Both spellings: the scan loses the space at 300 dpi and keeps it at 600.
     ("e", "aportland", "cement"): "PORT",
+    ("e", "a", "portland", "cement"): "PORT",
     ("kengen",): "KEGN",
     ("i", "m", "group"): "IMH",
     ("centum", "investment"): "CTUM",
